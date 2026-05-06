@@ -50,35 +50,45 @@ continuar el trabajo sin perder contexto.
 ## Arquitectura del SDK
 
 ```
-src/datos_mexico/
-├── __init__.py              ← exports públicos
-├── _version.py              ← single source of truth
-├── _constants.py            ← BASE_URL, defaults, retryable codes
-├── _helpers.py              ← _format_fecha, _to_decimal, _to_date, Money, DateField
-├── _cache.py                ← TTLCache con thread safety
-├── _http.py                 ← HttpClient con retries, cache, logging, get(), get_text()
-├── _namespace.py            ← BaseNamespace para todos los namespaces
-├── exceptions.py            ← jerarquía completa
-├── client.py                ← clase DatosMexico (entry point)
-├── models/
-│   ├── base.py              ← DatosMexicoModel, ApiResponse, PaginatedResponse[T], HealthResponse
-│   ├── cdmx.py              ← modelos CDMX servidores (incluye ServidorDetail)
-│   ├── consar.py            ← modelos CONSAR/SAR
-│   ├── enigh.py             ← modelos ENIGH
-│   ├── comparativo.py       ← modelos comparativo cross-dataset
-│   ├── personas.py          ← modelo Persona (raw padrón CDMX)
-│   ├── nombramientos.py     ← modelo Nombramiento (raw padrón CDMX)
-│   ├── demo.py              ← modelos demo (curso ITAM)
-│   └── export.py            ← (sin modelos, export devuelve CSV crudo)
-└── endpoints/
-    ├── cdmx.py              ← CdmxNamespace
-    ├── consar.py            ← ConsarNamespace
-    ├── enigh.py             ← EnighNamespace
-    ├── comparativo.py       ← ComparativoNamespace (cross-dataset)
-    ├── personas.py          ← PersonasNamespace
-    ├── nombramientos.py     ← NombramientosNamespace
-    ├── demo.py              ← DemoNamespace
-    └── export.py            ← ExportNamespace (CSV vía get_text)
+.
+├── src/datos_mexico/
+│   ├── __init__.py              ← exports públicos
+│   ├── _version.py              ← single source of truth
+│   ├── _constants.py            ← BASE_URL, defaults, retryable codes
+│   ├── _helpers.py              ← _format_fecha, _to_decimal, _to_date, Money, DateField
+│   ├── _cache.py                ← TTLCache con thread safety
+│   ├── _http.py                 ← HttpClient con retries, cache, logging, get(), get_text()
+│   ├── _namespace.py            ← BaseNamespace para todos los namespaces
+│   ├── exceptions.py            ← jerarquía completa
+│   ├── client.py                ← clase DatosMexico (entry point)
+│   ├── models/
+│   │   ├── base.py              ← DatosMexicoModel, ApiResponse, PaginatedResponse[T], HealthResponse
+│   │   ├── cdmx.py              ← modelos CDMX servidores (incluye ServidorDetail)
+│   │   ├── consar.py            ← modelos CONSAR/SAR
+│   │   ├── enigh.py             ← modelos ENIGH
+│   │   ├── comparativo.py       ← modelos comparativo cross-dataset
+│   │   ├── personas.py          ← modelo Persona (raw padrón CDMX)
+│   │   ├── nombramientos.py     ← modelo Nombramiento (raw padrón CDMX)
+│   │   ├── demo.py              ← modelos demo (curso ITAM)
+│   │   └── export.py            ← (sin modelos, export devuelve CSV crudo)
+│   └── endpoints/
+│       ├── cdmx.py              ← CdmxNamespace
+│       ├── consar.py            ← ConsarNamespace
+│       ├── enigh.py             ← EnighNamespace
+│       ├── comparativo.py       ← ComparativoNamespace (cross-dataset)
+│       ├── personas.py          ← PersonasNamespace
+│       ├── nombramientos.py     ← NombramientosNamespace
+│       ├── demo.py              ← DemoNamespace
+│       └── export.py            ← ExportNamespace (CSV vía get_text)
+├── tests/                       ← pytest unit tests
+│   ├── fixtures/                ← payloads JSON capturados del API
+│   └── integration/             ← integration suite gated por env var
+└── examples/                    ← 5 notebooks Jupyter ejecutables
+    ├── 01_quickstart.ipynb
+    ├── 02_cdmx_servidores_publicos.ipynb
+    ├── 03_sar_composicion.ipynb
+    ├── 04_enigh_hogares_desigualdad.ipynb
+    └── 05_paper_amafore_workflow.ipynb
 ```
 
 ## Patrón para agregar nuevos endpoints
@@ -142,7 +152,6 @@ alcance del SDK.
 
 ## Pendientes para próximas sesiones
 
-- [ ] Sub-bloque 5G: notebooks de ejemplo (4-5 notebooks Jupyter)
 - [ ] Sub-bloque 5H: publicar a TestPyPI + validar instalación end-to-end
 - [ ] Después de TestPyPI verde: release 0.1.0 a PyPI real
 - [ ] Vincular el repo desde el sitio datosmexico.org
@@ -224,6 +233,39 @@ validan:
 test — eso oculta bugs reales.** Reportar el delta exacto (cifra
 obtenida vs cifra esperada) y triagear si la falla es del API, del
 SDK, o del test.
+
+## Notebooks de ejemplo
+
+El directorio `examples/` contiene 5 notebooks Jupyter ejecutables que
+demuestran flujos típicos del SDK con datos reales contra
+`api.datos-itam.org`. Cada notebook se ejecuta end-to-end (no usa
+mocks) y los outputs (gráficas matplotlib, tablas pandas, prints con
+cifras reales) están persistidos en el `.ipynb` para que GitHub los
+renderice estáticamente.
+
+- `01_quickstart.ipynb` — onboarding mínimo en 10 minutos
+- `02_cdmx_servidores_publicos.ipynb` — análisis del padrón CDMX
+- `03_sar_composicion.ipynb` — composición del SAR mexicano
+- `04_enigh_hogares_desigualdad.ipynb` — desigualdad de ingreso por decil
+- `05_paper_amafore_workflow.ipynb` — workflow cross-dataset (paper Amafore-ITAM)
+
+Las dependencias (jupyter, pandas, matplotlib) son **opcionales** del
+paquete (`pip install datos-mexico[examples]`). El SDK base no las
+requiere.
+
+Re-ejecutar todos los notebooks (útil cuando cambien cifras del API):
+
+```bash
+pip install -e ".[examples]"
+for nb in examples/*.ipynb; do
+  jupyter nbconvert --to notebook --execute --inplace "$nb"
+done
+```
+
+`pyproject.toml` excluye `examples/` de ruff: los notebooks tienen
+convenciones de formateo distintas a las del código fuente (líneas
+largas en prints, imports semánticamente "no usados" para mostrar
+intención, etc.).
 
 ## Workflow para sesión nueva de Claude Code
 
