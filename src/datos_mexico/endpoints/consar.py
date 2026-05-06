@@ -152,6 +152,30 @@ class ConsarNamespace(BaseNamespace):
         """Snapshot de recursos por componente (tipo de recurso) para una fecha.
 
         Endpoint: ``GET /api/v1/consar/recursos/por-componente``
+
+        Notes:
+            El array ``componentes`` es **jerárquico, no una partición plana**.
+            Contiene rows con ``categoria`` en ``{'total', 'aggregate',
+            'component', 'operativo'}``:
+
+            - ``total``: filas resumen (incluye ``sar_total`` mismo y
+              sub-totales como "Recursos Administrados").
+            - ``aggregate``: agregados intermedios (p. ej. "Vivienda" =
+              INFONAVIT + FOVISSSTE).
+            - ``component``: filas hoja (los componentes propiamente dichos).
+            - ``operativo``: filas hoja del lado operativo (capital AFORES).
+
+            Para obtener la suma de componentes que iguale al ``sar_total_mm``
+            agregado, **filtrar a las hojas**: solo rows con
+            ``categoria in {'component', 'operativo'}``. Sumar todas las
+            filas indiscriminadamente sobre-cuenta el SAR ~3x.
+
+            La identidad contable canónica del observatorio es::
+
+                sum(component) + sum(operativo) ≈ recursos_por_afore.total_sistema_mm
+
+            Verificada al peso por el observatorio (ver
+            ``tests/integration/test_data_integrity.py``).
         """
         return self._get_validated(
             "/api/v1/consar/recursos/por-componente",
