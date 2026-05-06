@@ -1,0 +1,16 @@
+{
+  "afore": null,
+  "unit": "pct",
+  "n_puntos": 1,
+  "rango": {
+    "desde": "2008-01-01",
+    "hasta": "2025-06-01"
+  },
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "comision_pct": 0.566
+    }
+  ],
+  "caveats": []
+}

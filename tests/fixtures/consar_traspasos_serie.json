@@ -1,0 +1,17 @@
+{
+  "afore": null,
+  "n_puntos": 1,
+  "rango": {
+    "desde": "2010-01-01",
+    "hasta": "2025-06-01"
+  },
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "num_tras_cedido": 1000,
+      "num_tras_recibido": 1100,
+      "traspaso_neto": 100
+    }
+  ],
+  "caveats": []
+}

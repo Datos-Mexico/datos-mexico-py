@@ -1,0 +1,26 @@
+{
+  "siefore": {
+    "slug": "basica-1",
+    "nombre": "Básica 1",
+    "categoria": "basicas"
+  },
+  "rango": {
+    "desde": "2024-01-01",
+    "hasta": "2025-06-01"
+  },
+  "n_afores": 1,
+  "series": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "n_puntos": 1,
+      "serie": [
+        {
+          "fecha": "2025-06-01",
+          "precio": 2.45
+        }
+      ]
+    }
+  ],
+  "caveats": []
+}

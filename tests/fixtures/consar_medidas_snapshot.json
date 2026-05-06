@@ -1,0 +1,22 @@
+{
+  "fecha": "2025-06-01",
+  "metrica": {
+    "slug": "var_99",
+    "descripcion": "VaR 99%",
+    "unidad": "pct"
+  },
+  "n_filas": 1,
+  "valor_min": 0.01,
+  "valor_max": 0.05,
+  "filas": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "siefore_slug": "basica-1",
+      "siefore_nombre": "Básica 1",
+      "siefore_categoria": "basicas",
+      "valor": 0.02
+    }
+  ],
+  "caveats": []
+}

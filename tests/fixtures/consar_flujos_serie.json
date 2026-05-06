@@ -1,0 +1,18 @@
+{
+  "afore": null,
+  "unit": "MXN_mm",
+  "n_puntos": 1,
+  "rango": {
+    "desde": "2010-01-01",
+    "hasta": "2025-06-01"
+  },
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "montos_entradas": 100.0,
+      "montos_salidas": 50.0,
+      "flujo_neto": 50.0
+    }
+  ],
+  "caveats": []
+}

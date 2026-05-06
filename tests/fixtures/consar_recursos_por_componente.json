@@ -1,0 +1,16 @@
+{
+  "fecha": "2025-06-01",
+  "unit": "MXN_mm",
+  "sar_total_mm": 10127978.0,
+  "n_componentes": 1,
+  "componentes": [
+    {
+      "tipo_codigo": "rcv",
+      "tipo_nombre_corto": "RCV",
+      "categoria": "rcv",
+      "monto_mxn_mm": 9000000.0,
+      "pct_del_sar_total": 88.86
+    }
+  ],
+  "caveats": []
+}

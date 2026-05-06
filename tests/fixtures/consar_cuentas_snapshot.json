@@ -1,0 +1,14 @@
+{
+  "fecha": "2025-06-01",
+  "n_filas": 1,
+  "filas": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "metrica_slug": "cuentas_admin",
+      "metrica_descripcion": "Cuentas administradas",
+      "valor": 5000000
+    }
+  ],
+  "caveats": []
+}

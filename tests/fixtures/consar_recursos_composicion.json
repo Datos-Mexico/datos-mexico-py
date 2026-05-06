@@ -1,0 +1,19 @@
+{
+  "fecha": "2025-06-01",
+  "unit": "MXN_mm",
+  "sar_total_reportado_mm": 10127978.0,
+  "suma_8_componentes_mm": 10127978.0,
+  "delta_abs_mm": 0.0,
+  "delta_pct": 0.0,
+  "cierre_al_peso": true,
+  "componentes": [
+    {
+      "tipo_codigo": "rcv",
+      "tipo_nombre_corto": "RCV",
+      "monto_mxn_mm": 9000000.0,
+      "pct_del_sar": 88.86
+    }
+  ],
+  "caveats": [],
+  "identidad_caveat": "Suma cuadra al peso."
+}

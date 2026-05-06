@@ -1,0 +1,16 @@
+{
+  "n": 1,
+  "metricas": [
+    {
+      "id": 1,
+      "slug": "cuentas_admin",
+      "columna_csv": "n_cuentas",
+      "descripcion": "Cuentas administradas",
+      "unidad": "cuentas",
+      "desde_fecha": "2010-01-01",
+      "orden_display": 1,
+      "notas": null
+    }
+  ],
+  "caveats": []
+}

@@ -1,0 +1,19 @@
+{
+  "n_puntos": 1,
+  "anio_min": 2010,
+  "anio_max": 2024,
+  "serie": [
+    {
+      "anio": 2024,
+      "cotizantes": 25000000,
+      "pea": 60000000,
+      "porcentaje_pea_afore": 41.67,
+      "brecha_no_cubierta_pct": 58.33
+    }
+  ],
+  "cobertura_min_pct": 30.0,
+  "cobertura_min_anio": 2010,
+  "cobertura_max_pct": 41.67,
+  "cobertura_max_anio": 2024,
+  "caveats": []
+}

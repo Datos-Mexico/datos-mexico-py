@@ -1,0 +1,14 @@
+{
+  "n": 1,
+  "metricas": [
+    {
+      "id": 1,
+      "slug": "var_99",
+      "columna_csv": "var_99",
+      "descripcion": "VaR 99%",
+      "unidad": "pct",
+      "orden_display": 1
+    }
+  ],
+  "caveats": []
+}

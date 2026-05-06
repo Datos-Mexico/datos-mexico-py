@@ -1,0 +1,22 @@
+{
+  "tipo_recurso": {
+    "codigo": "rcv",
+    "nombre_corto": "RCV",
+    "nombre_oficial": "RCV",
+    "categoria": "rcv"
+  },
+  "afore": null,
+  "unit": "MXN_mm",
+  "n_puntos": 1,
+  "rango": {
+    "desde": "1998-05-01",
+    "hasta": "2025-06-01"
+  },
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "monto_mxn_mm": 9000000.0
+    }
+  ],
+  "caveats": []
+}

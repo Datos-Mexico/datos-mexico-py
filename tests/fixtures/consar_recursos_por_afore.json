@@ -1,0 +1,17 @@
+{
+  "fecha": "2025-06-01",
+  "unit": "MXN_mm",
+  "total_sistema_mm": 10127978.0,
+  "n_afores_reportando": 11,
+  "afores": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "sar_total_mm": 1500000.0,
+      "recursos_trabajadores_mm": 1400000.0,
+      "recursos_administrados_mm": 1500000.0,
+      "pct_sistema": 14.81
+    }
+  ],
+  "caveats": []
+}

@@ -1,0 +1,16 @@
+{
+  "count": 1,
+  "tipos_recurso": [
+    {
+      "id": 1,
+      "codigo": "rcv",
+      "columna_csv": "rcv",
+      "nombre_corto": "RCV",
+      "nombre_oficial": "Retiro, Cesantía y Vejez",
+      "descripcion": "Cuenta principal",
+      "categoria": "rcv",
+      "es_total_sar": false,
+      "orden_display": 1
+    }
+  ]
+}

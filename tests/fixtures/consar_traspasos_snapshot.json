@@ -1,0 +1,21 @@
+{
+  "fecha": "2025-06-01",
+  "n_afores_reportando": 11,
+  "identidad": {
+    "sistema_total_cedido": 5000,
+    "sistema_total_recibido": 5000,
+    "delta": 0,
+    "cierre_al_unidad": true
+  },
+  "afores": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "tipo_pension": "imss",
+      "num_tras_cedido": 500,
+      "num_tras_recibido": 600,
+      "traspaso_neto": 100
+    }
+  ],
+  "caveats": []
+}

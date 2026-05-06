@@ -1,0 +1,17 @@
+{
+  "fecha": "2025-06-01",
+  "n_filas": 1,
+  "precio_min": 1.0,
+  "precio_max": 2.5,
+  "filas": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "siefore_slug": "basica-1",
+      "siefore_nombre": "Básica 1",
+      "siefore_categoria": "basicas",
+      "precio": 2.456789
+    }
+  ],
+  "caveats": []
+}

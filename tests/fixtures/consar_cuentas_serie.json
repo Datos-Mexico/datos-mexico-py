@@ -1,0 +1,25 @@
+{
+  "afore": {
+    "codigo": "PRO_FU",
+    "nombre_corto": "PROFUTURO",
+    "tipo_pension": "imss"
+  },
+  "metrica": {
+    "slug": "cuentas_admin",
+    "descripcion": "Cuentas administradas",
+    "unidad": "cuentas",
+    "desde_fecha": "2010-01-01"
+  },
+  "n_puntos": 1,
+  "rango": {
+    "desde": "2010-01-01",
+    "hasta": "2025-06-01"
+  },
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "valor": 5000000
+    }
+  ],
+  "caveats": []
+}

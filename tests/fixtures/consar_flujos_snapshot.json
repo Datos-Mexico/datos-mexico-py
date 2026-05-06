@@ -1,0 +1,19 @@
+{
+  "fecha": "2025-06-01",
+  "unit": "MXN_mm",
+  "n_afores_reportando": 11,
+  "sistema_entradas_mm": 1100.0,
+  "sistema_salidas_mm": 600.0,
+  "sistema_flujo_neto_mm": 500.0,
+  "afores": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "tipo_pension": "imss",
+      "montos_entradas": 100.0,
+      "montos_salidas": 50.0,
+      "flujo_neto": 50.0
+    }
+  ],
+  "caveats": []
+}

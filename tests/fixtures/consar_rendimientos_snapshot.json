@@ -1,0 +1,19 @@
+{
+  "fecha": "2025-06-01",
+  "plazo": "36meses",
+  "unit": "pct",
+  "n_filas": 1,
+  "rendimiento_min": 5.0,
+  "rendimiento_max": 12.0,
+  "filas": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "siefore_slug": "basica-1",
+      "siefore_nombre": "Básica 1",
+      "siefore_categoria": "basicas",
+      "rendimiento_pct": 8.5
+    }
+  ],
+  "caveats": []
+}

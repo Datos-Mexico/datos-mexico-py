@@ -1,0 +1,21 @@
+{
+  "afore": {
+    "codigo": "PRO_FU",
+    "nombre_corto": "PROFUTURO",
+    "tipo_pension": "imss"
+  },
+  "categoria": "basicas",
+  "unit": "MXN_mm",
+  "n_puntos": 1,
+  "rango": {
+    "desde": "2010-01-01",
+    "hasta": "2025-06-01"
+  },
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "monto_mxn_mm": 1000000.0
+    }
+  ],
+  "caveats": []
+}

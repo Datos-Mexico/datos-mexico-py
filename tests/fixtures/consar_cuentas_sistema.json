@@ -1,0 +1,28 @@
+{
+  "n_puntos": 1,
+  "etiquetas": [
+    {
+      "slug": "imss",
+      "nombre_display": "IMSS",
+      "categoria": "imss"
+    }
+  ],
+  "metricas": [
+    {
+      "slug": "cuentas_admin",
+      "descripcion": "Cuentas administradas",
+      "unidad": "cuentas",
+      "desde_fecha": "2010-01-01"
+    }
+  ],
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "etiqueta_slug": "imss",
+      "etiqueta_categoria": "imss",
+      "metrica_slug": "cuentas_admin",
+      "valor": 70000000
+    }
+  ],
+  "caveats": []
+}

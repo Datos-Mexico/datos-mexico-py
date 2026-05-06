@@ -1,0 +1,21 @@
+{
+  "siefore": {
+    "slug": "basica-1",
+    "nombre": "Básica 1",
+    "categoria": "basicas"
+  },
+  "plazo": "36meses",
+  "unit": "pct",
+  "n_puntos": 1,
+  "rango": {
+    "desde": "2010-01-01",
+    "hasta": "2025-06-01"
+  },
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "rendimiento_pct": 7.5
+    }
+  ],
+  "caveats": []
+}

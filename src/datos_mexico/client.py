@@ -14,6 +14,7 @@ from datos_mexico._constants import (
 )
 from datos_mexico._http import HttpClient
 from datos_mexico.endpoints.cdmx import CdmxNamespace
+from datos_mexico.endpoints.consar import ConsarNamespace
 from datos_mexico.models.base import HealthResponse
 
 
@@ -46,6 +47,7 @@ class DatosMexico:
 
     Attributes:
         cdmx: Namespace del dataset Servidores Públicos CDMX.
+        consar: Namespace del dataset CONSAR/SAR (pensiones).
     """
 
     def __init__(
@@ -66,8 +68,8 @@ class DatosMexico:
             logger=logger,
         )
         self.cdmx = CdmxNamespace(self._http)
+        self.consar = ConsarNamespace(self._http)
         # Namespaces siguientes (implementados en sub-prompts posteriores):
-        # self.consar = ConsarNamespace(self._http)
         # self.enigh = EnighNamespace(self._http)
         # self.comparativo = ComparativoNamespace(self._http)
 

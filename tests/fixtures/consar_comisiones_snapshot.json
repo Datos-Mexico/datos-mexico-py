@@ -1,0 +1,17 @@
+{
+  "fecha": "2025-06-01",
+  "unit": "pct",
+  "n_afores_reportando": 11,
+  "promedio_simple_pct": 0.566,
+  "minima_pct": 0.5,
+  "maxima_pct": 0.7,
+  "afores": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "tipo_pension": "imss",
+      "comision_pct": 0.566
+    }
+  ],
+  "caveats": []
+}

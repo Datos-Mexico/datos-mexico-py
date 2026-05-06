@@ -1,0 +1,18 @@
+{
+  "fecha": "2025-06-01",
+  "unit": "MXN_mm",
+  "n_filas": 1,
+  "monto_total_mm": 100000.0,
+  "n_filas_null": 0,
+  "filas": [
+    {
+      "afore_codigo": "PRO_FU",
+      "afore_nombre_corto": "PROFUTURO",
+      "siefore_slug": "basica-1",
+      "siefore_nombre": "Básica 1",
+      "siefore_categoria": "basicas",
+      "monto_mxn_mm": 100000.0
+    }
+  ],
+  "caveats": []
+}

@@ -1,0 +1,13 @@
+{
+  "unit": "MXN_mm",
+  "n_puntos": 1,
+  "serie": [
+    {
+      "fecha": "2025-06-01",
+      "rcv_imss_mm": 8000000.0,
+      "rcv_issste_mm": 1000000.0,
+      "ratio_issste_sobre_imss": 0.125
+    }
+  ],
+  "caveats": []
+}
