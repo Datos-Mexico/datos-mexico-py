@@ -142,7 +142,6 @@ alcance del SDK.
 
 ## Pendientes para próximas sesiones
 
-- [ ] Sub-bloque 5F: tests integrales + fixtures cross-dataset
 - [ ] Sub-bloque 5G: notebooks de ejemplo (4-5 notebooks Jupyter)
 - [ ] Sub-bloque 5H: publicar a TestPyPI + validar instalación end-to-end
 - [ ] Después de TestPyPI verde: release 0.1.0 a PyPI real
@@ -174,6 +173,57 @@ soporte para Bearer tokens.
 - Snapshots requieren día=01 en el parámetro fecha (YYYY-MM-DD). El
   helper _format_fecha lo enforza con ValueError temprano.
 - Fecha más reciente CONSAR: 2025-06-01.
+- `consar.recursos_por_componente()` devuelve datos **jerárquicos**, no
+  una partición plana. El array `componentes` mezcla rows con
+  `categoria` en `{'total', 'aggregate', 'component', 'operativo'}`.
+  Para sumar componentes correctamente filtrar por
+  `categoria in ('component', 'operativo')`. Sumar todas las filas
+  sobre-cuenta el SAR ~3x. Documentado en el docstring del método y
+  validado por `tests/integration/test_data_integrity.py`.
+
+## Tests integrales
+
+El proyecto tiene dos suites:
+
+- **Tests unitarios** (rápidos, mocked con `respx`): ~2 segundos.
+  ```bash
+  pytest tests/
+  ```
+  CI corre solo esto. Default sin env var.
+
+- **Tests integrales** (lentos, contra API real, gated): ~60–90 segundos.
+  ```bash
+  DATOS_MEXICO_INTEGRATION_TESTS=1 pytest tests/integration/
+  ```
+  Requiere conectividad a https://api.datos-itam.org. CI no los corre.
+
+- Excluir explícitamente integrales: `pytest tests/ -m "not integration"`.
+
+Los tests integrales (`tests/integration/`, 27 tests en 6 módulos)
+validan:
+
+- **Lifecycle del cliente**: context manager, close idempotente,
+  instancias múltiples independientes, User-Agent canónico.
+- **Cross-namespace workflows**: full observatory overview (cdmx +
+  consar + enigh + comparativo en una sola sesión), namespace isolation,
+  chained calls (sectores → servidor_detail; persona → nombramientos).
+- **Identidades contables**: SAR componentes ≈ por_afore, ENIGH deciles
+  particionan el universo, rubros de gasto suman 100%, monotonía
+  temporal de la serie SAR.
+- **Validaciones INEGI**: las 13 cifras del observatorio cuadran con
+  las publicadas por INEGI (todas `passing=True`).
+- **Cache cross-endpoint**: keys distintos para `get()` vs `get_text()`,
+  `use_cache=False`, `clear_cache()`.
+- **Propagación de errores**: 404 consistente cross-namespace,
+  `ValidationError` con diagnostics, pcts como `Decimal`.
+- **Workflows de investigador**: distribución de servidores CDMX,
+  análisis temporal SAR, desigualdad ENIGH por decil, y el flujo
+  específico del paper Amafore-ITAM 2026.
+
+**Si un test integral falla, NO modificar el SDK para hacer pasar el
+test — eso oculta bugs reales.** Reportar el delta exacto (cifra
+obtenida vs cifra esperada) y triagear si la falla es del API, del
+SDK, o del test.
 
 ## Workflow para sesión nueva de Claude Code
 
