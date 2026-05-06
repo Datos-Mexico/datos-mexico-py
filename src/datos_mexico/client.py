@@ -14,8 +14,13 @@ from datos_mexico._constants import (
 )
 from datos_mexico._http import HttpClient
 from datos_mexico.endpoints.cdmx import CdmxNamespace
+from datos_mexico.endpoints.comparativo import ComparativoNamespace
 from datos_mexico.endpoints.consar import ConsarNamespace
+from datos_mexico.endpoints.demo import DemoNamespace
 from datos_mexico.endpoints.enigh import EnighNamespace
+from datos_mexico.endpoints.export import ExportNamespace
+from datos_mexico.endpoints.nombramientos import NombramientosNamespace
+from datos_mexico.endpoints.personas import PersonasNamespace
 from datos_mexico.models.base import HealthResponse
 
 
@@ -50,6 +55,11 @@ class DatosMexico:
         cdmx: Namespace del dataset Servidores Públicos CDMX.
         consar: Namespace del dataset CONSAR/SAR (pensiones).
         enigh: Namespace del dataset ENIGH 2024 NS (hogares INEGI).
+        comparativo: Endpoints cross-dataset CDMX x CONSAR x ENIGH.
+        personas: Tabla normalizada de personas del padrón CDMX.
+        nombramientos: Tabla normalizada de nombramientos del padrón CDMX.
+        demo: Dataset didáctico del curso ITAM Bases de Datos.
+        export: Descarga del padrón CDMX en formato CSV.
     """
 
     def __init__(
@@ -72,8 +82,11 @@ class DatosMexico:
         self.cdmx = CdmxNamespace(self._http)
         self.consar = ConsarNamespace(self._http)
         self.enigh = EnighNamespace(self._http)
-        # Namespaces siguientes (implementados en sub-prompts posteriores):
-        # self.comparativo = ComparativoNamespace(self._http)
+        self.comparativo = ComparativoNamespace(self._http)
+        self.personas = PersonasNamespace(self._http)
+        self.nombramientos = NombramientosNamespace(self._http)
+        self.demo = DemoNamespace(self._http)
+        self.export = ExportNamespace(self._http)
 
     def health(self) -> HealthResponse:
         """Consulta ``GET /health`` para verificar que la API responde.

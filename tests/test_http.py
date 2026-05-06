@@ -273,3 +273,113 @@ def test_context_manager_closes_client() -> None:
     )
     with HttpClient(base_url="https://api.test.local") as client:
         assert client.get("/x") == {"ok": True}
+
+
+# ---------- get_text() ----------
+
+
+@respx.mock
+def test_get_text_returns_raw_body(http_client: HttpClient) -> None:
+    csv = "a,b,c\n1,2,3\n4,5,6\n"
+    respx.get("https://api.test.local/export").mock(
+        return_value=httpx.Response(200, text=csv)
+    )
+    out = http_client.get_text("/export")
+    assert isinstance(out, str)
+    assert out == csv
+
+
+@respx.mock
+def test_get_text_sends_user_agent(http_client: HttpClient) -> None:
+    route = respx.get("https://api.test.local/export").mock(
+        return_value=httpx.Response(200, text="ok")
+    )
+    http_client.get_text("/export")
+    assert route.calls[0].request.headers["User-Agent"] == USER_AGENT
+
+
+@respx.mock
+def test_get_text_4xx_raises_api_error(
+    http_client_no_retries: HttpClient,
+) -> None:
+    respx.get("https://api.test.local/export").mock(
+        return_value=httpx.Response(404, text="missing")
+    )
+    with pytest.raises(NotFoundError):
+        http_client_no_retries.get_text("/export", use_cache=False)
+
+
+@respx.mock
+def test_get_text_5xx_retries_then_raises(http_client: HttpClient) -> None:
+    route = respx.get("https://api.test.local/export").mock(
+        return_value=httpx.Response(500)
+    )
+    with pytest.raises(ServerError):
+        http_client.get_text("/export", use_cache=False)
+    assert route.call_count == 3  # max_retries=2 → 3 intentos
+
+
+@respx.mock
+def test_get_text_recovers_after_transient_503(http_client: HttpClient) -> None:
+    route = respx.get("https://api.test.local/export").mock(
+        side_effect=[httpx.Response(503), httpx.Response(200, text="csv,row\n")]
+    )
+    out = http_client.get_text("/export", use_cache=False)
+    assert out == "csv,row\n"
+    assert route.call_count == 2
+
+
+@respx.mock
+def test_get_text_caches_responses(http_client: HttpClient) -> None:
+    route = respx.get("https://api.test.local/export").mock(
+        return_value=httpx.Response(200, text="csv,1\n")
+    )
+    first = http_client.get_text("/export")
+    second = http_client.get_text("/export")
+    assert first == second
+    assert route.call_count == 1
+
+
+@respx.mock
+def test_get_text_use_cache_false_skips_cache(http_client: HttpClient) -> None:
+    route = respx.get("https://api.test.local/export").mock(
+        return_value=httpx.Response(200, text="csv,1\n")
+    )
+    http_client.get_text("/export", use_cache=False)
+    http_client.get_text("/export", use_cache=False)
+    assert route.call_count == 2
+
+
+@respx.mock
+def test_get_text_cache_key_separate_from_get(http_client: HttpClient) -> None:
+    """get_text() y get() en el mismo path NO deben colisionar en cache."""
+    respx.get("https://api.test.local/x").mock(
+        return_value=httpx.Response(200, json={"ok": True})
+    )
+    http_client.get("/x")
+    # En el mismo path, get_text debería pegarle al server, no al cache
+    # del get(): aceptamos que respx falle si get_text reusa el cache de get,
+    # porque devolvería un dict en vez de un str.
+    respx.get("https://api.test.local/x").mock(
+        return_value=httpx.Response(200, text="raw text")
+    )
+    out = http_client.get_text("/x")
+    assert out == "raw text"
+
+
+@respx.mock
+def test_get_text_timeout(http_client_no_retries: HttpClient) -> None:
+    respx.get("https://api.test.local/export").mock(
+        side_effect=httpx.TimeoutException("slow")
+    )
+    with pytest.raises(TimeoutError):
+        http_client_no_retries.get_text("/export", use_cache=False)
+
+
+@respx.mock
+def test_get_text_network_error(http_client_no_retries: HttpClient) -> None:
+    respx.get("https://api.test.local/export").mock(
+        side_effect=httpx.ConnectError("dns")
+    )
+    with pytest.raises(NetworkError):
+        http_client_no_retries.get_text("/export", use_cache=False)

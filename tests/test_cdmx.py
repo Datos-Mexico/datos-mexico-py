@@ -26,6 +26,7 @@ from datos_mexico.models.cdmx import (
     SectorRanking,
     SectorStats,
     Servidor,
+    ServidorDetail,
     ServidoresStats,
 )
 
@@ -208,6 +209,32 @@ def test_servidores_lista_propagates_pagination(
     assert params["order_by"] == "sueldo_bruto"
     assert params["order"] == "desc"
     assert params["sector_id"] == "10"
+
+
+@respx.mock
+def test_servidor_detail(cdmx_client: DatosMexico) -> None:
+    from datetime import date as date_type
+
+    respx.get(f"{BASE}/api/v1/servidores/1").mock(
+        return_value=httpx.Response(200, json=_load("servidor_detail"))
+    )
+    s = cdmx_client.cdmx.servidor_detail(1)
+    assert isinstance(s, ServidorDetail)
+    assert s.id == 1
+    assert isinstance(s.sueldo_bruto, Decimal)
+    assert isinstance(s.fecha_ingreso, date_type)
+    # Campos derivados que servidores_lista() no expone
+    assert s.tipo_contratacion is not None
+    assert s.universo is not None
+
+
+@respx.mock
+def test_servidor_detail_404(cdmx_client: DatosMexico) -> None:
+    respx.get(f"{BASE}/api/v1/servidores/9999999").mock(
+        return_value=httpx.Response(404, json={"detail": "not found"})
+    )
+    with pytest.raises(NotFoundError):
+        cdmx_client.cdmx.servidor_detail(9999999)
 
 
 @respx.mock

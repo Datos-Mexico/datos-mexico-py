@@ -15,6 +15,7 @@ from typing import Annotated
 
 from pydantic import BeforeValidator, Field
 
+from datos_mexico._helpers import DateField
 from datos_mexico.models.base import DatosMexicoModel
 
 
@@ -274,6 +275,34 @@ class Servidor(DatosMexicoModel):
     sueldo_neto: MoneyStr
     sector: str
     puesto: str
+
+
+class ServidorDetail(DatosMexicoModel):
+    """Detalle completo devuelto por ``GET /api/v1/servidores/{servidor_id}``.
+
+    A diferencia de ``Servidor`` (vista de listado), incluye los campos
+    derivados de ``nombramientos`` y ``catalogos`` ya resueltos por
+    nombre: ``tipo_contratacion``, ``tipo_personal``, ``tipo_nomina``,
+    ``universo`` y ``fecha_ingreso``. Cualquier campo puede llegar como
+    ``None`` cuando el dato fuente venía sin esa información.
+    """
+
+    id: int
+    nombre: str
+    apellido_1: str
+    apellido_2: str | None = None
+    sexo: str
+    edad: int | None = None
+    sueldo_bruto: MoneyStr | None = None
+    sueldo_neto: MoneyStr | None = None
+    fecha_ingreso: DateField | None = None
+    id_nivel_salarial: int | None = None
+    sector: str | None = None
+    puesto: str | None = None
+    tipo_contratacion: str | None = None
+    tipo_personal: str | None = None
+    tipo_nomina: str | None = None
+    universo: str | None = None
 
 
 class CatalogItem(DatosMexicoModel):

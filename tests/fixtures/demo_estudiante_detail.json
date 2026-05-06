@@ -1,0 +1,11 @@
+{
+  "id": 12,
+  "nombre_completo": "MARCO AUGUSTO VASQUEZ BELTRAN",
+  "rol": "profesor",
+  "tipo": "profesor",
+  "seccion": "BASES DE DATOS - 001",
+  "sueldo_diario_mxn": "4500.00",
+  "reclamar_bono": false,
+  "fecha_creacion": "2026-04-27T18:03:34.123123Z",
+  "fecha_actualizacion": "2026-04-27T18:44:50.030437Z"
+}

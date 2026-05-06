@@ -153,11 +153,16 @@ class HttpClient:
     def _build_url(self, path: str) -> str:
         return f"{self._base_url}/{path.lstrip('/')}"
 
-    def _cache_key(self, url: str, params: dict[str, Any] | None) -> str:
+    def _cache_key(
+        self,
+        url: str,
+        params: dict[str, Any] | None,
+        prefix: str = "GET",
+    ) -> str:
         if not params:
-            return f"GET:{url}"
+            return f"{prefix}:{url}"
         encoded = urlencode(sorted(params.items()), doseq=True)
-        return f"GET:{url}?{encoded}"
+        return f"{prefix}:{url}?{encoded}"
 
     def _log_retry(self, retry_state: RetryCallState) -> None:
         attempt = retry_state.attempt_number
@@ -274,6 +279,27 @@ class HttpClient:
             retry_after=retry_after,
         )
 
+    def _execute_request(
+        self,
+        path: str,
+        params: dict[str, Any] | None,
+    ) -> httpx.Response:
+        """Ejecuta GET con retries y raise-on-error. Devuelve el ``httpx.Response`` crudo.
+
+        Helper compartido por ``get()`` y ``get_text()``: ejecuta el
+        request con la lógica de retries, mapea las excepciones de
+        ``httpx`` a la jerarquía propia y dispara la clasificación de
+        errores HTTP. **No** hace cache ni parseo del body — eso lo
+        decide el caller según el tipo de payload esperado.
+        """
+        url = self._build_url(path)
+        try:
+            response = self._send_with_retries("GET", url, params=params)
+        except httpx.RequestError as exc:
+            raise self._convert_request_error(exc, path) from exc
+        self._raise_for_status(response, endpoint=path, method="GET")
+        return response
+
     def get(
         self,
         path: str,
@@ -297,7 +323,9 @@ class HttpClient:
             ApiError: La API respondió con un status 4xx/5xx no transitorio.
         """
         url = self._build_url(path)
-        cache_key = self._cache_key(url, params) if use_cache else None
+        cache_key = (
+            self._cache_key(url, params, prefix="GET") if use_cache else None
+        )
 
         if cache_key is not None:
             cached = self._cache.get(cache_key)
@@ -305,18 +333,71 @@ class HttpClient:
                 self._logger.info("Cache hit: %s", cache_key)
                 return cached
 
-        try:
-            response = self._send_with_retries("GET", url, params=params)
-        except httpx.RequestError as exc:
-            raise self._convert_request_error(exc, path) from exc
-
-        self._raise_for_status(response, endpoint=path, method="GET")
+        response = self._execute_request(path, params)
         payload = self._parse_json_or_raise(response, endpoint=path, method="GET")
 
         if cache_key is not None:
             self._cache.set(cache_key, payload)
 
         return payload
+
+    def get_text(
+        self,
+        path: str,
+        params: dict[str, Any] | None = None,
+        *,
+        use_cache: bool = True,
+    ) -> str:
+        """Ejecuta un ``GET`` y devuelve el body crudo como ``str``, sin parseo JSON.
+
+        Útil para endpoints que devuelven CSV, XML, plain text o cualquier
+        otro content-type distinto de JSON. Reutiliza la misma lógica de
+        retries, cache, logging y manejo de errores que :meth:`get`,
+        omitiendo solo la deserialización JSON.
+
+        El cache se almacena bajo un prefijo separado (``GET_TEXT:``) para
+        no colisionar con :meth:`get` cuando el mismo path soporta ambas
+        representaciones.
+
+        Args:
+            path: Path relativo (con o sin slash inicial).
+            params: Query string params.
+            use_cache: Si ``True`` (default) consulta y popula la caché.
+
+        Returns:
+            Body del response como ``str``.
+
+        Raises:
+            NetworkError: Falla de red persistente tras los reintentos.
+            TimeoutError: Timeout persistente tras los reintentos.
+            ApiError: La API respondió con un status 4xx/5xx no transitorio.
+
+        Examples:
+            >>> from datos_mexico._http import HttpClient
+            >>> client = HttpClient()
+            >>> csv_data = client.get_text("/api/v1/export/csv")
+            >>> csv_data.startswith("id,nombre")
+            True
+        """
+        url = self._build_url(path)
+        cache_key = (
+            self._cache_key(url, params, prefix="GET_TEXT") if use_cache else None
+        )
+
+        if cache_key is not None:
+            cached = self._cache.get(cache_key)
+            if cached is not None:
+                self._logger.info("Cache hit: %s", cache_key)
+                assert isinstance(cached, str)
+                return cached
+
+        response = self._execute_request(path, params)
+        text = response.text
+
+        if cache_key is not None:
+            self._cache.set(cache_key, text)
+
+        return text
 
     def post(self, path: str, json: dict[str, Any] | None = None) -> Any:
         """Ejecuta un ``POST``. No se cachea ni se reintenta.

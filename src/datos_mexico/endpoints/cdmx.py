@@ -16,6 +16,7 @@ from datos_mexico.models.cdmx import (
     SectorRanking,
     SectorStats,
     Servidor,
+    ServidorDetail,
     ServidoresStats,
 )
 
@@ -236,6 +237,22 @@ class CdmxNamespace(BaseNamespace):
         )
         return self._get_validated(
             "/api/v1/servidores/", PaginatedResponse[Servidor], params=params
+        )
+
+    def servidor_detail(self, servidor_id: int) -> ServidorDetail:
+        """Detalle completo de un servidor por ID.
+
+        Devuelve campos derivados ya resueltos (``tipo_contratacion``,
+        ``tipo_personal``, ``tipo_nomina``, ``universo``, ``fecha_ingreso``)
+        que la vista de listado ``servidores_lista()`` no incluye.
+
+        Endpoint: ``GET /api/v1/servidores/{servidor_id}``
+
+        Raises:
+            NotFoundError: Si no existe un servidor con ese ID.
+        """
+        return self._get_validated(
+            f"/api/v1/servidores/{servidor_id}", ServidorDetail
         )
 
     def catalogo_sectores(self) -> list[CatalogItem]:
