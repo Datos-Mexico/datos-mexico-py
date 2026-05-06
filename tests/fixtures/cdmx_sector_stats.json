@@ -1,0 +1,16 @@
+{
+  "id": 1,
+  "nombre": "JEFATURA DE GOBIERNO DE LA CDMX",
+  "total_servidores": 554,
+  "sueldo_bruto_avg": 17144.53,
+  "sueldo_bruto_median": 11645.0,
+  "sueldo_neto_avg": 14709.08,
+  "edad_avg": 42.74,
+  "count_hombres": 254,
+  "count_mujeres": 299,
+  "brecha_genero_pct": 20.49,
+  "top_puestos": [
+    {"puesto": "ADMINISTRATIVO ESPECIALIZADO L", "count": 96, "sueldo_avg": 5576.51},
+    {"puesto": "OFICIAL ADMINISTRATIVOHON D", "count": 62, "sueldo_avg": 9009.0}
+  ]
+}

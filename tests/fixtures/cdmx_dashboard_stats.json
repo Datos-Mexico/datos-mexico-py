@@ -1,0 +1,60 @@
+{
+  "totalServidores": 246831,
+  "totalSectors": 75,
+  "avgSalary": 13225.47,
+  "medianSalary": 10410.0,
+  "minSalary": 461.0,
+  "maxSalary": 111178.0,
+  "p25": 8115.0,
+  "p50": 10410.0,
+  "p75": 16451.0,
+  "p90": 22102.0,
+  "genderGapPercent": 3.76,
+  "hombres": 140786,
+  "mujeres": 106040,
+  "avgSalaryMale": 13434.76,
+  "avgSalaryFemale": 12947.39,
+  "salaryDistribution": [
+    {"label": "Menos de $5K", "count": 10924},
+    {"label": "$5K - $10K", "count": 105126}
+  ],
+  "ageDistribution": [
+    {"label": "18-25", "count": 8402},
+    {"label": "26-35", "count": 50195}
+  ],
+  "contractTypes": [
+    {"label": "BASE", "count": 113350}
+  ],
+  "personalTypes": [
+    {"label": "SINDICALIZADOS", "count": 99212}
+  ],
+  "salaryByAge": [
+    {"label": "18-25", "avg": 10691.5},
+    {"label": "26-35", "avg": 13567.18}
+  ],
+  "top15Sectors": [
+    {"name": "JEFATURA DE GOBIERNO DE LA CDMX", "count": 554, "avgSalary": 17144.53, "avgMale": 16384.21, "avgFemale": 17791.45}
+  ],
+  "allSectors": [
+    {"name": "JEFATURA DE GOBIERNO DE LA CDMX", "count": 554, "avgSalary": 17144.53, "avgMale": 16384.21, "avgFemale": 17791.45}
+  ],
+  "genderGapBySector": [
+    {"name": "JEFATURA DE GOBIERNO DE LA CDMX", "avgMale": 16384.21, "avgFemale": 17791.45, "gap": -8.59}
+  ],
+  "topPositions": [
+    {"name": "JEFE DE GOBIERNO", "count": 1, "avgSalary": 111178.0}
+  ],
+  "seniorityDistribution": [
+    {"label": "0-2 años", "count": 39069}
+  ],
+  "salaryBySeniority": [
+    {"label": "0-2 años", "avg": 12937.88, "count": 39069}
+  ],
+  "avgSeniority": 11.38,
+  "avgNetSalary": 11796.04,
+  "avgDeduction": 1429.37,
+  "avgDeductionPercent": 10.81,
+  "brutoNetoByRange": [
+    {"label": "Menos de $5K", "avgBruto": 3839.61, "avgNeto": 4010.09, "count": 10924}
+  ]
+}

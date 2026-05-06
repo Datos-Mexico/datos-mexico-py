@@ -1,0 +1,20 @@
+[
+  {
+    "bucket_edad": "18-25",
+    "avg_male": 10595.48,
+    "avg_female": 10824.54,
+    "count_male": 4480,
+    "count_female": 3922,
+    "gap_pct": -2.12,
+    "running_avg_global": 12753.79
+  },
+  {
+    "bucket_edad": "26-35",
+    "avg_male": 13527.5,
+    "avg_female": 13619.71,
+    "count_male": 28074,
+    "count_female": 22117,
+    "gap_pct": -0.68,
+    "running_avg_global": 12753.79
+  }
+]

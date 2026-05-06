@@ -1,0 +1,18 @@
+{
+  "total": 246831,
+  "sueldo_bruto_avg": 13225.47,
+  "sueldo_bruto_median": 10410.0,
+  "sueldo_bruto_p25": 8115.0,
+  "sueldo_bruto_p75": 16451.0,
+  "sueldo_bruto_min": 461.0,
+  "sueldo_bruto_max": 111178.0,
+  "sueldo_neto_avg": 11796.04,
+  "edad_avg": 42.48,
+  "count_hombres": 140786,
+  "count_mujeres": 106040,
+  "brecha_genero_pct": 3.76,
+  "distribucion_sueldo": [
+    {"rango": "0-5K", "count": 10924},
+    {"rango": "5K-10K", "count": 105126}
+  ]
+}

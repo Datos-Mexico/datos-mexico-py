@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, ConfigDict
+
+T = TypeVar("T")
 
 
 class DatosMexicoModel(BaseModel):
@@ -35,18 +37,18 @@ class ApiResponse(DatosMexicoModel):
     meta: dict[str, Any] | None = None
 
 
-class PaginatedResponse(DatosMexicoModel):
+class PaginatedResponse(DatosMexicoModel, Generic[T]):
     """Response paginada estándar.
 
     Los endpoints que devuelven listas paginadas siguen el contrato
 
         {"data": [...], "total": N, "page": p, "per_page": pp, "pages": P}
 
-    Endpoints específicos pueden refinar el tipo de ``data`` en una subclase
-    (por ejemplo ``data: list[ServidorPublico]``).
+    Es genérico sobre el tipo de elementos en ``data``. Para anotar la
+    paginación de un dataset específico, usar ``PaginatedResponse[Servidor]``.
     """
 
-    data: list[Any]
+    data: list[T]
     total: int
     page: int
     per_page: int

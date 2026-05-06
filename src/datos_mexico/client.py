@@ -13,6 +13,7 @@ from datos_mexico._constants import (
     DEFAULT_TIMEOUT_SECONDS,
 )
 from datos_mexico._http import HttpClient
+from datos_mexico.endpoints.cdmx import CdmxNamespace
 from datos_mexico.models.base import HealthResponse
 
 
@@ -31,7 +32,9 @@ class DatosMexico:
         Con context manager (recomendado, cierra recursos automáticamente):
 
             >>> with DatosMexico() as client:
-            ...     health = client.health()
+            ...     stats = client.cdmx.dashboard_stats()
+            ...     print(f"{stats.total_servidores:,} servidores")
+            246,831 servidores
 
         Configuración personalizada:
 
@@ -40,6 +43,9 @@ class DatosMexico:
             ...     cache_ttl=600,
             ...     max_retries=5,
             ... )
+
+    Attributes:
+        cdmx: Namespace del dataset Servidores Públicos CDMX.
     """
 
     def __init__(
@@ -59,8 +65,8 @@ class DatosMexico:
             user_agent=user_agent,
             logger=logger,
         )
-        # Namespaces — placeholders. Implementados en sub-prompts siguientes.
-        # self.cdmx = CdmxNamespace(self._http)
+        self.cdmx = CdmxNamespace(self._http)
+        # Namespaces siguientes (implementados en sub-prompts posteriores):
         # self.consar = ConsarNamespace(self._http)
         # self.enigh = EnighNamespace(self._http)
         # self.comparativo = ComparativoNamespace(self._http)

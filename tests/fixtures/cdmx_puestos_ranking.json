@@ -1,0 +1,20 @@
+[
+  {
+    "puesto_id": 1496,
+    "nombre": "SECRETARIO",
+    "avg_sueldo": 109981.0,
+    "count": 23,
+    "rank": 1,
+    "percent_rank": 1.0,
+    "gap_vs_next": null
+  },
+  {
+    "puesto_id": 1576,
+    "nombre": "SUBSECRETARIO",
+    "avg_sueldo": 104740.0,
+    "count": 8,
+    "rank": 2,
+    "percent_rank": 0.9967,
+    "gap_vs_next": 0.0
+  }
+]

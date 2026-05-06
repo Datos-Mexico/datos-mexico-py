@@ -1,0 +1,32 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "nombre": "MAYELA MARIANA",
+      "apellido_1": "DORANTES",
+      "apellido_2": "GUILLEN",
+      "sexo": "FEMENINO",
+      "edad": 41,
+      "sueldo_bruto": "14915.00",
+      "sueldo_neto": "13377.45",
+      "sector": "ALCALDIA DE BENITO JUAREZ",
+      "puesto": "ADMINISTRATIVO ESPECIALIZADO L"
+    },
+    {
+      "id": 2,
+      "nombre": "ENRIQUE",
+      "apellido_1": "RAMIREZ",
+      "apellido_2": "MARQUEZ",
+      "sexo": "MASCULINO",
+      "edad": 41,
+      "sueldo_bruto": "8115.00",
+      "sueldo_neto": "7549.19",
+      "sector": "ALCALDIA DE GUSTAVO A. MADERO",
+      "puesto": "AUXILIAR DE SERVICIOS"
+    }
+  ],
+  "total": 246831,
+  "page": 1,
+  "per_page": 2,
+  "pages": 123416
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "sector_id": 60,
+    "nombre": "FIDEICOMISO PARA LA PROMOCION Y DESARROLLO DEL CINE MEXICANO EN LA CIUDAD DE MEXICO",
+    "avg_sueldo": 48327.25,
+    "count": 4,
+    "rank": 1,
+    "percent_rank": 1.0,
+    "avg_vs_global_pct": 195.15
+  },
+  {
+    "sector_id": 21,
+    "nombre": "COMISION DE BUSQUEDA DE PERSONAS DE LA CIUDAD DE MEXICO",
+    "avg_sueldo": 46224.7,
+    "count": 10,
+    "rank": 2,
+    "percent_rank": 0.9865,
+    "avg_vs_global_pct": 182.31
+  }
+]

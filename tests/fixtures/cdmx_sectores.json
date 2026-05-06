@@ -1,0 +1,18 @@
+[
+  {
+    "id": 30,
+    "nombre": "AGENCIA DE ATENCION ANIMAL DE LA CDMX",
+    "total_servidores": 86,
+    "sueldo_bruto_avg": 20146.72,
+    "count_hombres": 33,
+    "count_mujeres": 53
+  },
+  {
+    "id": 1,
+    "nombre": "JEFATURA DE GOBIERNO DE LA CDMX",
+    "total_servidores": 554,
+    "sueldo_bruto_avg": 17144.53,
+    "count_hombres": 254,
+    "count_mujeres": 299
+  }
+]

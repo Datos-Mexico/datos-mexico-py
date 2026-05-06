@@ -1,0 +1,32 @@
+{
+  "sector_a": {
+    "id": 1,
+    "nombre": "JEFATURA DE GOBIERNO DE LA CDMX",
+    "total_servidores": 554,
+    "sueldo_bruto_avg": 17144.53,
+    "sueldo_bruto_median": 11645.0,
+    "sueldo_neto_avg": 14709.08,
+    "edad_avg": 42.74,
+    "count_hombres": 254,
+    "count_mujeres": 299,
+    "brecha_genero_pct": 20.49,
+    "top_puestos": [
+      {"puesto": "ADMINISTRATIVO ESPECIALIZADO L", "count": 96, "sueldo_avg": 5576.51}
+    ]
+  },
+  "sector_b": {
+    "id": 2,
+    "nombre": "C5 CDMX",
+    "total_servidores": 487,
+    "sueldo_bruto_avg": 16916.09,
+    "sueldo_bruto_median": 12405.0,
+    "sueldo_neto_avg": 14824.55,
+    "edad_avg": 33.91,
+    "count_hombres": 228,
+    "count_mujeres": 259,
+    "brecha_genero_pct": 19.85,
+    "top_puestos": [
+      {"puesto": "TECNICO OPERADORPR C", "count": 274, "sueldo_avg": 12405.0}
+    ]
+  }
+}
