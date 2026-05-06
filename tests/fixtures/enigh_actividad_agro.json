@@ -1,0 +1,24 @@
+{
+  "n_hogares_muestra": 5000,
+  "n_hogares_expandido": 2000000,
+  "pct_del_universo": 5.15,
+  "sum_ventas_trim": 50000000000,
+  "sum_gasto_negocio_trim": 30000000000,
+  "mean_ventas_por_hogar": 25000.0,
+  "por_decil": [
+    {
+      "decil": 1,
+      "n_hogares_muestra": 1500,
+      "n_hogares_expandido": 600000,
+      "pct_share_actividad": 30.0
+    }
+  ],
+  "top_entidades": [
+    {
+      "clave": "07",
+      "nombre": "Chiapas",
+      "n_hogares_expandido": 250000
+    }
+  ],
+  "note": "Hogares con cualquier actividad agropecuaria reportada."
+}

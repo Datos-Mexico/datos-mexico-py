@@ -20,44 +20,8 @@ Convenciones:
 
 from __future__ import annotations
 
-from datetime import date
-from decimal import Decimal
-from typing import Annotated
-
-from pydantic import BeforeValidator
-
+from datos_mexico._helpers import DateField, Money
 from datos_mexico.models.base import DatosMexicoModel
-
-
-def _to_decimal(value: object) -> object:
-    """Convierte ``int``/``float``/``str`` a ``Decimal``.
-
-    Para floats, usa ``str(value)`` para evitar la representación binaria
-    exacta del IEEE 754 que sería ``Decimal('0.10000000000000000555...')``
-    en vez de ``Decimal('0.1')``.
-    """
-    if value is None:
-        return value
-    if isinstance(value, Decimal):
-        return value
-    if isinstance(value, (int, float, str)):
-        return Decimal(str(value))
-    return value
-
-
-def _to_date(value: object) -> object:
-    """Convierte un string ISO ``YYYY-MM-DD`` a ``date``."""
-    if isinstance(value, str):
-        return date.fromisoformat(value)
-    return value
-
-
-Money = Annotated[Decimal, BeforeValidator(_to_decimal)]
-"""Decimal proveniente de un número monetario o porcentual."""
-
-DateField = Annotated[date, BeforeValidator(_to_date)]
-"""``date`` proveniente de un string ISO."""
-
 
 # ============================================================================
 # GRUPO 1 — Catálogos

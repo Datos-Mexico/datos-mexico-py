@@ -1,0 +1,29 @@
+{
+  "scope": "nacional",
+  "n_personas_muestra": 305000,
+  "n_personas_expandido": 130000000,
+  "sexo": [
+    {
+      "sexo": "MUJER",
+      "n_expandido": 67000000,
+      "pct": 51.54
+    },
+    {
+      "sexo": "HOMBRE",
+      "n_expandido": 63000000,
+      "pct": 48.46
+    }
+  ],
+  "edad": [
+    {
+      "bucket": "0-14",
+      "n_expandido": 30000000,
+      "pct": 23.08
+    },
+    {
+      "bucket": "65+",
+      "n_expandido": 12000000,
+      "pct": 9.23
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "n_hogares_muestra": 8000,
+  "n_hogares_expandido": 4500000,
+  "pct_del_universo": 11.59,
+  "sum_ventas_trim": 800000000000,
+  "sum_ingreso_trim": 200000000000,
+  "mean_ventas_por_hogar": 177777.78,
+  "por_decil": [
+    {
+      "decil": 5,
+      "n_hogares_muestra": 800,
+      "n_hogares_expandido": 450000,
+      "pct_share_actividad": 10.0
+    }
+  ],
+  "top_entidades": [
+    {
+      "clave": "09",
+      "nombre": "Ciudad de México",
+      "n_hogares_expandido": 600000
+    }
+  ],
+  "note": "Hogares con negocio no agropecuario."
+}

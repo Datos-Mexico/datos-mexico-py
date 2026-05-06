@@ -1,0 +1,15 @@
+{
+  "n_beneficiarios_muestra": 12000,
+  "n_beneficiarios_expandido": 6500000,
+  "sum_ingreso_trim": 100000000000,
+  "mean_ingreso_trim_por_beneficiario": 15384.62,
+  "por_entidad": [
+    {
+      "clave": "20",
+      "nombre": "Oaxaca",
+      "beneficiarios_muestra": 1000,
+      "beneficiarios_expandido": 500000
+    }
+  ],
+  "note": "Hogares con jornal/cuenta familiar."
+}

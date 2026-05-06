@@ -1,0 +1,21 @@
+{
+  "edition": "ENIGH 2024 NS",
+  "periodicity": "bienal",
+  "reference_date": "2024-08-01",
+  "schema_version": "v1",
+  "last_updated": "2026-04-15",
+  "total_hogares_muestra": 91414,
+  "total_hogares_expandido": 38830230,
+  "total_tablas_ingestadas": 14,
+  "total_catalogos": 8,
+  "sources": [
+    {
+      "title": "ENIGH 2024 NS",
+      "url": "https://www.inegi.org.mx/programas/enigh/nc/2024/",
+      "consulted_on": "2026-04-15"
+    }
+  ],
+  "methodology_notes": [
+    "Encuesta de corte transversal."
+  ]
+}

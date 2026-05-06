@@ -1,0 +1,11 @@
+[
+  {
+    "clave": "09",
+    "nombre": "Ciudad de México",
+    "n_hogares_muestra": 4500,
+    "n_hogares_expandido": 2900000,
+    "mean_ing_cor_trim": 75000.0,
+    "mean_ing_cor_mensual": 25000.0,
+    "mean_gasto_mon_trim": 50000.0
+  }
+]

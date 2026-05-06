@@ -1,0 +1,20 @@
+[
+  {
+    "decil": 1,
+    "n_hogares_muestra": 9000,
+    "n_hogares_expandido": 3800000,
+    "mean_ing_cor_trim": 12000.5,
+    "mean_ing_cor_mensual": 4000.16,
+    "mean_gasto_mon_trim": 9000.0,
+    "share_factor_pct": 9.78
+  },
+  {
+    "decil": 10,
+    "n_hogares_muestra": 9100,
+    "n_hogares_expandido": 3900000,
+    "mean_ing_cor_trim": 250000.0,
+    "mean_ing_cor_mensual": 83333.33,
+    "mean_gasto_mon_trim": 150000.0,
+    "share_factor_pct": 10.04
+  }
+]
