@@ -56,19 +56,29 @@ src/datos_mexico/
 ├── _constants.py            ← BASE_URL, defaults, retryable codes
 ├── _helpers.py              ← _format_fecha, _to_decimal, _to_date, Money, DateField
 ├── _cache.py                ← TTLCache con thread safety
-├── _http.py                 ← HttpClient con retries, cache, logging
+├── _http.py                 ← HttpClient con retries, cache, logging, get(), get_text()
 ├── _namespace.py            ← BaseNamespace para todos los namespaces
 ├── exceptions.py            ← jerarquía completa
 ├── client.py                ← clase DatosMexico (entry point)
 ├── models/
-│   ├── base.py              ← DatosMexicoModel, ApiResponse, PaginatedResponse[T]
-│   ├── cdmx.py              ← modelos CDMX servidores
+│   ├── base.py              ← DatosMexicoModel, ApiResponse, PaginatedResponse[T], HealthResponse
+│   ├── cdmx.py              ← modelos CDMX servidores (incluye ServidorDetail)
 │   ├── consar.py            ← modelos CONSAR/SAR
-│   └── enigh.py             ← modelos ENIGH
+│   ├── enigh.py             ← modelos ENIGH
+│   ├── comparativo.py       ← modelos comparativo cross-dataset
+│   ├── personas.py          ← modelo Persona (raw padrón CDMX)
+│   ├── nombramientos.py     ← modelo Nombramiento (raw padrón CDMX)
+│   ├── demo.py              ← modelos demo (curso ITAM)
+│   └── export.py            ← (sin modelos, export devuelve CSV crudo)
 └── endpoints/
     ├── cdmx.py              ← CdmxNamespace
     ├── consar.py            ← ConsarNamespace
-    └── enigh.py             ← EnighNamespace
+    ├── enigh.py             ← EnighNamespace
+    ├── comparativo.py       ← ComparativoNamespace (cross-dataset)
+    ├── personas.py          ← PersonasNamespace
+    ├── nombramientos.py     ← NombramientosNamespace
+    ├── demo.py              ← DemoNamespace
+    └── export.py            ← ExportNamespace (CSV vía get_text)
 ```
 
 ## Patrón para agregar nuevos endpoints
@@ -96,20 +106,42 @@ src/datos_mexico/
 
 5. **Coverage**: cada módulo nuevo debe contribuir ≥ 95%
 
-## Estado actual de cobertura del API (89 endpoints totales)
+## Patrón para endpoints non-JSON (CSV, XML, archivos)
+
+El `HttpClient` expone `get_text(path, params, *, use_cache=True)` que
+reusa el mismo pipeline (retries, cache, errores) pero retorna el body
+como `str` sin parseo JSON. Útil para endpoints que devuelven CSV, XML,
+plain text, etc. Ejemplo: `ExportNamespace.csv()` lo usa.
+
+No accedas a `self._http._client` directamente desde un namespace. Si
+necesitas un nuevo método de transporte (ej. `get_bytes` para binarios),
+agrégalo como método público a `HttpClient` siguiendo el patrón de
+`get_text`: extraer la parte común vía el helper privado
+`_execute_request()` y mantener cache key con prefijo distinto
+(`GET:` vs `GET_TEXT:`) para evitar colisiones.
+
+## Estado actual de cobertura del API (97 operaciones totales)
 
 | Namespace | Endpoints | Estado |
 |---|---|---|
-| cdmx | 17 | ✅ Completo |
+| cdmx | 18 | ✅ Completo (incluye servidor_detail) |
 | consar | 34 | ✅ Completo |
 | enigh | 10 | ✅ Completo |
-| comparativo | 7 | ⏳ Pendiente |
-| restantes (auth/me, admin públicos, otros) | ~20 | ⏳ Pendiente |
+| comparativo | 7 | ✅ Completo |
+| personas | 2 | ✅ Completo |
+| nombramientos | 2 | ✅ Completo |
+| demo | 3 | ✅ Completo |
+| export | 1 | ✅ Completo |
+| health | 1 | ✅ Completo (root client) |
+| restantes (admin writes / auth) | 19 | ⏳ Out of scope |
+
+**Cobertura total**: 78/97 operaciones (80.4%), **100% de lectura pública**.
+El 19.6% restante son escrituras admin (POST/PUT/DELETE) o endpoints
+auth-required (`auth/me`, `auth/register`, `auth/token`), fuera de
+alcance del SDK.
 
 ## Pendientes para próximas sesiones
 
-- [ ] Sub-bloque 5E: namespace comparativo (/api/v1/comparativo/*) +
-  endpoints restantes (auth/me, etc.)
 - [ ] Sub-bloque 5F: tests integrales + fixtures cross-dataset
 - [ ] Sub-bloque 5G: notebooks de ejemplo (4-5 notebooks Jupyter)
 - [ ] Sub-bloque 5H: publicar a TestPyPI + validar instalación end-to-end
@@ -120,12 +152,19 @@ src/datos_mexico/
 - [ ] Actualizar GitHub Actions a actions/checkout@v5+ (Node.js 20
   deprecation prevista 2026-06-02)
 
-## Endpoints adicionales encontrados pero NO implementados
+## Endpoints deliberadamente NO implementados (out of scope)
 
-- `GET /api/v1/servidores/{servidor_id}` — detalle de servidor con campos
-  extra. Complementaría servidores_lista() del namespace cdmx.
-- `GET /api/v1/catalogos/{tipo}` y `/{tipo}/{item_id}` — endpoints genéricos
-  de catálogo (los específicos ya cubren todo lo útil).
+- **Escrituras admin** (POST/PUT/DELETE en `/api/v1/admin/*`,
+  `/api/v1/catalogos/{tipo}`, `/api/v1/personas/`, `/api/v1/nombramientos/`,
+  `/api/v1/demo/estudiantes/{id}/toggle-bono`, `/api/v1/ingest/csv`):
+  fuera del alcance del SDK de lectura pública.
+- **Auth** (`GET /api/v1/auth/me`, `POST /api/v1/auth/register`,
+  `POST /api/v1/auth/token`): el SDK no maneja autenticación con tokens
+  de usuario; los endpoints de lectura pública no la requieren.
+
+Si en el futuro se decide soportar admin/auth, añadir un namespace
+dedicado `auth` y opcionalmente `admin`, y extender `HttpClient` con
+soporte para Bearer tokens.
 
 ## Cosas conocidas del API server-side
 
