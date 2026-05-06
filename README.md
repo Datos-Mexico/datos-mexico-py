@@ -40,6 +40,25 @@ hogares = client.enigh.hogares_summary()
 print(f"{hogares['n_hogares_expandido']:,} hogares estimados")
 ```
 
+## Examples
+
+El directorio [`examples/`](examples/) contiene 5 notebooks Jupyter ejecutables que muestran flujos típicos del SDK con datos reales contra `https://api.datos-itam.org`:
+
+- [`01_quickstart.ipynb`](examples/01_quickstart.ipynb) — onboarding en 10 minutos
+- [`02_cdmx_servidores_publicos.ipynb`](examples/02_cdmx_servidores_publicos.ipynb) — análisis del padrón CDMX (distribuciones, top sectores, brecha por edad)
+- [`03_sar_composicion.ipynb`](examples/03_sar_composicion.ipynb) — composición del Sistema de Ahorro para el Retiro (serie histórica, AFOREs, componentes, IMSS vs ISSSTE)
+- [`04_enigh_hogares_desigualdad.ipynb`](examples/04_enigh_hogares_desigualdad.ipynb) — desigualdad de ingreso por decil ENIGH 2024 NS (composición de gasto D1 vs D10, validaciones INEGI)
+- [`05_paper_amafore_workflow.ipynb`](examples/05_paper_amafore_workflow.ipynb) — workflow específico para investigación de pensiones (cross-dataset, paper Amafore-ITAM 2026)
+
+Para ejecutarlos:
+
+```bash
+pip install datos-mexico[examples]
+jupyter notebook examples/
+```
+
+Cada notebook se renderiza en GitHub con outputs visibles (gráficas y cifras reales).
+
 ## Documentación
 
 - **Quickstart**: [docs/quickstart.md](docs/quickstart.md)
