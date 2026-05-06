@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the following metadata."
+title: "datos-mexico-py: Cliente Python para la API del Observatorio Datos México"
+abstract: "Cliente Python oficial para acceder programáticamente a los datos públicos mexicanos curados por el Observatorio Datos México. Provee acceso tipado a microdatos del SAR (CONSAR), ENIGH (INEGI) y servidores públicos de la Ciudad de México."
+authors:
+  - name: "Equipo de Datos México"
+    website: "https://datosmexico.org"
+    email: "equipo@datosmexico.org"
+version: 0.1.0
+date-released: 2026-05-04
+license: MIT
+repository-code: "https://github.com/datos-mexico/datos-mexico-py"
+url: "https://datosmexico.org"
+keywords:
+  - "datos abiertos"
+  - "México"
+  - "open data"
+  - "INEGI"
+  - "CONSAR"
+  - "ENIGH"
+  - "SAR"

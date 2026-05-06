@@ -1,0 +1,75 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "datos-mexico"
+version = "0.1.0"
+description = "Cliente Python oficial para la API de Datos México, observatorio de datos públicos mexicanos."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Equipo de Datos México", email = "equipo@datosmexico.org" }
+]
+maintainers = [
+  { name = "Equipo de Datos México", email = "equipo@datosmexico.org" }
+]
+keywords = ["datos abiertos", "México", "INEGI", "CONSAR", "ENIGH", "SAR", "CDMX", "open data", "mexico"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Sociology",
+  "Natural Language :: Spanish",
+]
+dependencies = [
+  "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+  "ruff>=0.6",
+  "mypy>=1.10",
+  "build>=1.2",
+  "twine>=5.0",
+]
+
+[project.urls]
+Homepage = "https://datosmexico.org"
+Documentation = "https://github.com/datos-mexico/datos-mexico-py#readme"
+Repository = "https://github.com/datos-mexico/datos-mexico-py"
+Issues = "https://github.com/datos-mexico/datos-mexico-py/issues"
+"API documentation" = "https://api.datos-itam.org/docs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/datos_mexico"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+ignore = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v --tb=short"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
