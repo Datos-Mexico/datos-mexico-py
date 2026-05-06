@@ -7,7 +7,7 @@ authors:
     website: "https://datosmexico.org"
     email: "equipo@datosmexico.org"
 version: 0.1.0
-date-released: 2026-05-04
+date-released: 2026-05-06
 license: MIT
 repository-code: "https://github.com/datos-mexico/datos-mexico-py"
 url: "https://datosmexico.org"

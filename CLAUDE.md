@@ -152,13 +152,52 @@ alcance del SDK.
 
 ## Pendientes para próximas sesiones
 
-- [ ] Sub-bloque 5H: publicar a TestPyPI + validar instalación end-to-end
-- [ ] Después de TestPyPI verde: release 0.1.0 a PyPI real
+- [x] Sub-bloque 5H: publicar a TestPyPI + validar instalación end-to-end
+  (completado 2026-05-06; v0.1.0 en https://pypi.org/project/datos-mexico/0.1.0/
+  y https://test.pypi.org/project/datos-mexico/0.1.0/)
+- [x] Después de TestPyPI verde: release 0.1.0 a PyPI real (publicado
+  vía OIDC trusted publishing desde tag `v0.1.0`)
 - [ ] Vincular el repo desde el sitio datosmexico.org
 - [ ] Actualizar /metodologia del sitio para mencionar el SDK
 - [ ] Documentación con mkdocs-material (opcional, después de 0.1.0)
 - [ ] Actualizar GitHub Actions a actions/checkout@v5+ (Node.js 20
   deprecation prevista 2026-06-02)
+
+## Release process (futuras versiones)
+
+El SDK se publica a PyPI mediante OIDC trusted publishing — sin tokens
+ni secrets en el repo. Workflow: `.github/workflows/publish.yml`. Se
+trigerea con cualquier tag `v*` y corre 3 jobs en serie:
+**build → publish-testpypi → publish-pypi**. Si TestPyPI falla, PyPI
+no se ejecuta.
+
+Para una nueva release `vX.Y.Z`:
+
+1. Bumpear `src/datos_mexico/_version.py` → `__version__ = "X.Y.Z"`
+   (single source of truth; `pyproject.toml` lee dinámico de aquí).
+2. Actualizar `CITATION.cff` con `version: X.Y.Z` y `date-released: YYYY-MM-DD`.
+3. Si hay cambios visibles, redactar release notes para
+   `gh release create`.
+4. `git commit` el bump.
+5. `git tag -aX vX.Y.Z -m "Release X.Y.Z..."` y `git push origin vX.Y.Z`.
+6. Esperar a que el workflow termine los 3 jobs.
+7. `gh release create vX.Y.Z --notes-file ...` para que aparezca en la
+   pestaña "Releases" del repo (independiente del tag puro).
+
+Reglas duras:
+- **NUNCA** re-usar un número de versión ya publicado a PyPI productivo
+  (PyPI rechaza re-uploads de la misma versión incluso tras delete).
+- TestPyPI tolera re-uploads tras delete pero conviene bumpear a la
+  siguiente patch para evitar ambigüedad.
+- Si el job `publish-testpypi` falla, **NO** crear PR para arreglar la
+  versión que ya quedó "manchada" — bumpear la siguiente patch.
+
+Trusted Publishers ya configurados en ambos registries:
+`owner=datos-mexico`, `repo=datos-mexico-py`, `workflow=publish.yml`,
+environments `testpypi` y `pypi`. Los environments están en
+`https://github.com/datos-mexico/datos-mexico-py/settings/environments`
+sin required reviewers para 0.1.0; agregar reviewers manuales ahí si se
+quiere gate manual en futuras releases.
 
 ## Endpoints deliberadamente NO implementados (out of scope)
 
@@ -283,5 +322,5 @@ intención, etc.).
 - API OpenAPI spec: https://api.datos-itam.org/openapi.json
 - API Swagger UI: https://api.datos-itam.org/docs
 - Repo: https://github.com/datos-mexico/datos-mexico-py
-- PyPI: https://pypi.org/project/datos-mexico/ (cuando se publique)
-- TestPyPI: https://test.pypi.org/project/datos-mexico/ (en preparación)
+- PyPI: https://pypi.org/project/datos-mexico/ (publicado v0.1.0 el 2026-05-06)
+- TestPyPI: https://test.pypi.org/project/datos-mexico/ (publicado v0.1.0 el 2026-05-06)

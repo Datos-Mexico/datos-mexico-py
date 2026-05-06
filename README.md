@@ -1,5 +1,10 @@
 # datos-mexico-py
 
+[![PyPI version](https://img.shields.io/pypi/v/datos-mexico.svg)](https://pypi.org/project/datos-mexico/)
+[![Python versions](https://img.shields.io/pypi/pyversions/datos-mexico.svg)](https://pypi.org/project/datos-mexico/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml/badge.svg)](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml)
+
 Cliente Python oficial para la API del [Observatorio Datos México](https://datosmexico.org).
 
 Acceso programático a microdatos públicos mexicanos curados, validados al peso contra fuentes oficiales, y documentados con sus salvedades metodológicas.
@@ -16,6 +21,11 @@ Próximamente: tipos comparativos cross-dataset.
 
 ```bash
 pip install datos-mexico
+```
+
+Para ejecutar los notebooks de ejemplo:
+```bash
+pip install datos-mexico[examples]
 ```
 
 Requiere Python 3.10 o superior.
