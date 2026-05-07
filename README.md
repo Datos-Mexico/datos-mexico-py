@@ -4,8 +4,11 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/datos-mexico.svg)](https://pypi.org/project/datos-mexico/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml/badge.svg)](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml)
+[![Docs](https://img.shields.io/badge/docs-docs.datosmexico.org-black?logo=materialformkdocs)](https://docs.datosmexico.org)
 
 Cliente Python oficial para la API del [Observatorio Datos México](https://datosmexico.org).
+
+📖 **Documentación completa**: [docs.datosmexico.org](https://docs.datosmexico.org)
 
 Acceso programático a microdatos públicos mexicanos curados, validados al peso contra fuentes oficiales, y documentados con sus salvedades metodológicas.
 
@@ -71,8 +74,16 @@ Cada notebook se renderiza en GitHub con outputs visibles (gráficas y cifras re
 
 ## Documentación
 
-- **Quickstart**: [docs/quickstart.md](docs/quickstart.md)
-- **API completa**: [docs/api/](docs/api/)
+Documentación profesional en **[docs.datosmexico.org](https://docs.datosmexico.org)**:
+
+- [Quickstart](https://docs.datosmexico.org/quickstart/) — onboarding en 10 minutos
+- [Conceptos clave](https://docs.datosmexico.org/conceptos/decimal/) — Decimal, identidad contable, caveats editoriales, cache y retries
+- [Tutoriales](https://docs.datosmexico.org/tutoriales/cdmx/) — walkthroughs por dataset (CDMX, CONSAR, ENIGH, comparativo)
+- [Reference completo](https://docs.datosmexico.org/reference/client/) — auto-generado desde docstrings
+- [FAQ](https://docs.datosmexico.org/faq/)
+
+Otros recursos:
+
 - **Ejemplos en notebooks**: [examples/](examples/)
 - **Documentación de la API HTTP**: https://api.datos-itam.org/docs
 

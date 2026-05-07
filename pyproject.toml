@@ -73,7 +73,7 @@ docs = [
 
 [project.urls]
 Homepage = "https://datosmexico.org"
-Documentation = "https://github.com/datos-mexico/datos-mexico-py#readme"
+Documentation = "https://docs.datosmexico.org"
 Repository = "https://github.com/datos-mexico/datos-mexico-py"
 Issues = "https://github.com/datos-mexico/datos-mexico-py/issues"
 Changelog = "https://github.com/datos-mexico/datos-mexico-py/releases"
