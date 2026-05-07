@@ -160,8 +160,9 @@ alcance del SDK.
 - [ ] Vincular el repo desde el sitio datosmexico.org
 - [ ] Actualizar /metodologia del sitio para mencionar el SDK
 - [ ] Documentación con mkdocs-material (opcional, después de 0.1.0)
-- [ ] Actualizar GitHub Actions a actions/checkout@v5+ (Node.js 20
-  deprecation prevista 2026-06-02)
+- [x] Actualizar GitHub Actions para Node 24 compat (completado 2026-05-06
+  vía PR #1: checkout v4→v6, setup-python v5→v6, upload-artifact v4→v7,
+  download-artifact v4→v8)
 
 ## Release process (futuras versiones)
 
