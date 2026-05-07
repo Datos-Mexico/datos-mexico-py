@@ -160,10 +160,43 @@ alcance del SDK.
 - [x] Actualizar GitHub Actions para Node 24 compat (completado 2026-05-06
   vía PR #1: checkout v4→v6, setup-python v5→v6, upload-artifact v4→v7,
   download-artifact v4→v8)
+- [x] Documentación profesional con mkdocs-material (completado 2026-05-06
+  vía PR #4: live en https://docs.datosmexico.org, hosteada en Cloudflare
+  Pages, custom domain configurado en zona datosmexico.org)
 
 Pendientes externos al repo (en repo del sitio o cuentas de servicios):
-- mkdocs-material para documentación del SDK (opcional, post-Amafore)
 - Datos de 3/7 miembros del equipo en /quienes-somos del sitio (esperando)
+
+## Documentación
+
+Documentación profesional en https://docs.datosmexico.org (mkdocs-material
+hosteado en Cloudflare Pages, custom domain con CNAME en zona datosmexico.org).
+
+Build local:
+
+    pip install -e ".[docs]"
+    mkdocs serve              # dev server en localhost:8000
+    mkdocs build --strict     # validación pre-deploy
+
+Deploy a Cloudflare Pages (manual desde local; Git integration no
+configurada en este repo todavía):
+
+    mkdocs build --strict
+    wrangler pages deploy site/ \
+      --project-name datos-mexico-docs \
+      --branch main \
+      --commit-dirty=true
+
+Custom domain `docs.datosmexico.org` está asociado al proyecto Pages
+`datos-mexico-docs` en la cuenta `davidfernando@dafel.com.mx`. El CNAME
+fue creado por Cloudflare al asociar el custom domain (zona
+datosmexico.org en la misma cuenta).
+
+Cuando se actualice contenido de `docs/` o `mkdocs.yml`, conviene
+re-correr el deploy manual. Para automatizar más adelante, considerar
+Git integration directa de Cloudflare Pages al repo o un workflow
+GitHub Actions que dispare `wrangler pages deploy` en pushes a `main`
+que toquen `docs/` o `mkdocs.yml`.
 
 ## Release process (futuras versiones)
 
