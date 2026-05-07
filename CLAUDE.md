@@ -157,12 +157,13 @@ alcance del SDK.
   y https://test.pypi.org/project/datos-mexico/0.1.0/)
 - [x] Después de TestPyPI verde: release 0.1.0 a PyPI real (publicado
   vía OIDC trusted publishing desde tag `v0.1.0`)
-- [ ] Vincular el repo desde el sitio datosmexico.org
-- [ ] Actualizar /metodologia del sitio para mencionar el SDK
-- [ ] Documentación con mkdocs-material (opcional, después de 0.1.0)
 - [x] Actualizar GitHub Actions para Node 24 compat (completado 2026-05-06
   vía PR #1: checkout v4→v6, setup-python v5→v6, upload-artifact v4→v7,
   download-artifact v4→v8)
+
+Pendientes externos al repo (en repo del sitio o cuentas de servicios):
+- mkdocs-material para documentación del SDK (opcional, post-Amafore)
+- Datos de 3/7 miembros del equipo en /quienes-somos del sitio (esperando)
 
 ## Release process (futuras versiones)
 
@@ -317,6 +318,17 @@ intención, etc.).
 6. Lee el último commit para entender estado: git log -1
 7. Revisa pendientes en este archivo
 8. Si arrancas un nuevo namespace, sigue el patrón documentado arriba
+
+## Notas operativas para PRs
+
+- `gh pr merge --delete-branch` elimina el branch local pero el remote
+  puede quedar. Validar con: `git push origin --delete <branch-name>`
+  después del merge si el branch sigue listado en `gh pr list`.
+- Para PRs doc-only (cambios solo a archivos `.md`), el patrón aceptado
+  es auto-merge sin OK explícito del usuario, dado que el riesgo es
+  trivial.
+- Para PRs que tocan código, workflows, o `pyproject.toml`, requerir OK
+  explícito antes del merge.
 
 ## Recursos externos
 
