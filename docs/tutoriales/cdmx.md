@@ -43,9 +43,10 @@ Puedes obtener la lista paginada con `servidores_lista()`:
 
 ```python
 with DatosMexico() as client:
-    pagina = client.cdmx.servidores_lista(limit=100)
-    for r in pagina.rows[:10]:
-        print(f"{r.puesto[:50]:<50} ${r.sueldo_bruto or 0:>12,.2f}")
+    pagina = client.cdmx.servidores_lista(per_page=10)
+    for r in pagina.data:
+        print(f"{r.puesto[:50]:<50} ${r.sueldo_bruto:>12,.2f}")
+    print(f"Página {pagina.page} de {pagina.pages} (total: {pagina.total:,})")
 ```
 
 Para análisis de distribución completa, considera bajarte el padrón en CSV vía `client.export.csv()` y trabajarlo con pandas. La API tiene rate limiting prudente, así que es mejor pegarse uno solo a `export` que iterar miles de páginas.
@@ -66,14 +67,14 @@ with DatosMexico() as client:
 with DatosMexico() as client:
     top_puestos = client.cdmx.puestos_ranking(limit=10)
     for p in top_puestos:
-        print(f"{p.puesto[:50]:<50} {p.frecuencia:>6,}")
+        print(f"{p.nombre[:50]:<50} n={p.count:>5}  avg sueldo ${p.avg_sueldo:>11,.2f}")
 
     sectores_rank = client.cdmx.sectores_ranking()
     for s in sectores_rank[:10]:
-        print(f"{s.sector[:40]:<40} {s.total_servidores:>6,}")
+        print(f"{s.nombre[:50]:<50} n={s.count:>5}  avg sueldo ${s.avg_sueldo:>11,.2f}")
 ```
 
-Estos rankings son útiles para entender qué dominio del gobierno concentra cuántas personas. La distribución es típicamente muy sesgada: las dos o tres secretarías más grandes (Educación, Salud) suelen sumar más de la mitad del padrón.
+Ambos rankings vienen ordenados **por sueldo promedio descendente**, no por cantidad de servidores. Si lo que necesitas es la concentración de cabezas (qué secretarías emplean a más gente), usa `client.cdmx.sectores()` y ordena por `total_servidores`: la Secretaría de Seguridad Ciudadana sola concentra alrededor de 20 % del padrón.
 
 ## Brecha por edad
 
@@ -83,7 +84,12 @@ Estos rankings son útiles para entender qué dominio del gobierno concentra cu�
 with DatosMexico() as client:
     rows = client.cdmx.brecha_edad()
     for r in rows:
-        print(f"{r.grupo_edad:<12} ${r.sueldo_promedio:,.2f}  ({r.n_servidores:,})")
+        print(
+            f"{r.bucket_edad:<10} "
+            f"M:${r.avg_male:>9,.0f} ({r.count_male:,})  "
+            f"F:${r.avg_female:>9,.0f} ({r.count_female:,})  "
+            f"Δ:{r.gap_pct:+5.2f}%"
+        )
 ```
 
 **Caveat metodológico**: el grupo de edad y el sueldo promedio están correlacionados con antigüedad (no observada directamente como feature en este corte). Una lectura simplista — "los jóvenes ganan menos que los mayores" — confunde edad con experiencia. El equipo del observatorio expone el corte tal cual; la interpretación es responsabilidad del analista.
@@ -108,11 +114,13 @@ with DatosMexico() as client:
 ```python
 with DatosMexico() as client:
     cmp = client.cdmx.sectores_compare(a=1, b=2)
-    print(f"Sector A: {cmp.sector_a.nombre}")
-    print(f"  Sueldo medio:   ${cmp.sector_a.avg_salary:,.2f}")
-    print(f"Sector B: {cmp.sector_b.nombre}")
-    print(f"  Sueldo medio:   ${cmp.sector_b.avg_salary:,.2f}")
-    print(f"Diferencia: ${cmp.diff_avg_salary:,.2f}")
+    a, b = cmp.sector_a, cmp.sector_b
+    print(f"Sector A: {a.nombre}")
+    print(f"  Sueldo bruto medio: ${a.sueldo_bruto_avg:,.2f}  (n={a.total_servidores})")
+    print(f"Sector B: {b.nombre}")
+    print(f"  Sueldo bruto medio: ${b.sueldo_bruto_avg:,.2f}  (n={b.total_servidores})")
+    if a.sueldo_bruto_avg and b.sueldo_bruto_avg:
+        print(f"Diferencia A − B: ${a.sueldo_bruto_avg - b.sueldo_bruto_avg:+,.2f}")
 ```
 
 ## Caveats globales del dataset
