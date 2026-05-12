@@ -70,3 +70,7 @@ site/
 
 # Ruff
 .ruff_cache/
+
+# AI agent / operational notes (private — not for the public repo)
+.claude/
+CLAUDE.md
