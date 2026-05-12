@@ -80,6 +80,10 @@ DATOS_MEXICO_INTEGRATION_TESTS=1 pytest tests/integration/
 
 Si un test integral falla, **no modifiques el SDK para silenciarlo**. La causa suele ser una de tres: cambio real en la fuente oficial, drift en la API del observatorio, o un bug del SDK. Reporta la cifra obtenida y la esperada en el issue antes de proponer un fix.
 
+### Reproducibilidad del README
+
+Los bloques de código ` ```python ` del `README.md` se validan automáticamente con `tests/test_readme_examples.py`: cada bloque pasa `compile()` en CI, y con `DATOS_MEXICO_INTEGRATION_TESTS=1` también se ejecuta contra la API real. Si la evolución de los modelos Pydantic o de los métodos públicos rompe un ejemplo del README, el test falla antes del merge.
+
 ## Lint y type-check
 
 `ruff` y `mypy --strict` son obligatorios en CI; no hay excepciones aceptadas en el código fuente.
