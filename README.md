@@ -19,7 +19,7 @@ Acceso programático a microdatos públicos mexicanos curados, validados al peso
 - **ENIGH 2024 Nueva Serie**: 91,414 hogares en muestra · 38.8M expandidos · ingresos, gastos, demografía
 - **ENOE — Mercado laboral INEGI**: 101.5M microdatos · 76 mil indicadores agregados · cobertura 2005T1–2025T1 · nacional + 32 entidades federativas
 
-Próximamente: tipos comparativos cross-dataset.
+Además, el namespace `client.comparativo` expone 7 cruces cross-dataset (CDMX × ENIGH × CONSAR) con interpretación y caveats redactados por el observatorio.
 
 ## Instalación
 
@@ -123,7 +123,7 @@ Documentación profesional en **[docs.datosmexico.org](https://docs.datosmexico.
 
 - [Quickstart](https://docs.datosmexico.org/quickstart/) — onboarding en 10 minutos
 - [Conceptos clave](https://docs.datosmexico.org/conceptos/decimal/) — Decimal, identidad contable, caveats editoriales, cache y retries
-- [Tutoriales](https://docs.datosmexico.org/tutoriales/cdmx/) — walkthroughs por dataset (CDMX, CONSAR, ENIGH, comparativo)
+- [Tutoriales](https://docs.datosmexico.org/tutoriales/cdmx/) — walkthroughs por dataset (CDMX, CONSAR, ENIGH, ENOE, comparativo)
 - [Reference completo](https://docs.datosmexico.org/reference/client/) — auto-generado desde docstrings
 - [FAQ](https://docs.datosmexico.org/faq/)
 
