@@ -1,0 +1,39 @@
+{
+  "count": 3,
+  "etapas": [
+    {
+      "slug": "clasica",
+      "nombre": "ENOE Clásica (pre-rediseño)",
+      "descripcion": "Diseño 2005-2020T1 con marco muestral pre-Censo 2020. Población originalmente publicada con dominio 14+; el observatorio re-calcula con dominio 15+ para comparabilidad longitudinal.",
+      "periodo_inicio": "2005T1",
+      "periodo_fin": "2020T1",
+      "dominio_edad": "15+ (recálculo); publicación original 14+",
+      "n_trimestres": 61,
+      "tiene_microdatos": true,
+      "caveat_aplicable": "Para comparaciones largas que cruzan 2020T2/2020T3, considerar cambio de marco muestral post-Censo 2020 (slug 'cambio_marco_2020T3')."
+    },
+    {
+      "slug": "etoe_telefonica",
+      "nombre": "ETOE (Encuesta Telefónica) — COVID-19",
+      "descripcion": "Diseño emergente 2020T2: encuesta telefónica sustituta del ENOE presencial durante el confinamiento pandémico. INEGI no publicó microdatos descargables; solo agregados de investigación. El observatori...",
+      "periodo_inicio": "2020T2",
+      "periodo_fin": "2020T2",
+      "dominio_edad": "15+",
+      "n_trimestres": 1,
+      "tiene_microdatos": false,
+      "caveat_aplicable": "Sin microdatos descargables. Etapa registrada para completeness documental. Series ENOE saltan de 2020T1 a 2020T3."
+    },
+    {
+      "slug": "enoe_n",
+      "nombre": "ENOE-N (Nueva Edición, post-Censo 2020)",
+      "descripcion": "Diseño actual desde 2020T3 con marco muestral rediseñado post-Censo 2020. Población 15+ uniformemente. Incluye URL legacy enoe_n_* (2020T3-2022T4) y enoe_* (2023T1+), rebranding nominal sin cambio met...",
+      "periodo_inicio": "2020T3",
+      "periodo_fin": null,
+      "dominio_edad": "15+",
+      "n_trimestres": 19,
+      "tiene_microdatos": true,
+      "caveat_aplicable": "2020T3-2021T4: fac_tri pre-CPV-2020 produce subestimación 6-7% en conteos absolutos (no afecta tasas). Slug 'cambio_marco_2020T3'."
+    }
+  ],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

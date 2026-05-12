@@ -1,0 +1,31 @@
+{
+  "count": 32,
+  "entidades": [
+    {
+      "clave": "01",
+      "nombre": "Aguascalientes",
+      "abreviatura": "Ags."
+    },
+    {
+      "clave": "02",
+      "nombre": "Baja California",
+      "abreviatura": "BC"
+    },
+    {
+      "clave": "03",
+      "nombre": "Baja California Sur",
+      "abreviatura": "BCS"
+    },
+    {
+      "clave": "04",
+      "nombre": "Campeche",
+      "abreviatura": "Camp."
+    },
+    {
+      "clave": "05",
+      "nombre": "Coahuila de Zaragoza",
+      "abreviatura": "Coah."
+    }
+  ],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

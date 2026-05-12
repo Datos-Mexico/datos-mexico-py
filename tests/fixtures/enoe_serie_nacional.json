@@ -1,0 +1,41 @@
+{
+  "indicador": "tasa_desocupacion",
+  "nombre": "Tasa de Desocupación",
+  "unidad": "porcentaje",
+  "categoria": "tasa",
+  "cobertura": {
+    "desde": "2024T1",
+    "hasta": "2025T1",
+    "n_observaciones": 5
+  },
+  "datos": [
+    {
+      "periodo": "2024T1",
+      "valor": 2.586032,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T2",
+      "valor": 2.718618,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T3",
+      "valor": 3.038224,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T4",
+      "valor": 2.587419,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2025T1",
+      "valor": 2.470392,
+      "etapa": "enoe_n"
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/",
+  "source_url": "https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

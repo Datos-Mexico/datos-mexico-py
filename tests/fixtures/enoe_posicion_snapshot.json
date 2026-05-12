@@ -1,0 +1,46 @@
+{
+  "periodo": "2025T1",
+  "etapa": "enoe_n",
+  "nivel": "nacional",
+  "geo_clave": null,
+  "geo_nombre": null,
+  "total_ocupados_nivel": 58921494,
+  "n_posiciones": 4,
+  "distribucion": [
+    {
+      "periodo": null,
+      "pos_clave": 1,
+      "pos_nombre": "Trabajadores subordinados y remunerados",
+      "total_ocupados": 40930410,
+      "participacion_porcentaje": 69.466,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "pos_clave": 2,
+      "pos_nombre": "Empleadores",
+      "total_ocupados": 3014205,
+      "participacion_porcentaje": 5.1156,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "pos_clave": 3,
+      "pos_nombre": "Trabajadores por cuenta propia",
+      "total_ocupados": 12922725,
+      "participacion_porcentaje": 21.9321,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "pos_clave": 4,
+      "pos_nombre": "Trabajadores no remunerados",
+      "total_ocupados": 2054154,
+      "participacion_porcentaje": 3.4863,
+      "etapa": null
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/",
+  "source_url": "https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

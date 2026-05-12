@@ -1,0 +1,205 @@
+{
+  "periodo": "2025T1",
+  "etapa": "enoe_n",
+  "indicador": "tasa_desocupacion",
+  "nombre": "Tasa de Desocupación",
+  "unidad": "porcentaje",
+  "categoria": "tasa",
+  "n_entidades": 32,
+  "datos": [
+    {
+      "entidad_clave": "01",
+      "entidad_nombre": "Aguascalientes",
+      "entidad_abreviatura": "Ags.",
+      "valor": 2.173388
+    },
+    {
+      "entidad_clave": "02",
+      "entidad_nombre": "Baja California",
+      "entidad_abreviatura": "BC",
+      "valor": 2.14914
+    },
+    {
+      "entidad_clave": "03",
+      "entidad_nombre": "Baja California Sur",
+      "entidad_abreviatura": "BCS",
+      "valor": 2.900954
+    },
+    {
+      "entidad_clave": "04",
+      "entidad_nombre": "Campeche",
+      "entidad_abreviatura": "Camp.",
+      "valor": 2.069825
+    },
+    {
+      "entidad_clave": "05",
+      "entidad_nombre": "Coahuila de Zaragoza",
+      "entidad_abreviatura": "Coah.",
+      "valor": 3.56311
+    },
+    {
+      "entidad_clave": "06",
+      "entidad_nombre": "Colima",
+      "entidad_abreviatura": "Col.",
+      "valor": 2.426938
+    },
+    {
+      "entidad_clave": "07",
+      "entidad_nombre": "Chiapas",
+      "entidad_abreviatura": "Chis.",
+      "valor": 2.486041
+    },
+    {
+      "entidad_clave": "08",
+      "entidad_nombre": "Chihuahua",
+      "entidad_abreviatura": "Chih.",
+      "valor": 2.053245
+    },
+    {
+      "entidad_clave": "09",
+      "entidad_nombre": "Ciudad de México",
+      "entidad_abreviatura": "CDMX",
+      "valor": 3.445624
+    },
+    {
+      "entidad_clave": "10",
+      "entidad_nombre": "Durango",
+      "entidad_abreviatura": "Dgo.",
+      "valor": 3.46131
+    },
+    {
+      "entidad_clave": "11",
+      "entidad_nombre": "Guanajuato",
+      "entidad_abreviatura": "Gto.",
+      "valor": 2.553335
+    },
+    {
+      "entidad_clave": "12",
+      "entidad_nombre": "Guerrero",
+      "entidad_abreviatura": "Gro.",
+      "valor": 0.889822
+    },
+    {
+      "entidad_clave": "13",
+      "entidad_nombre": "Hidalgo",
+      "entidad_abreviatura": "Hgo.",
+      "valor": 1.946185
+    },
+    {
+      "entidad_clave": "14",
+      "entidad_nombre": "Jalisco",
+      "entidad_abreviatura": "Jal.",
+      "valor": 1.670044
+    },
+    {
+      "entidad_clave": "15",
+      "entidad_nombre": "México",
+      "entidad_abreviatura": "Méx.",
+      "valor": 2.734278
+    },
+    {
+      "entidad_clave": "16",
+      "entidad_nombre": "Michoacán de Ocampo",
+      "entidad_abreviatura": "Mich.",
+      "valor": 1.180058
+    },
+    {
+      "entidad_clave": "17",
+      "entidad_nombre": "Morelos",
+      "entidad_abreviatura": "Mor.",
+      "valor": 1.060602
+    },
+    {
+      "entidad_clave": "18",
+      "entidad_nombre": "Nayarit",
+      "entidad_abreviatura": "Nay.",
+      "valor": 2.447031
+    },
+    {
+      "entidad_clave": "19",
+      "entidad_nombre": "Nuevo León",
+      "entidad_abreviatura": "NL",
+      "valor": 2.756614
+    },
+    {
+      "entidad_clave": "20",
+      "entidad_nombre": "Oaxaca",
+      "entidad_abreviatura": "Oax.",
+      "valor": 1.650005
+    },
+    {
+      "entidad_clave": "21",
+      "entidad_nombre": "Puebla",
+      "entidad_abreviatura": "Pue.",
+      "valor": 2.56324
+    },
+    {
+      "entidad_clave": "22",
+      "entidad_nombre": "Querétaro",
+      "entidad_abreviatura": "Qro.",
+      "valor": 1.988734
+    },
+    {
+      "entidad_clave": "23",
+      "entidad_nombre": "Quintana Roo",
+      "entidad_abreviatura": "QRoo",
+      "valor": 2.384772
+    },
+    {
+      "entidad_clave": "24",
+      "entidad_nombre": "San Luis Potosí",
+      "entidad_abreviatura": "SLP",
+      "valor": 3.208471
+    },
+    {
+      "entidad_clave": "25",
+      "entidad_nombre": "Sinaloa",
+      "entidad_abreviatura": "Sin.",
+      "valor": 2.745538
+    },
+    {
+      "entidad_clave": "26",
+      "entidad_nombre": "Sonora",
+      "entidad_abreviatura": "Son.",
+      "valor": 2.576944
+    },
+    {
+      "entidad_clave": "27",
+      "entidad_nombre": "Tabasco",
+      "entidad_abreviatura": "Tab.",
+      "valor": 4.974381
+    },
+    {
+      "entidad_clave": "28",
+      "entidad_nombre": "Tamaulipas",
+      "entidad_abreviatura": "Tamps.",
+      "valor": 3.370727
+    },
+    {
+      "entidad_clave": "29",
+      "entidad_nombre": "Tlaxcala",
+      "entidad_abreviatura": "Tlax.",
+      "valor": 2.566251
+    },
+    {
+      "entidad_clave": "30",
+      "entidad_nombre": "Veracruz de Ignacio de la Llave",
+      "entidad_abreviatura": "Ver.",
+      "valor": 1.943396
+    },
+    {
+      "entidad_clave": "31",
+      "entidad_nombre": "Yucatán",
+      "entidad_abreviatura": "Yuc.",
+      "valor": 1.541156
+    },
+    {
+      "entidad_clave": "32",
+      "entidad_nombre": "Zacatecas",
+      "entidad_abreviatura": "Zac.",
+      "valor": 2.88227
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

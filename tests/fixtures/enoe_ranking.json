@@ -1,0 +1,49 @@
+{
+  "periodo": "2025T1",
+  "etapa": "enoe_n",
+  "indicador": "tasa_desocupacion",
+  "nombre": "Tasa de Desocupación",
+  "unidad": "porcentaje",
+  "orden": "desc",
+  "limit": 5,
+  "total_resultados": 5,
+  "ranking": [
+    {
+      "rank": 1,
+      "entidad_clave": "27",
+      "entidad_nombre": "Tabasco",
+      "entidad_abreviatura": "Tab.",
+      "valor": 4.974381
+    },
+    {
+      "rank": 2,
+      "entidad_clave": "05",
+      "entidad_nombre": "Coahuila de Zaragoza",
+      "entidad_abreviatura": "Coah.",
+      "valor": 3.56311
+    },
+    {
+      "rank": 3,
+      "entidad_clave": "10",
+      "entidad_nombre": "Durango",
+      "entidad_abreviatura": "Dgo.",
+      "valor": 3.46131
+    },
+    {
+      "rank": 4,
+      "entidad_clave": "09",
+      "entidad_nombre": "Ciudad de México",
+      "entidad_abreviatura": "CDMX",
+      "valor": 3.445624
+    },
+    {
+      "rank": 5,
+      "entidad_clave": "28",
+      "entidad_nombre": "Tamaulipas",
+      "entidad_abreviatura": "Tamps.",
+      "valor": 3.370727
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

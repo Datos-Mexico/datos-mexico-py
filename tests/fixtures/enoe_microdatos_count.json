@@ -1,0 +1,10 @@
+{
+  "tabla": "microdatos_sdem",
+  "filtros": {
+    "periodo": "2025T1",
+    "entidad_clave": "09"
+  },
+  "total": 9376,
+  "caveat_metodologico": null,
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

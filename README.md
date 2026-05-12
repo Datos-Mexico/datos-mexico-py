@@ -17,6 +17,7 @@ Acceso programático a microdatos públicos mexicanos curados, validados al peso
 - **CDMX servidores públicos**: 246,831 servidores · 75 sectores · padrón vigente del Gobierno de la Ciudad de México
 - **CONSAR / SAR**: serie histórica 1998–2025 · 11 AFOREs · recursos administrados, composición, comisiones, traspasos
 - **ENIGH 2024 Nueva Serie**: 91,414 hogares en muestra · 38.8M expandidos · ingresos, gastos, demografía
+- **ENOE — Mercado laboral INEGI**: 101.5M microdatos · 76 mil indicadores agregados · cobertura 2005T1–2025T1 · nacional + 32 entidades federativas
 
 Próximamente: tipos comparativos cross-dataset.
 
@@ -51,7 +52,50 @@ print(f"Última fecha: {sar['fecha_max']}")
 # ENIGH hogares
 hogares = client.enigh.hogares_summary()
 print(f"{hogares['n_hogares_expandido']:,} hogares estimados")
+
+# ENOE — Top 5 estados con mayor desempleo (2025T1)
+top5 = client.enoe.ranking(periodo="2025T1", indicador="tasa_desocupacion", limit=5)
+for e in top5.ranking:
+    print(f"  {e.rank}. {e.entidad_nombre}: {e.valor:.2f}%")
 ```
+
+### ENOE — mercado laboral mexicano
+
+El módulo `enoe` expone los 101.5M microdatos y 76 mil indicadores agregados
+de la Encuesta Nacional de Ocupación y Empleo (INEGI, 2005T1–2025T1).
+
+```python
+from datos_mexico import DatosMexico
+
+with DatosMexico() as client:
+    # Catálogo de los 13 indicadores agregados disponibles
+    catalogo = client.enoe.indicadores()
+    for ind in catalogo.indicadores[:3]:
+        print(f"  {ind.slug:30s}  {ind.nombre}")
+
+    # Serie nacional histórica de la tasa de desocupación
+    serie = client.enoe.serie_nacional(indicador="tasa_desocupacion")
+    print(f"Cobertura: {serie.cobertura.n_observaciones} trimestres")
+    print(f"Último punto: {serie.datos[-1].periodo} = {serie.datos[-1].valor:.2f}%")
+
+    # Microdatos de CDMX como DataFrame (requiere pandas)
+    df = client.enoe.microdatos_to_pandas(
+        "sdem", periodo="2025T1", entidad_clave="09", limit=500
+    )
+    print(f"Muestra CDMX 2025T1: {len(df)} filas × {len(df.columns)} cols")
+
+    # Iterar sin cargar a memoria
+    for row in client.enoe.microdatos_iter(
+        "sdem", periodo="2025T1", entidad_clave="09", sex=2, eda_min=18
+    ):
+        # procesar fila a fila
+        ...
+```
+
+Cada response incluye una lista tipada de `caveats` con las salvedades
+metodológicas relevantes: cambio de marco muestral en 2020T3, redefinición
+del TCCO en 2020T1, gap documental ETOE en 2020T2, re-cálculo del dominio
+15+ en la etapa clásica pre-2020.
 
 ## Examples
 
@@ -62,6 +106,7 @@ El directorio [`examples/`](examples/) contiene 5 notebooks Jupyter ejecutables 
 - [`03_sar_composicion.ipynb`](examples/03_sar_composicion.ipynb) — composición del Sistema de Ahorro para el Retiro (serie histórica, AFOREs, componentes, IMSS vs ISSSTE)
 - [`04_enigh_hogares_desigualdad.ipynb`](examples/04_enigh_hogares_desigualdad.ipynb) — desigualdad de ingreso por decil ENIGH 2024 NS (composición de gasto D1 vs D10, validaciones INEGI)
 - [`05_paper_amafore_workflow.ipynb`](examples/05_paper_amafore_workflow.ipynb) — workflow específico para investigación de pensiones (cross-dataset, paper Amafore-ITAM 2026)
+- [`06_enoe_mercado_laboral.ipynb`](examples/06_enoe_mercado_laboral.ipynb) — mercado laboral mexicano según ENOE (desempleo histórico, ranking 32 entidades, composición sectorial, microdatos CDMX)
 
 Para ejecutarlos:
 

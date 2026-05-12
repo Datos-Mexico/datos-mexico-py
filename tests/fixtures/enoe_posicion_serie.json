@@ -1,0 +1,32 @@
+{
+  "pos_clave": 1,
+  "pos_nombre": "Trabajadores subordinados y remunerados",
+  "nivel": "nacional",
+  "geo_clave": null,
+  "geo_nombre": null,
+  "cobertura": {
+    "desde": "2024T1",
+    "hasta": "2024T2",
+    "n_observaciones": 2
+  },
+  "datos": [
+    {
+      "periodo": "2024T1",
+      "pos_clave": 1,
+      "pos_nombre": "Trabajadores subordinados y remunerados",
+      "total_ocupados": 39131045,
+      "participacion_porcentaje": 69.2974,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T2",
+      "pos_clave": 1,
+      "pos_nombre": "Trabajadores subordinados y remunerados",
+      "total_ocupados": 39792166,
+      "participacion_porcentaje": 69.2534,
+      "etapa": "enoe_n"
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

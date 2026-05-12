@@ -1,0 +1,72 @@
+{
+  "tabla": "microdatos_sdem",
+  "filtros": {
+    "periodo": "2025T1",
+    "entidad_clave": "09",
+    "include_extras": false
+  },
+  "pagination": {
+    "total": 9376,
+    "page": 2,
+    "per_page": 3,
+    "total_pages": 3126,
+    "has_next": false,
+    "has_previous": true
+  },
+  "data": [
+    {
+      "periodo": "2025T1",
+      "etapa": "enoe_n",
+      "cd_a": "01",
+      "ent": "09",
+      "con": "20293",
+      "v_sel": "75",
+      "n_hog": 1,
+      "n_ren": 1,
+      "sex": 1,
+      "eda": 74,
+      "clase1": 1,
+      "clase2": 1,
+      "pos_ocu": 2,
+      "rama_est2": 8,
+      "fac_tri": 2466
+    },
+    {
+      "periodo": "2025T1",
+      "etapa": "enoe_n",
+      "cd_a": "01",
+      "ent": "09",
+      "con": "20293",
+      "v_sel": "75",
+      "n_hog": 1,
+      "n_ren": 2,
+      "sex": 2,
+      "eda": 83,
+      "clase1": 2,
+      "clase2": 4,
+      "pos_ocu": 0,
+      "rama_est2": 0,
+      "fac_tri": 2466
+    },
+    {
+      "periodo": "2025T1",
+      "etapa": "enoe_n",
+      "cd_a": "01",
+      "ent": "09",
+      "con": "20293",
+      "v_sel": "77",
+      "n_hog": 1,
+      "n_ren": 1,
+      "sex": 1,
+      "eda": 31,
+      "clase1": 1,
+      "clase2": 1,
+      "pos_ocu": 1,
+      "rama_est2": 9,
+      "fac_tri": 2466
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/",
+  "tiempo_query_ms": 547.51
+}

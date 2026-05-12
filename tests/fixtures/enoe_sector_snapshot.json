@@ -1,0 +1,110 @@
+{
+  "periodo": "2025T1",
+  "etapa": "enoe_n",
+  "nivel": "nacional",
+  "geo_clave": null,
+  "geo_nombre": null,
+  "total_ocupados_nivel": 58921494,
+  "n_sectores": 12,
+  "distribucion": [
+    {
+      "periodo": null,
+      "sector_clave": "0",
+      "sector_nombre": "No especificado",
+      "total_ocupados": 397647,
+      "participacion_porcentaje": 0.6749,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "1",
+      "sector_nombre": "Agricultura, ganadería, silvicultura, caza y pesca",
+      "total_ocupados": 6170920,
+      "participacion_porcentaje": 10.4731,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "10",
+      "sector_nombre": "Servicios diversos",
+      "total_ocupados": 5991207,
+      "participacion_porcentaje": 10.1681,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "11",
+      "sector_nombre": "Gobierno y organismos internacionales",
+      "total_ocupados": 2186005,
+      "participacion_porcentaje": 3.71,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "2",
+      "sector_nombre": "Industria extractiva y de la electricidad",
+      "total_ocupados": 397246,
+      "participacion_porcentaje": 0.6742,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "3",
+      "sector_nombre": "Industria manufacturera",
+      "total_ocupados": 9509132,
+      "participacion_porcentaje": 16.1386,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "4",
+      "sector_nombre": "Construcción",
+      "total_ocupados": 4619183,
+      "participacion_porcentaje": 7.8396,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "5",
+      "sector_nombre": "Comercio",
+      "total_ocupados": 11628131,
+      "participacion_porcentaje": 19.735,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "6",
+      "sector_nombre": "Restaurantes y servicios de alojamiento",
+      "total_ocupados": 4883914,
+      "participacion_porcentaje": 8.2888,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "7",
+      "sector_nombre": "Transportes, comunicaciones, correo y almacenamiento",
+      "total_ocupados": 3419262,
+      "participacion_porcentaje": 5.8031,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "8",
+      "sector_nombre": "Servicios profesionales, financieros y corporativos",
+      "total_ocupados": 4816358,
+      "participacion_porcentaje": 8.1742,
+      "etapa": null
+    },
+    {
+      "periodo": null,
+      "sector_clave": "9",
+      "sector_nombre": "Servicios sociales",
+      "total_ocupados": 4902489,
+      "participacion_porcentaje": 8.3204,
+      "etapa": null
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/",
+  "source_url": "https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

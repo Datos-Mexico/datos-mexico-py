@@ -1,0 +1,83 @@
+{
+  "tabla": "microdatos_sdem",
+  "total_columnas": 82,
+  "total_filas": 31498811,
+  "cobertura_temporal": "2005T1-2025T1",
+  "columnas": [
+    {
+      "nombre": "periodo",
+      "tipo": "character (6)",
+      "nullable": false,
+      "descripcion": "Trimestre 'YYYYTQ' (CHAR(6)). PK."
+    },
+    {
+      "nombre": "cd_a",
+      "tipo": "character (2)",
+      "nullable": false,
+      "descripcion": "Cuestionario A. PK."
+    },
+    {
+      "nombre": "ent",
+      "tipo": "character (2)",
+      "nullable": false,
+      "descripcion": "Entidad federativa, clave INEGI '01'..'32'. PK."
+    },
+    {
+      "nombre": "con",
+      "tipo": "character (5)",
+      "nullable": false,
+      "descripcion": "Control. PK."
+    },
+    {
+      "nombre": "v_sel",
+      "tipo": "character (2)",
+      "nullable": false,
+      "descripcion": "Vivienda seleccionada. PK."
+    },
+    {
+      "nombre": "n_hog",
+      "tipo": "smallint",
+      "nullable": false,
+      "descripcion": "Número de hogar dentro de la vivienda. PK en hog/sdem/coe1/coe2."
+    },
+    {
+      "nombre": "n_ren",
+      "tipo": "smallint",
+      "nullable": false,
+      "descripcion": "Número de renglón (persona) dentro del hogar. PK en sdem/coe1/coe2."
+    },
+    {
+      "nombre": "sex",
+      "tipo": "smallint",
+      "nullable": false,
+      "descripcion": "Sexo: 1=hombre, 2=mujer. NOT NULL en sdem."
+    },
+    {
+      "nombre": "eda",
+      "tipo": "smallint",
+      "nullable": false,
+      "descripcion": "Edad en años, 0-98 (98=98+)."
+    },
+    {
+      "nombre": "par_c",
+      "tipo": "character varying(3)",
+      "nullable": true,
+      "descripcion": null
+    }
+  ],
+  "pk": [
+    "periodo",
+    "cd_a",
+    "ent",
+    "con",
+    "v_sel",
+    "n_hog",
+    "n_ren"
+  ],
+  "indexes": [
+    "idx_enoe_sdem_periodo_clase",
+    "idx_enoe_sdem_periodo_eda",
+    "idx_enoe_sdem_periodo_ent"
+  ],
+  "caveat_metodologico": "Las columnas no listadas con descripción siguen los identificadores INEGI documentados en Reconstrucción de variables 2023 (https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/doc/recons_var_15ymas.pdf). extras_jsonb contiene las columnas DBF que no se promovieron a typed."
+}

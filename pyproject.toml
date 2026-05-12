@@ -23,11 +23,13 @@ keywords = [
   "sar",
   "afore",
   "enigh",
+  "enoe",
   "inegi",
   "cdmx",
   "transparencia",
   "api-client",
   "pensiones",
+  "mercado-laboral",
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -91,6 +93,7 @@ include = [
   "README.md",
   "LICENSE",
   "CITATION.cff",
+  "CHANGELOG.md",
   "pyproject.toml",
 ]
 
@@ -116,3 +119,7 @@ python_version = "3.10"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["pandas"]
+ignore_missing_imports = true

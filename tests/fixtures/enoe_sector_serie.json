@@ -1,0 +1,32 @@
+{
+  "sector_clave": "10",
+  "sector_nombre": "Servicios diversos",
+  "nivel": "nacional",
+  "geo_clave": null,
+  "geo_nombre": null,
+  "cobertura": {
+    "desde": "2024T1",
+    "hasta": "2024T2",
+    "n_observaciones": 2
+  },
+  "datos": [
+    {
+      "periodo": "2024T1",
+      "sector_clave": "10",
+      "sector_nombre": "Servicios diversos",
+      "total_ocupados": 5877604,
+      "participacion_porcentaje": 10.4087,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T2",
+      "sector_clave": "10",
+      "sector_nombre": "Servicios diversos",
+      "total_ocupados": 5876017,
+      "participacion_porcentaje": 10.2265,
+      "etapa": "enoe_n"
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

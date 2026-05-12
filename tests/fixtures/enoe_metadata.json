@@ -1,0 +1,60 @@
+{
+  "nombre": "Encuesta Nacional de Ocupación y Empleo",
+  "acronimo": "ENOE",
+  "fuente": "INEGI",
+  "fuente_url": "https://www.inegi.org.mx/programas/enoe/15ymas/",
+  "periodicidad": "Trimestral",
+  "cobertura_temporal": "2005T1-2025T1 (80 trimestres con datos; gap documental en 2020T2)",
+  "cobertura_geografica": "Nacional + 32 entidades federativas",
+  "n_trimestres_disponibles": 80,
+  "n_indicadores": 13,
+  "n_entidades": 32,
+  "etapas_metodologicas": [
+    "clasica",
+    "etoe_telefonica",
+    "enoe_n"
+  ],
+  "tablas_disponibles": [
+    {
+      "nombre": "microdatos_viv",
+      "descripcion": "Microdatos de Vivienda (cuestionario residencial)",
+      "n_filas": 9843149,
+      "has_data": true
+    },
+    {
+      "nombre": "microdatos_hog",
+      "descripcion": "Microdatos de Hogar (cuestionario doméstico)",
+      "n_filas": 10037505,
+      "has_data": true
+    },
+    {
+      "nombre": "microdatos_sdem",
+      "descripcion": "Microdatos Sociodemográficos (fuente operativa de los indicadores)",
+      "n_filas": 31498811,
+      "has_data": true
+    }
+  ],
+  "total_microdatos": 101512667,
+  "total_agregados": 76557,
+  "caveats": [
+    {
+      "slug": "dominio_15_plus",
+      "titulo": "Dominio operativo de la serie: población de 15 años o más",
+      "descripcion": "El observatorio reporta indicadores con dominio 15+ uniformemente en toda la serie. INEGI publicó originalmente la etapa clasica (2005T1-2020T1) con dominio 14+ siguiendo el marco legal pre-2014. El ENOE-N (2020T3+) ya nace con 15+ post-reforma constitucional 2014. Re-cálculo con 15+ en pre-2020T3 mantiene comparabilidad longitudinal.",
+      "periodo_aplicable": "2005T1-2020T1 (recálculo 15+)",
+      "referencia": "Boletín INEGI 209/15 — Reforma constitucional 2014"
+    },
+    {
+      "slug": "cambio_marco_2020T3",
+      "titulo": "Cambio de marco muestral en 2020T3 (post-Censo 2020)",
+      "descripcion": "Series que cruzan 2020T2/2020T3 deben interpretarse considerando el rediseño del marco muestral post-Censo 2020. Pre-2020T3 usa marco pre-Censo 2020 (etapa 'clasica'); post-2020T3 usa marco post-Censo 2020 (etapa 'enoe_n'). El 2020T3-2021T4 conserva factores fac_tri pre-CPV-2020 → subestimación de 6-7% en conteos absolutos respecto a publicaciones posteriores. Las tasas (cocientes razón) no se ven afectadas por este artefacto.",
+      "periodo_aplicable": "2020T3-2021T4 (subestimación absolutos)",
+      "referencia": "Boletín INEGI 280/21"
+    }
+  ],
+  "sources": [
+    "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/",
+    "INEGI — ENOE Reconstrucción de variables 2023. https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/doc/recons_var_15ymas.pdf"
+  ],
+  "last_updated": "2026-05-09T23:06:32.924288Z"
+}

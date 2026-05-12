@@ -1,0 +1,45 @@
+{
+  "count": 13,
+  "indicadores": [
+    {
+      "slug": "pob_15ymas",
+      "nombre": "Población de 15 años o más",
+      "descripcion": "Universo de referencia del ENOE 15+. Suma expandida vía fac_tri.",
+      "unidad": "personas",
+      "categoria": "conteo",
+      "formula": "SUM(fac_tri) WHERE eda >= 15",
+      "fuente_metodologica": "INEGI — ENOE Reconstrucción de variables 2023. https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/doc/recons_var_15ymas.pdf",
+      "n_observaciones_nacional": 80,
+      "n_observaciones_entidad": 2560,
+      "cobertura_temporal": "2005T1-2025T1",
+      "caveat_metodologico": "Dominio operativo de la serie: población de 15 años o más (dominio_15_plus): El observatorio reporta indicadores con dominio 15+ uniformemente en toda la serie. INEGI publicó originalmente la etapa clasica (2005T1-2020T1) con dominio 14+ siguiendo el marco legal pre-2014. El ENOE-N (2020T3+) ya nace con 15+ post-reforma constitucional 2014. Re-cálculo con 15+ en pre-2020T3 mantiene comparabilidad longitudinal."
+    },
+    {
+      "slug": "pea_total",
+      "nombre": "Población Económicamente Activa (PEA)",
+      "descripcion": "Personas 15+ ocupadas o buscando empleo (clase1=1).",
+      "unidad": "personas",
+      "categoria": "conteo",
+      "formula": "SUM(fac_tri) WHERE eda >= 15 AND clase1 = 1",
+      "fuente_metodologica": "INEGI — ENOE Reconstrucción de variables 2023. https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/doc/recons_var_15ymas.pdf",
+      "n_observaciones_nacional": 80,
+      "n_observaciones_entidad": 2560,
+      "cobertura_temporal": "2005T1-2025T1",
+      "caveat_metodologico": null
+    },
+    {
+      "slug": "pnea_total",
+      "nombre": "Población No Económicamente Activa (PNEA)",
+      "descripcion": "Personas 15+ que no participan en el mercado laboral (clase1=2).",
+      "unidad": "personas",
+      "categoria": "conteo",
+      "formula": "SUM(fac_tri) WHERE eda >= 15 AND clase1 = 2",
+      "fuente_metodologica": "INEGI — ENOE Reconstrucción de variables 2023. https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/doc/recons_var_15ymas.pdf",
+      "n_observaciones_nacional": 80,
+      "n_observaciones_entidad": 2560,
+      "cobertura_temporal": "2005T1-2025T1",
+      "caveat_metodologico": null
+    }
+  ],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

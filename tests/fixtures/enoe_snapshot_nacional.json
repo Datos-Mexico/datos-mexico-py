@@ -1,0 +1,102 @@
+{
+  "periodo": "2025T1",
+  "etapa": "enoe_n",
+  "n_indicadores": 13,
+  "indicadores": [
+    {
+      "indicador": "condcrit_total",
+      "nombre": "Ocupados en condiciones críticas (TCCO)",
+      "unidad": "personas",
+      "valor": 19745485.0
+    },
+    {
+      "indicador": "desocupados_total",
+      "nombre": "Población desocupada",
+      "unidad": "personas",
+      "valor": 1483994.0
+    },
+    {
+      "indicador": "informales_total",
+      "nombre": "Ocupados informales (TIL1 base)",
+      "unidad": "personas",
+      "valor": 32104097.0
+    },
+    {
+      "indicador": "ocupados_total",
+      "nombre": "Población ocupada",
+      "unidad": "personas",
+      "valor": 58921494.0
+    },
+    {
+      "indicador": "pea_total",
+      "nombre": "Población Económicamente Activa (PEA)",
+      "unidad": "personas",
+      "valor": 60071190.0
+    },
+    {
+      "indicador": "pnea_total",
+      "nombre": "Población No Económicamente Activa (PNEA)",
+      "unidad": "personas",
+      "valor": 41449796.0
+    },
+    {
+      "indicador": "pob_15ymas",
+      "nombre": "Población de 15 años o más",
+      "unidad": "personas",
+      "valor": 101527324.0
+    },
+    {
+      "indicador": "subocupados_total",
+      "nombre": "Población subocupada",
+      "unidad": "personas",
+      "valor": 3901301.0
+    },
+    {
+      "indicador": "tasa_desocupacion",
+      "nombre": "Tasa de Desocupación",
+      "unidad": "porcentaje",
+      "valor": 2.470392
+    },
+    {
+      "indicador": "tasa_informalidad_til1",
+      "nombre": "Tasa de Informalidad Laboral (TIL1)",
+      "unidad": "porcentaje",
+      "valor": 54.486224
+    },
+    {
+      "indicador": "tasa_ocupacion_critica_tcco",
+      "nombre": "Tasa de Condiciones Críticas de Ocupación (TCCO)",
+      "unidad": "porcentaje",
+      "valor": 33.511514
+    },
+    {
+      "indicador": "tasa_participacion",
+      "nombre": "Tasa de Participación",
+      "unidad": "porcentaje",
+      "valor": 59.16751
+    },
+    {
+      "indicador": "tasa_subocupacion",
+      "nombre": "Tasa de Subocupación",
+      "unidad": "porcentaje",
+      "valor": 6.621185
+    }
+  ],
+  "caveats": [
+    {
+      "slug": "tcco_redefinicion_2020",
+      "titulo": "TCCO (Condiciones Críticas de Ocupación): 3 condiciones operativas",
+      "descripcion": "INEGI ajustó la definición operativa de TCCO en el rediseño 2020. El observatorio calcula TCCO con el dominio 3-condiciones documentado en sec 3.24 INEGI Reconstrucción de variables 2023, aplicable a toda la serie. Series TCCO 2005-2019 no son comparables 1:1 con publicaciones INEGI pre-2020 que usaban definición previa.",
+      "periodo_aplicable": "Pre-2020T3 (comparación con publicaciones INEGI originales)",
+      "referencia": "INEGI — ENOE Reconstrucción de variables 2023. https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/doc/recons_var_15ymas.pdf (sec 3.24)"
+    },
+    {
+      "slug": "til1_definicion_operativa",
+      "titulo": "Tasa de Informalidad Laboral TIL1: 7 condiciones operativas",
+      "descripcion": "TIL1 se deriva en runtime desde 7 condiciones unidas con OR sobre tue2, pos_ocu, rama, seg_soc, remune2c (esta última vive en extras_jsonb por no estar typed). Sección 3.36 INEGI Reconstrucción de variables 2023.",
+      "periodo_aplicable": "Todos los periodos",
+      "referencia": "INEGI — ENOE Reconstrucción de variables 2023. https://www.inegi.org.mx/contenidos/programas/enoe/15ymas/doc/recons_var_15ymas.pdf"
+    }
+  ],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}

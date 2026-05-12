@@ -1,0 +1,43 @@
+{
+  "indicador": "tasa_desocupacion",
+  "nombre": "Tasa de Desocupación",
+  "unidad": "porcentaje",
+  "categoria": "tasa",
+  "entidad_clave": "09",
+  "entidad_nombre": "Ciudad de México",
+  "entidad_abreviatura": "CDMX",
+  "cobertura": {
+    "desde": "2024T1",
+    "hasta": "2025T1",
+    "n_observaciones": 5
+  },
+  "datos": [
+    {
+      "periodo": "2024T1",
+      "valor": 3.991157,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T2",
+      "valor": 4.113157,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T3",
+      "valor": 4.018855,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2024T4",
+      "valor": 3.967024,
+      "etapa": "enoe_n"
+    },
+    {
+      "periodo": "2025T1",
+      "valor": 3.445624,
+      "etapa": "enoe_n"
+    }
+  ],
+  "caveats": [],
+  "source": "INEGI — Encuesta Nacional de Ocupación y Empleo (ENOE 15+). https://www.inegi.org.mx/programas/enoe/15ymas/"
+}
