@@ -43,15 +43,15 @@ client = DatosMexico()
 
 # CDMX servidores públicos
 stats = client.cdmx.dashboard_stats()
-print(f"{stats['totalServidores']:,} servidores públicos")
+print(f"{stats.total_servidores:,} servidores públicos")
 
 # SAR composición
 sar = client.consar.recursos_totales()
-print(f"Última fecha: {sar['fecha_max']}")
+print(f"Última fecha: {sar.fecha_max}")
 
 # ENIGH hogares
 hogares = client.enigh.hogares_summary()
-print(f"{hogares['n_hogares_expandido']:,} hogares estimados")
+print(f"{hogares.n_hogares_expandido:,} hogares estimados")
 
 # ENOE — Top 5 estados con mayor desempleo (2025T1)
 top5 = client.enoe.ranking(periodo="2025T1", indicador="tasa_desocupacion", limit=5)
