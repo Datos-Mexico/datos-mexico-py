@@ -186,4 +186,4 @@ Los cuatro caveats tipados aparecen como objetos `CaveatMetodologico` en `series
 - [Tutorial ENIGH](enigh.md) — encuesta INEGI análoga (hogares en lugar de personas/empleo).
 - [Caveats editoriales](../conceptos/caveats-editoriales.md) — marco general de los caveats en el observatorio.
 - [Reference completo ENOE](../reference/enoe.md) — todos los métodos y modelos del namespace.
-- [Notebook ejemplo](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/06_enoe_mercado_laboral.ipynb) — análisis end-to-end con outputs persistidos.
+- [Notebook ejemplo](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/06_enoe_mercado_laboral.ipynb) — análisis end-to-end con outputs persistidos.

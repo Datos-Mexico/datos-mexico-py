@@ -9,7 +9,7 @@ authors:
 version: 0.2.0
 date-released: 2026-05-11
 license: MIT
-repository-code: "https://github.com/datos-mexico/datos-mexico-py"
+repository-code: "https://github.com/Datos-Mexico/datos-mexico-py"
 url: "https://datosmexico.org"
 keywords:
   - "datos abiertos"

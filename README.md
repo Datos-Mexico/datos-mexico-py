@@ -3,7 +3,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/datos-mexico.svg)](https://pypi.org/project/datos-mexico/)
 [![Python versions](https://img.shields.io/pypi/pyversions/datos-mexico.svg)](https://pypi.org/project/datos-mexico/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml/badge.svg)](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml)
+[![Tests](https://github.com/Datos-Mexico/datos-mexico-py/actions/workflows/tests.yml/badge.svg)](https://github.com/Datos-Mexico/datos-mexico-py/actions/workflows/tests.yml)
 [![Docs](https://img.shields.io/badge/docs-docs.datosmexico.org-black?logo=materialformkdocs)](https://docs.datosmexico.org)
 
 Cliente Python oficial para la API del [Observatorio Datos México](https://datosmexico.org).
@@ -148,7 +148,7 @@ Si usas este cliente en una investigación o publicación académica, por favor 
   title = {datos-mexico-py: Cliente Python para la API del Observatorio Datos México},
   year = {2026},
   publisher = {Datos México},
-  url = {https://github.com/datos-mexico/datos-mexico-py},
+  url = {https://github.com/Datos-Mexico/datos-mexico-py},
 }
 ```
 

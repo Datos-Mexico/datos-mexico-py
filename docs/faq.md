@@ -36,11 +36,11 @@ Bajar TTL global a cero al construir: `DatosMexico(cache_ttl=0)`.
 
 El SDK reintenta automáticamente con backoff exponencial en errores transitorios (5xx, 429, timeouts, conexión perdida). Por default hace 3 reintentos.
 
-Si después de los reintentos la llamada sigue fallando, levanta `NetworkError` o `ServerError`. Esto es señal de que el problema persiste — verifica https://api.datos-itam.org/docs y reporta en https://github.com/datos-mexico/datos-mexico-py/issues si parece estar caído.
+Si después de los reintentos la llamada sigue fallando, levanta `NetworkError` o `ServerError`. Esto es señal de que el problema persiste — verifica https://api.datos-itam.org/docs y reporta en https://github.com/Datos-Mexico/datos-mexico-py/issues si parece estar caído.
 
 ## ¿Cómo cito el SDK en mi paper?
 
-Usa el BibTeX de [Citación](citation.md), o el botón "Cite this repository" en el [repo de GitHub](https://github.com/datos-mexico/datos-mexico-py) que exporta BibTeX/APA automáticamente desde [`CITATION.cff`](https://github.com/datos-mexico/datos-mexico-py/blob/main/CITATION.cff).
+Usa el BibTeX de [Citación](citation.md), o el botón "Cite this repository" en el [repo de GitHub](https://github.com/Datos-Mexico/datos-mexico-py) que exporta BibTeX/APA automáticamente desde [`CITATION.cff`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/CITATION.cff).
 
 ## ¿Cómo contribuyo?
 

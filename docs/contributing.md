@@ -7,7 +7,7 @@ Pull requests, reportes de errores, y sugerencias son bienvenidos.
 Si encuentras una cifra que no coincide con la fuente oficial, repórtalo a:
 
 - **Email**: [errores@datosmexico.org](mailto:errores@datosmexico.org)
-- **Issue**: [github.com/datos-mexico/datos-mexico-py/issues](https://github.com/datos-mexico/datos-mexico-py/issues) con etiqueta `data-error`
+- **Issue**: [github.com/Datos-Mexico/datos-mexico-py/issues](https://github.com/Datos-Mexico/datos-mexico-py/issues) con etiqueta `data-error`
 
 Por favor incluye:
 

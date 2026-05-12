@@ -11,7 +11,7 @@ Si usas este SDK en una investigación, reporte o publicación académica, por f
   year      = {2026},
   version   = {0.2.0},
   publisher = {Datos México},
-  url       = {https://github.com/datos-mexico/datos-mexico-py},
+  url       = {https://github.com/Datos-Mexico/datos-mexico-py},
   note      = {Documentación: https://docs.datosmexico.org}
 }
 ```
@@ -26,7 +26,7 @@ O bien:
 
 ## CITATION.cff
 
-El repositorio incluye un [`CITATION.cff`](https://github.com/datos-mexico/datos-mexico-py/blob/main/CITATION.cff) en el formato estándar de Citation File Format. GitHub renderiza un botón **"Cite this repository"** en la página principal del repo que exporta automáticamente a BibTeX o APA.
+El repositorio incluye un [`CITATION.cff`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/CITATION.cff) en el formato estándar de Citation File Format. GitHub renderiza un botón **"Cite this repository"** en la página principal del repo que exporta automáticamente a BibTeX o APA.
 
 Contenido actual del CITATION.cff (snapshot al momento de v0.2.0; ver el archivo en el repo para la versión vigente):
 
@@ -42,7 +42,7 @@ authors:
 version: 0.2.0
 date-released: 2026-05-11
 license: MIT
-repository-code: "https://github.com/datos-mexico/datos-mexico-py"
+repository-code: "https://github.com/Datos-Mexico/datos-mexico-py"
 url: "https://datosmexico.org"
 keywords:
   - "datos abiertos"

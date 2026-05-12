@@ -126,4 +126,4 @@ with DatosMexico() as client:
 - [Tutorial CONSAR/SAR](consar.md) — análisis del sistema de pensiones.
 - [Tutorial cross-dataset](comparativo.md) — combinar CDMX con SAR y ENIGH.
 - [Reference completa CDMX](../reference/cdmx.md) — todos los métodos del namespace.
-- [Notebook ejemplo](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/02_cdmx_servidores_publicos.ipynb) — workflow completo en Jupyter.
+- [Notebook ejemplo](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/02_cdmx_servidores_publicos.ipynb) — workflow completo en Jupyter.

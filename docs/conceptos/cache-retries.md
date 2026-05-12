@@ -122,4 +122,4 @@ with DatosMexico() as client:
 
 - [Reference: Cliente](../reference/client.md) — todos los argumentos del constructor.
 - [Reference: Excepciones](../reference/exceptions.md) — jerarquía completa de errores.
-- El módulo [`_http.py`](https://github.com/datos-mexico/datos-mexico-py/blob/main/src/datos_mexico/_http.py) implementa cache + retries + logging.
+- El módulo [`_http.py`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/src/datos_mexico/_http.py) implementa cache + retries + logging.

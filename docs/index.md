@@ -55,4 +55,4 @@ Cobertura total: **95/114 operaciones** (83 %), 100 % de las lecturas públicas.
 
 Todo lo que publica el Observatorio Datos México sale firmado por el **Equipo de Datos México**, no por personas individuales. Esto incluye este SDK, los notebooks de ejemplo, los caveats redactados en cada endpoint y la documentación que estás leyendo. El equipo es un colectivo de siete personas full-time del ITAM que sostiene el proyecto.
 
-Si encuentras un bug, una imprecisión metodológica o tienes una propuesta de mejora, abre un *issue* en el [repositorio](https://github.com/datos-mexico/datos-mexico-py). Si vas a citar el proyecto en un paper, usa la [forma colectiva de citación](citation.md).
+Si encuentras un bug, una imprecisión metodológica o tienes una propuesta de mejora, abre un *issue* en el [repositorio](https://github.com/Datos-Mexico/datos-mexico-py). Si vas a citar el proyecto en un paper, usa la [forma colectiva de citación](citation.md).

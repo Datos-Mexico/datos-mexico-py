@@ -116,4 +116,4 @@ Hay endpoints específicos para actividad económica:
 
 - [Tutorial cross-dataset](comparativo.md) — combinar ENIGH con CDMX y SAR.
 - [Reference completo ENIGH](../reference/enigh.md).
-- [Notebook ejemplo](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/04_enigh_hogares_desigualdad.ipynb) — análisis de desigualdad por decil.
+- [Notebook ejemplo](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/04_enigh_hogares_desigualdad.ipynb) — análisis de desigualdad por decil.

@@ -78,4 +78,4 @@ El SDK te entrega los componentes para que puedas validar tú misma. El equipo d
 
 - [Caveats editoriales](caveats-editoriales.md) — los campos `note`, `narrative`, `caveats` complementan las identidades contables explicando contexto cualitativo.
 - [Tutorial ENIGH](../tutoriales/enigh.md) — workflow completo con validaciones INEGI.
-- [`tests/integration/test_data_integrity.py`](https://github.com/datos-mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py) — implementación de las validaciones automáticas.
+- [`tests/integration/test_data_integrity.py`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py) — implementación de las validaciones automáticas.

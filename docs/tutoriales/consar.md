@@ -59,7 +59,7 @@ suma = sum(c.recursos for c in componentes_validos)
 print(f"Suma componentes: ${suma:,.0f}")
 ```
 
-Esto está validado por la suite integral del SDK ([`test_data_integrity.py`](https://github.com/datos-mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py)) — si el cuadre se rompe, el test falla.
+Esto está validado por la suite integral del SDK ([`test_data_integrity.py`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py)) — si el cuadre se rompe, el test falla.
 
 ## IMSS vs ISSSTE
 
@@ -124,4 +124,4 @@ Para los detalles de cada modelo, consulta el [reference de CONSAR](../reference
 
 - [Tutorial cross-dataset](comparativo.md) — cobertura SAR vs PEA, aportes vs jubilaciones.
 - [Reference completo CONSAR](../reference/consar.md) — los 34 métodos del namespace.
-- [Notebook ejemplo](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/03_sar_composicion.ipynb) — composición histórica con gráficas.
+- [Notebook ejemplo](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/03_sar_composicion.ipynb) — composición histórica con gráficas.

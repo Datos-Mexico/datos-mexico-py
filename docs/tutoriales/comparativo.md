@@ -108,7 +108,7 @@ Compara composición de actividad económica (formal/informal) entre CDMX y el p
 
 ## Workflow para investigación de pensiones
 
-El paper Amafore-ITAM 2026 (deadline 31 de julio 2026) es el caso de uso central que motivó el desarrollo del SDK. El [notebook 05_paper_amafore_workflow.ipynb](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/05_paper_amafore_workflow.ipynb) reproduce el flujo cross-dataset completo:
+El paper Amafore-ITAM 2026 (deadline 31 de julio 2026) es el caso de uso central que motivó el desarrollo del SDK. El [notebook 05_paper_amafore_workflow.ipynb](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/05_paper_amafore_workflow.ipynb) reproduce el flujo cross-dataset completo:
 
 1. `consar.recursos_totales()` y `consar.pea_cotizantes_serie()` → cobertura del SAR.
 2. `comparativo.aportes_vs_jubilaciones_actuales()` → presión actuarial contemporánea.
@@ -120,4 +120,4 @@ El paper Amafore-ITAM 2026 (deadline 31 de julio 2026) es el caso de uso central
 
 - [Reference completo comparativo](../reference/comparativo.md).
 - [Caveats editoriales](../conceptos/caveats-editoriales.md) — guía para leer los textos del observatorio.
-- [Notebook Amafore](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/05_paper_amafore_workflow.ipynb) — workflow narrado paso a paso.
+- [Notebook Amafore](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/05_paper_amafore_workflow.ipynb) — workflow narrado paso a paso.
