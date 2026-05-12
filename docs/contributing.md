@@ -68,6 +68,8 @@ pytest tests/ --ignore=tests/integration --cov=datos_mexico --cov-report=term
 
 El objetivo del repo es **≥95 % de cobertura total** y **≥90 % por módulo**.
 
+El badge de cobertura en el README es **estático** (hard-coded). El workflow de tests publica `coverage.xml` y `htmlcov/` como artifacts (gated por matrix 3.12) con retention de 30 días, de modo que cualquiera puede descargar el reporte HTML detallado desde el run. Cuando se corta una release, hay que actualizar el porcentaje del badge a mano si cambió notablemente — no usamos Codecov ni un endpoint dinámico para evitar falsos negativos cuando el endpoint cae.
+
 ### Tests integrales
 
 Pegan a `api.datos-itam.org` y validan identidades contables, validaciones INEGI, cross-namespace workflows y propagación de errores. Lentos (~60–90 segundos), gated por variable de entorno para evitar que corran sin querer.
