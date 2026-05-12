@@ -30,7 +30,7 @@ El SDK expone 95 operaciones de lectura pública distribuidas en diez namespaces
 | `client.consar` | Sistema de Ahorro para el Retiro (CONSAR/SAR) | 34 |
 | `client.enigh` | Encuesta Nacional de Ingresos y Gastos de los Hogares 2024 NS | 10 |
 | `client.enoe` | Encuesta Nacional de Ocupación y Empleo (INEGI, 2005T1–2025T1) | 17 |
-| `client.comparativo` | Indicadores cross-dataset CDMX × CONSAR × ENIGH | 7 |
+| `client.comparativo` | Cruces editoriales CDMX × ENIGH (con caveats) | 7 |
 | `client.personas` | Tabla normalizada de personas del padrón CDMX | 2 |
 | `client.nombramientos` | Tabla normalizada de nombramientos del padrón CDMX | 2 |
 | `client.demo` | Dataset didáctico (curso ITAM Bases de Datos) | 3 |

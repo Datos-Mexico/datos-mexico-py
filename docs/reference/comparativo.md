@@ -1,6 +1,6 @@
 # Comparativo (cross-dataset)
 
-Endpoints que cruzan CDMX × CONSAR × ENIGH con caveats editoriales del equipo.
+Endpoints que cruzan servidores públicos CDMX con hogares ENIGH (uno también toca CONSAR), todos acompañados de caveats editoriales del equipo.
 
 → Para uso narrado, ver [Tutorial comparativo](../tutoriales/comparativo.md).
 
