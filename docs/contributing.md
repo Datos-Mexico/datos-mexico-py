@@ -191,6 +191,32 @@ mkdocs build --strict
 
 `--strict` falla si hay links rotos internos o warnings de mkdocstrings. Si pasa local, pasa el deploy.
 
+## Secretos requeridos por CI/CD
+
+Los workflows automatizados consumen secretos configurados en GitHub (Settings → Secrets and variables → Actions). No están versionados en el repo y deben configurarse una vez por cuenta de organización o por fork que pretenda desplegar.
+
+### `CLOUDFLARE_API_TOKEN`
+
+Token de API de Cloudflare con permiso `Cloudflare Pages: Edit` sobre la cuenta donde vive el proyecto `datos-mexico-docs`. Usado por `.github/workflows/docs-deploy.yml`.
+
+Cómo crearlo:
+
+1. Entrar a `https://dash.cloudflare.com/profile/api-tokens`.
+2. **Create Token** → plantilla **Create Custom Token**.
+3. Permissions: `Account` → `Cloudflare Pages` → `Edit`.
+4. Account Resources: `Include` → la cuenta que aloja el proyecto Pages.
+5. Crear el token y copiar el valor (no se vuelve a mostrar).
+
+### `CLOUDFLARE_ACCOUNT_ID`
+
+Identificador numérico de la cuenta Cloudflare. Aparece en el sidebar derecho de `https://dash.cloudflare.com/` al seleccionar la cuenta, o en la URL después de iniciar sesión.
+
+### Cómo configurarlos en el repo
+
+`https://github.com/Datos-Mexico/datos-mexico-py/settings/secrets/actions` → **New repository secret**. Crear ambos con los nombres exactos `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID`.
+
+Sin estos secretos, el workflow `docs-deploy.yml` falla al llegar al step de Cloudflare. El resto del CI (tests, lint, drift detection) no los necesita.
+
 ## Versionado y releases
 
 El proyecto sigue [Semantic Versioning](https://semver.org/lang/es/):
