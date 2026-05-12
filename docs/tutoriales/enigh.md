@@ -9,9 +9,10 @@ from datos_mexico import DatosMexico
 
 with DatosMexico() as client:
     resp = client.enigh.hogares_summary()
-    print(f"Hogares en muestra:  {resp.n_hogares_muestra:,}")
-    print(f"Hogares expandidos:  {resp.n_hogares_expandido:,}")
-    print(f"Personas:            {resp.n_personas_expandido:,}")
+    print(f"Hogares en muestra:    {resp.n_hogares_muestra:,}")
+    print(f"Hogares expandidos:    {resp.n_hogares_expandido:,}")
+    print(f"Ingreso medio trim:    ${resp.mean_ing_cor_trim:,.2f}")
+    print(f"Ingreso medio mensual: ${resp.mean_ing_cor_mensual:,.2f}")
 ```
 
 La diferencia entre muestra y expandido es la lógica de la encuesta: cada hogar muestreado representa cientos o miles de hogares similares en la población según los factores de elevación.
@@ -22,13 +23,13 @@ La diferencia entre muestra y expandido es la lógica de la encuesta: cada hogar
 with DatosMexico() as client:
     deciles = client.enigh.hogares_by_decil()
     for d in deciles:
-        print(f"D{d.decil:<2} ${d.ingreso_mediano:>10,.0f}  ({d.hogares_expandido:,} hogares)")
+        print(f"D{d.decil:<2}  ${d.mean_ing_cor_mensual:>10,.2f}  ({d.n_hogares_expandido:,} hogares)")
 ```
 
 [Identidad contable](../conceptos/identidad-contable.md) — la suma de hogares expandidos por decil debe coincidir con `hogares_summary().n_hogares_expandido` ± redondeo.
 
 ```python
-total = sum(d.hogares_expandido for d in deciles)
+total = sum(d.n_hogares_expandido for d in deciles)
 ref = client.enigh.hogares_summary().n_hogares_expandido
 assert abs(total - ref) / ref < 0.001
 ```
@@ -38,10 +39,10 @@ assert abs(total - ref) / ref < 0.001
 ```python
 with DatosMexico() as client:
     rubros = client.enigh.gastos_by_rubro()
-    print(f"{'Rubro':<30} {'Pct':>7}")
+    print(f"{'Rubro':<32} {'Pct':>7}")
     for r in rubros.rubros:
-        print(f"{r.nombre:<30} {r.pct:>6.2f}%")
-    print(f"{'TOTAL':<30} {sum(r.pct for r in rubros.rubros):>6.2f}%")
+        print(f"{r.nombre:<32} {r.pct_del_monetario:>6.2f}%")
+    print(f"{'TOTAL':<32} {sum(r.pct_del_monetario for r in rubros.rubros):>6.2f}%")
 ```
 
 La suma debe ser 100 % ± 0.01. Si usas `Decimal` (que el SDK usa) la suma da exacta hasta los decimales publicados.
@@ -52,10 +53,11 @@ La suma debe ser 100 % ± 0.01. Si usas `Decimal` (que el SDK usa) la suma da ex
 with DatosMexico() as client:
     d1 = client.enigh.gastos_by_rubro(decil=1)
     d10 = client.enigh.gastos_by_rubro(decil=10)
-    pares = {r.nombre: r.pct for r in d1.rubros}
+    pares = {r.nombre: r.pct_del_monetario for r in d1.rubros}
     for r in d10.rubros:
-        diff = r.pct - pares.get(r.nombre, 0)
-        print(f"{r.nombre:<30} D1: {pares.get(r.nombre,0):>5.1f}% D10: {r.pct:>5.1f}% Δ: {diff:+5.1f}")
+        a = pares.get(r.nombre, 0)
+        b = r.pct_del_monetario
+        print(f"{r.nombre:<32} D1: {a:>5.1f}%  D10: {b:>5.1f}%  Δ: {b - a:+5.1f}")
 ```
 
 El patrón clásico: D1 gasta una proporción mucho mayor en alimentos y vivienda; D10 gasta mucho más en transporte, educación y servicios.
@@ -64,9 +66,9 @@ El patrón clásico: D1 gasta una proporción mucho mayor en alimentos y viviend
 
 ```python
 with DatosMexico() as client:
-    resp = client.enigh.hogares_by_entidad()
-    for e in sorted(resp.entidades, key=lambda x: x.hogares_expandido, reverse=True)[:10]:
-        print(f"{e.nombre:<25} {e.hogares_expandido:>11,.0f}  (mediano ingreso: ${e.ingreso_mediano:>8,.0f})")
+    entidades = client.enigh.hogares_by_entidad()
+    for e in sorted(entidades, key=lambda x: x.n_hogares_expandido, reverse=True)[:10]:
+        print(f"{e.nombre:<28} {e.n_hogares_expandido:>11,}  (ingreso medio mensual: ${e.mean_ing_cor_mensual:>8,.0f})")
 ```
 
 CDMX, EdoMex, Jalisco y Veracruz suelen estar arriba en valor absoluto.
@@ -76,12 +78,10 @@ CDMX, EdoMex, Jalisco y Veracruz suelen estar arriba en valor absoluto.
 ```python
 with DatosMexico() as client:
     val = client.enigh.validaciones()
-    pasa = sum(1 for v in val.cifras if v.passing)
-    total = len(val.cifras)
-    print(f"Validaciones: {pasa}/{total} passing")
-    for v in val.cifras:
+    print(f"Validaciones: {val.passing}/{val.count} passing (failing: {val.failing})")
+    for v in val.bounds:
         flag = "✓" if v.passing else "✗"
-        print(f"  {flag} {v.indicador:<40} obs: {v.valor_observado}  esp: {v.valor_esperado}")
+        print(f"  {flag} {v.metric[:48]:<48} calc: {v.calculado:>12,.2f}  ofic: {v.oficial:>12,.2f}  Δ: {v.delta_pct:+6.4f}%")
 ```
 
 El observatorio pre-calcula 13 cifras de referencia que cuadran cifras del API contra publicaciones oficiales del INEGI. Las 13 deben dar `passing=True`. La suite integral del SDK falla si alguna no pasa.
@@ -93,9 +93,13 @@ Este es el "sello de calidad" del dataset. Si `validaciones()` devuelve cifras c
 ```python
 with DatosMexico() as client:
     demo = client.enigh.poblacion_demographics()
-    # composición edad/sexo
-    for fila in demo.distribucion[:5]:
-        print(f"{fila.grupo_edad} {fila.sexo}: {fila.personas:,}")
+    print(f"Universo {demo.scope}: {demo.n_personas_expandido:,} personas")
+    print("Por sexo:")
+    for s in demo.sexo:
+        print(f"  {s.sexo:<10} {s.n_expandido:>11,}  ({s.pct:.2f}%)")
+    print("Por bucket de edad:")
+    for b in demo.edad:
+        print(f"  {b.bucket:<10} {b.n_expandido:>11,}  ({b.pct:.2f}%)")
 ```
 
 Hay endpoints específicos para actividad económica:
