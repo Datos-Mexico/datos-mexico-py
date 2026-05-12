@@ -9,7 +9,7 @@ Si usas este SDK en una investigación, reporte o publicación académica, por f
   author    = {{Equipo de Datos México}},
   title     = {datos-mexico-py: Cliente Python para la API del Observatorio Datos México},
   year      = {2026},
-  version   = {0.1.0},
+  version   = {0.2.0},
   publisher = {Datos México},
   url       = {https://github.com/datos-mexico/datos-mexico-py},
   note      = {Documentación: https://docs.datosmexico.org}
@@ -22,28 +22,37 @@ Si usas este SDK en una investigación, reporte o publicación académica, por f
 
 O bien:
 
-> Los datos del SAR se obtuvieron vía la API del Observatorio Datos México usando el cliente Python `datos-mexico` v0.1.0.
+> Los datos del SAR y la ENOE se obtuvieron vía la API del Observatorio Datos México usando el cliente Python `datos-mexico` v0.2.0.
 
 ## CITATION.cff
 
 El repositorio incluye un [`CITATION.cff`](https://github.com/datos-mexico/datos-mexico-py/blob/main/CITATION.cff) en el formato estándar de Citation File Format. GitHub renderiza un botón **"Cite this repository"** en la página principal del repo que exporta automáticamente a BibTeX o APA.
 
-Contenido actual del CITATION.cff:
+Contenido actual del CITATION.cff (snapshot al momento de v0.2.0; ver el archivo en el repo para la versión vigente):
 
 ```yaml
 cff-version: 1.2.0
 message: "If you use this software, please cite it using the following metadata."
 title: "datos-mexico-py: Cliente Python para la API del Observatorio Datos México"
-abstract: "Cliente Python oficial para acceder programáticamente a los datos públicos mexicanos curados por el Observatorio Datos México."
+abstract: "Cliente Python oficial para acceder programáticamente a los datos públicos mexicanos curados por el Observatorio Datos México. Provee acceso tipado a microdatos del SAR (CONSAR), ENIGH (INEGI), ENOE (INEGI) y servidores públicos de la Ciudad de México."
 authors:
   - name: "Equipo de Datos México"
     website: "https://datosmexico.org"
     email: "equipo@datosmexico.org"
-version: 0.1.0
-date-released: 2026-05-06
+version: 0.2.0
+date-released: 2026-05-11
 license: MIT
 repository-code: "https://github.com/datos-mexico/datos-mexico-py"
 url: "https://datosmexico.org"
+keywords:
+  - "datos abiertos"
+  - "México"
+  - "open data"
+  - "INEGI"
+  - "CONSAR"
+  - "ENIGH"
+  - "ENOE"
+  - "SAR"
 ```
 
 ## Voz colectiva

@@ -62,6 +62,45 @@ Porque el SAR mexicano se descompone en niveles (total → RCV/vivienda/voluntar
 
 Sí, prudente. El cache del SDK (default 300s TTL) reduce tráfico significativamente para workflows interactivos típicos. Si tu workflow legítimamente necesita muchas requests, considera bajar el cache o pegarse al `export.csv()` y trabajar localmente.
 
+## ¿Cómo accedo a microdatos individuales de ENOE?
+
+El módulo `enoe` expone tres familias de acceso a microdatos:
+
+```python
+# Schema de una tabla
+schema = client.enoe.microdatos_schema("sdem")
+
+# Conteo previo con filtros (útil para evitar pulls gigantes)
+n = client.enoe.microdatos_count("sdem", periodo="2025T1", entidad_clave="09")
+
+# Iterador síncrono (pagina internamente, no carga todo en memoria)
+for row in client.enoe.microdatos_iter(
+    "sdem", periodo="2025T1", entidad_clave="09", limit=500,
+):
+    ...
+
+# Materializar a DataFrame (requiere pandas; instala con datos-mexico[examples])
+df = client.enoe.microdatos_to_pandas(
+    "sdem", periodo="2025T1", entidad_clave="09", limit=500,
+)
+```
+
+Las cinco tablas son `viv` (vivienda), `hog` (hogar), `sdem` (sociodemográfica), `coe1` y `coe2` (cuestionario de ocupación y empleo). → [Tutorial ENOE](tutoriales/enoe.md).
+
+## ¿Por qué la ENOE tiene tres "etapas metodológicas"?
+
+Porque la encuesta cambió de marco muestral en 2020T3 (post-CPV 2020) y tuvo una sustitución por ETOE telefónica en 2020T2 durante la suspensión operativa por COVID. El observatorio etiqueta cada cifra con su etapa:
+
+- `clasica` — pre-2020T1, marco muestral del CPV 2010.
+- `etoe_telefonica` — 2020T2, suspensión presencial.
+- `enoe_n` — post-2020T3, marco muestral del CPV 2020.
+
+Para comparaciones cross-etapa, leer el caveat tipado `cambio_marco_2020T3` que viene en cada response que cruza la frontera. → [Tutorial ENOE — Caveats metodológicos](tutoriales/enoe.md#caveats-metodologicos).
+
+## ¿Por qué hay un gap en 2020T2 sin microdatos ENOE?
+
+Por la suspensión operativa de la ENOE presencial durante la primera ola de COVID-19. INEGI levantó una encuesta telefónica de transición (ETOE) que el observatorio expone como `etapa="etoe_telefonica"`, pero no publica microdatos brutos para ese trimestre. Está documentado con el caveat tipado `gap_documental_2020T2`.
+
 ## ¿Hay logs de qué se cachea o qué se reintenta?
 
 Sí, en `DEBUG` level del logger. Configuración:

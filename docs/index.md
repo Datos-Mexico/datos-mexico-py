@@ -22,13 +22,14 @@ Este SDK es la forma idiomática de consumirla desde Python: tipos Pydantic estr
 
 ## Lo que cubre el SDK
 
-El SDK expone 78 operaciones de lectura pública distribuidas en nueve namespaces:
+El SDK expone 95 operaciones de lectura pública distribuidas en diez namespaces:
 
 | Namespace | Cobertura | Endpoints |
 |---|---|---|
 | `client.cdmx` | Padrón de servidores públicos del Gobierno de la CDMX | 18 |
 | `client.consar` | Sistema de Ahorro para el Retiro (CONSAR/SAR) | 34 |
 | `client.enigh` | Encuesta Nacional de Ingresos y Gastos de los Hogares 2024 NS | 10 |
+| `client.enoe` | Encuesta Nacional de Ocupación y Empleo (INEGI, 2005T1–2025T1) | 17 |
 | `client.comparativo` | Indicadores cross-dataset CDMX × CONSAR × ENIGH | 7 |
 | `client.personas` | Tabla normalizada de personas del padrón CDMX | 2 |
 | `client.nombramientos` | Tabla normalizada de nombramientos del padrón CDMX | 2 |
@@ -36,7 +37,7 @@ El SDK expone 78 operaciones de lectura pública distribuidas en nueve namespace
 | `client.export` | Descarga CSV cruda del padrón | 1 |
 | `client.health()` | Sondeo del backend | 1 |
 
-Cobertura total: **78/97 operaciones** (80 %), 100 % de las lecturas públicas. El 20 % restante corresponde a escrituras administrativas (POST/PUT/DELETE) y endpoints `auth/*`, fuera del alcance del SDK.
+Cobertura total: **95/114 operaciones** (83 %), 100 % de las lecturas públicas. El 17 % restante corresponde a escrituras administrativas (POST/PUT/DELETE) y endpoints `auth/*`, fuera del alcance del SDK.
 
 ## Cómo arrancar
 

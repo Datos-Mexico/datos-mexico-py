@@ -83,12 +83,13 @@ continuar el trabajo sin perder contexto.
 ├── tests/                       ← pytest unit tests
 │   ├── fixtures/                ← payloads JSON capturados del API
 │   └── integration/             ← integration suite gated por env var
-└── examples/                    ← 5 notebooks Jupyter ejecutables
+└── examples/                    ← 6 notebooks Jupyter ejecutables
     ├── 01_quickstart.ipynb
     ├── 02_cdmx_servidores_publicos.ipynb
     ├── 03_sar_composicion.ipynb
     ├── 04_enigh_hogares_desigualdad.ipynb
-    └── 05_paper_amafore_workflow.ipynb
+    ├── 05_paper_amafore_workflow.ipynb
+    └── 06_enoe_mercado_laboral.ipynb
 ```
 
 ## Patrón para agregar nuevos endpoints
@@ -130,13 +131,14 @@ agrégalo como método público a `HttpClient` siguiendo el patrón de
 `_execute_request()` y mantener cache key con prefijo distinto
 (`GET:` vs `GET_TEXT:`) para evitar colisiones.
 
-## Estado actual de cobertura del API (97 operaciones totales)
+## Estado actual de cobertura del API (114 operaciones totales)
 
 | Namespace | Endpoints | Estado |
 |---|---|---|
 | cdmx | 18 | ✅ Completo (incluye servidor_detail) |
 | consar | 34 | ✅ Completo |
 | enigh | 10 | ✅ Completo |
+| enoe | 17 | ✅ Completo (v0.2.0, incluye microdatos + helper pandas) |
 | comparativo | 7 | ✅ Completo |
 | personas | 2 | ✅ Completo |
 | nombramientos | 2 | ✅ Completo |
@@ -145,8 +147,8 @@ agrégalo como método público a `HttpClient` siguiendo el patrón de
 | health | 1 | ✅ Completo (root client) |
 | restantes (admin writes / auth) | 19 | ⏳ Out of scope |
 
-**Cobertura total**: 78/97 operaciones (80.4%), **100% de lectura pública**.
-El 19.6% restante son escrituras admin (POST/PUT/DELETE) o endpoints
+**Cobertura total**: 95/114 operaciones (83.3%), **100% de lectura pública**.
+El 16.7% restante son escrituras admin (POST/PUT/DELETE) o endpoints
 auth-required (`auth/me`, `auth/register`, `auth/token`), fuera de
 alcance del SDK.
 
@@ -163,6 +165,10 @@ alcance del SDK.
 - [x] Documentación profesional con mkdocs-material (completado 2026-05-06
   vía PR #4: live en https://docs.datosmexico.org, hosteada en Cloudflare
   Pages, custom domain configurado en zona datosmexico.org)
+- [x] Integración ENOE en docs.datosmexico.org (completado 2026-05-12
+  vía push directo a main: docs/reference/enoe.md + docs/tutoriales/enoe.md
+  + mkdocs.yml nav + sweep de páginas comunes para v0.2.0
+  index/quickstart/sources/citation/faq)
 
 Pendientes externos al repo (en repo del sitio o cuentas de servicios):
 - Datos de 3/7 miembros del equipo en /quienes-somos del sitio (esperando)
@@ -310,7 +316,7 @@ SDK, o del test.
 
 ## Notebooks de ejemplo
 
-El directorio `examples/` contiene 5 notebooks Jupyter ejecutables que
+El directorio `examples/` contiene 6 notebooks Jupyter ejecutables que
 demuestran flujos típicos del SDK con datos reales contra
 `api.datos-itam.org`. Cada notebook se ejecuta end-to-end (no usa
 mocks) y los outputs (gráficas matplotlib, tablas pandas, prints con
@@ -322,6 +328,7 @@ renderice estáticamente.
 - `03_sar_composicion.ipynb` — composición del SAR mexicano
 - `04_enigh_hogares_desigualdad.ipynb` — desigualdad de ingreso por decil
 - `05_paper_amafore_workflow.ipynb` — workflow cross-dataset (paper Amafore-ITAM)
+- `06_enoe_mercado_laboral.ipynb` — mercado laboral mexicano según ENOE (INEGI)
 
 Las dependencias (jupyter, pandas, matplotlib) son **opcionales** del
 paquete (`pip install datos-mexico[examples]`). El SDK base no las

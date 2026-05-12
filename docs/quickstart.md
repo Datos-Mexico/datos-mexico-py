@@ -44,6 +44,9 @@ with DatosMexico() as client:
 
     enigh = client.enigh.hogares_summary()
     print(f"ENIGH: {enigh.n_hogares_expandido:,} hogares estimados")
+
+    enoe = client.enoe.health()
+    print(f"ENOE: {enoe.total_microdatos:,} microdatos hasta {enoe.ultimo_periodo}")
 ```
 
 El SDK devuelve modelos Pydantic — accede a campos con sintaxis de atributo (`stats.total_servidores`) en lugar de `stats['totalServidores']`. Los campos están en `snake_case` independientemente de cómo los publica la API.
@@ -114,6 +117,7 @@ client.clear_cache()
 - [Tutorial CDMX servidores públicos](tutoriales/cdmx.md) — análisis del padrón con caveats.
 - [Tutorial CONSAR/SAR](tutoriales/consar.md) — composición del sistema de pensiones.
 - [Tutorial ENIGH](tutoriales/enigh.md) — desigualdad de ingreso por decil.
+- [Tutorial ENOE](tutoriales/enoe.md) — mercado laboral mexicano y microdatos del INEGI.
 - [Por qué Decimal](conceptos/decimal.md) — fundamento de la decisión de tipos monetarios.
 - [Reference completa](reference/client.md) — documentación auto-generada por método.
 

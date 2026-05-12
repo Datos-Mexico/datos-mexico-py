@@ -22,6 +22,16 @@ El Observatorio Datos México reprocesa datos de las siguientes fuentes oficiale
 - **Universo**: hogares mexicanos representados por factores de elevación
 - **Diferencia con ENIGH Tradicional**: incorpora ajustes metodológicos en captura de ingresos; ambas versiones coexisten
 
+## ENOE (Encuesta Nacional de Ocupación y Empleo)
+
+- **Fuente**: [INEGI ENOE / ENOE_N — 15 años y más](https://www.inegi.org.mx/programas/enoe/15ymas/)
+- **Periodicidad**: trimestral
+- **Cobertura temporal**: 2005T1 – 2025T1 (80 trimestres; gap documental en 2020T2, sustituido por la encuesta telefónica de transición ETOE)
+- **Etapas metodológicas**: `clasica` (pre-2020T1, marco muestral CPV 2010), `etoe_telefonica` (2020T2 transición COVID), `enoe_n` (Nueva ENOE post-2020T3, marco muestral derivado del CPV 2020)
+- **Universo**: ~101.5 millones de microdatos en cinco tablas (`viv`, `hog`, `sdem`, `coe1`, `coe2`); nacional + 32 entidades federativas
+- **Dominio operativo**: el observatorio mantiene 15 años o más en toda la serie. INEGI publicaba originalmente 14+ en la etapa clásica pre-2014T4; el observatorio reconstruyó la serie sobre el dominio uniforme para que sea comparable.
+- **Caveats tipados**: `cambio_marco_2020T3`, `redefinicion_tcco_2020T1`, `dominio_15_plus`, `gap_documental_2020T2`
+
 ## API HTTP del observatorio
 
 Todos los endpoints expuestos por este cliente Python están documentados en formato OpenAPI 3.1.0:
