@@ -5,8 +5,8 @@ sin instalar dependencias. Pensado para CI y uso local.
 
 Uso:
 
-    python openapi/update_snapshot.py                       # escribe a openapi/openapi.snapshot.json
-    python openapi/update_snapshot.py /tmp/openapi.live.json  # escribe a la ruta dada
+    python openapi/update_snapshot.py          # escribe a openapi/openapi.snapshot.json
+    python openapi/update_snapshot.py PATH     # escribe a la ruta dada
 
 Idempotente: dos ejecuciones consecutivas producen el mismo archivo byte a byte
 (salvo que la API live haya cambiado en el ínterin).
@@ -28,7 +28,7 @@ USER_AGENT = "datos-mexico-openapi-snapshot/1.0 (+https://github.com/datos-mexic
 
 def fetch_spec(url: str = OPENAPI_URL, timeout: float = 30.0) -> dict:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310
+    with urllib.request.urlopen(request, timeout=timeout) as response:
         return json.load(response)
 
 
