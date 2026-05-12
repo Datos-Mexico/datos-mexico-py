@@ -146,6 +146,32 @@ El flujo típico cuando la API expone un dataset nuevo (ej. una sección `educac
 
 8. **PR descriptivo** con motivación, lista de endpoints cubiertos y cualquier discrepancia detectada vs el spec.
 
+## Gestión del drift del OpenAPI spec
+
+El repo versiona un snapshot del spec live en `openapi/openapi.snapshot.json`. Dos workflows de CI vigilan el drift entre ese snapshot y la API en `https://api.datos-itam.org/openapi.json`:
+
+- **Continuo** (`.github/workflows/openapi-drift.yml`) — en cada push a `main` y cada PR. Si detecta drift, deja warning en el run summary, sube el diff como artifact (`openapi-drift-diff`, retention 30 días) y comenta el PR con un diff truncado. **No falla CI**.
+- **Cron diario** (`.github/workflows/openapi-drift-cron.yml`) — 09:00 UTC. Si detecta drift, abre o actualiza un issue con label `openapi-drift`. Si el snapshot está sincronizado, cierra automáticamente cualquier issue abierto con esa label.
+
+### Actualizar el snapshot local
+
+Desde la raíz del repo:
+
+```bash
+uv run python openapi/update_snapshot.py
+```
+
+El script es idempotente: dos ejecuciones consecutivas producen el mismo archivo byte a byte (salvo cambios upstream).
+
+### Qué hacer cuando CI marca drift
+
+1. Revisar el diff (artifact `openapi-drift-diff` o issue automático).
+2. Decidir si el SDK absorbe el cambio. La cobertura del SDK es **decisión editorial del equipo**, no una meta mecánica; un endpoint nuevo en la API no obliga a implementarlo en el SDK.
+3. Si se absorbe el cambio: implementar lo necesario en el SDK, correr `uv run python openapi/update_snapshot.py`, y commitear ambos diffs en el mismo PR.
+4. Si no se absorbe: dejar el issue abierto como registro intencional, o cerrarlo manualmente con justificación.
+
+**Política**: el drift es información, no error. El SDK cubre la lectura pública (95 de 114 operaciones). Las escrituras admin y los endpoints auth-required están deliberadamente fuera de alcance.
+
 ## Documentación local
 
 Los docs viven en `docs/` y se publican en [docs.datosmexico.org](https://docs.datosmexico.org) (mkdocs-material en Cloudflare Pages).
