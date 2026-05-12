@@ -46,6 +46,42 @@ uv lock --check
 
 Esto es lo que CI espera; si falla en local, falla en CI.
 
+## Reproducibilidad del entorno
+
+El repo soporta dos caminos para instalar el entorno de desarrollo, y los dos son tratados como ciudadanos de primera clase:
+
+### Path moderno (recomendado para dev local)
+
+```bash
+uv sync --all-extras
+source .venv/bin/activate
+```
+
+Rápido (descarga paralela, resolución en segundos), usa `uv.lock` como fuente de verdad y mantiene `.venv/` actualizado automáticamente. Es el camino diario del equipo.
+
+### Path estándar (universal y verificable)
+
+```bash
+pip install --require-hashes -r requirements-dev.txt
+pip install -e . --no-deps
+```
+
+Funciona con cualquier `pip` reciente, no requiere `uv` instalado. `--require-hashes` verifica el SHA256 de cada wheel descargada contra el valor congelado en `requirements-dev.txt`; cualquier alteración intermedia (mirror comprometido, mismatch de versión) hace fallar la instalación. Es lo que CI usa en `.github/workflows/tests.yml` y lo que cualquier revisor académico externo puede ejecutar para reproducir el ambiente exacto del lockfile.
+
+### Cuándo regenerar `requirements-dev.txt`
+
+Cada vez que se modifiquen las dependencias del proyecto: agregar/quitar/bumpear una entrada en `pyproject.toml`, o actualizar `uv.lock`. El script auxiliar lo hace en un comando:
+
+```bash
+./scripts/sync_requirements.sh
+```
+
+Internamente corre `uv lock` para asegurar que el lockfile esté al día, y luego `uv export --format requirements-txt --extra dev --no-emit-project --output-file requirements-dev.txt`. El export excluye al proyecto editable (`-e .`): los workflows lo instalan por separado con `pip install -e . --no-deps` para no re-resolver el árbol completo de deps.
+
+### Por qué ambos paths
+
+`uv` es la herramienta moderna que el equipo usa día a día. Pero un revisor externo, un investigador que no tiene `uv` instalado, o un sistema de CI antiguo no debería necesitar adoptar `uv` para poder reproducir un análisis. `pip --require-hashes -r requirements-dev.txt` es el contrato universal: cualquier intérprete de Python con `pip` puede pararse en el mismo ambiente exacto, con verificación criptográfica de integridad.
+
 ## Correr los tests
 
 Hay dos suites con propósitos distintos.
