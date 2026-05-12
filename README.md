@@ -19,7 +19,7 @@ Acceso programático a microdatos públicos mexicanos curados, validados al peso
 - **ENIGH 2024 Nueva Serie**: 91,414 hogares en muestra · 38.8M expandidos · ingresos, gastos, demografía
 - **ENOE — Mercado laboral INEGI**: 101.5M microdatos · 76 mil indicadores agregados · cobertura 2005T1–2025T1 · nacional + 32 entidades federativas
 
-Además, el namespace `client.comparativo` expone 7 cruces cross-dataset (CDMX × ENIGH × CONSAR) con interpretación y caveats redactados por el observatorio.
+Además, el namespace `client.comparativo` expone 7 cruces editoriales entre servidores públicos CDMX y hogares ENIGH — ingreso, gasto, deciles, top vs bottom, bancarización, actividad económica y aportes vs jubilaciones — con interpretación y caveats redactados por el observatorio.
 
 ## Instalación
 
@@ -39,24 +39,23 @@ Requiere Python 3.10 o superior.
 ```python
 from datos_mexico import DatosMexico
 
-client = DatosMexico()
+with DatosMexico() as client:
+    # CDMX servidores públicos
+    stats = client.cdmx.dashboard_stats()
+    print(f"{stats.total_servidores:,} servidores públicos")
 
-# CDMX servidores públicos
-stats = client.cdmx.dashboard_stats()
-print(f"{stats.total_servidores:,} servidores públicos")
+    # SAR composición
+    sar = client.consar.recursos_totales()
+    print(f"Última fecha: {sar.fecha_max}")
 
-# SAR composición
-sar = client.consar.recursos_totales()
-print(f"Última fecha: {sar.fecha_max}")
+    # ENIGH hogares
+    hogares = client.enigh.hogares_summary()
+    print(f"{hogares.n_hogares_expandido:,} hogares estimados")
 
-# ENIGH hogares
-hogares = client.enigh.hogares_summary()
-print(f"{hogares.n_hogares_expandido:,} hogares estimados")
-
-# ENOE — Top 5 estados con mayor desempleo (2025T1)
-top5 = client.enoe.ranking(periodo="2025T1", indicador="tasa_desocupacion", limit=5)
-for e in top5.ranking:
-    print(f"  {e.rank}. {e.entidad_nombre}: {e.valor:.2f}%")
+    # ENOE — Top 5 estados con mayor desempleo (2025T1)
+    top5 = client.enoe.ranking(periodo="2025T1", indicador="tasa_desocupacion", limit=5)
+    for e in top5.ranking:
+        print(f"  {e.rank}. {e.entidad_nombre}: {e.valor:.2f}%")
 ```
 
 ### ENOE — mercado laboral mexicano
