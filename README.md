@@ -97,9 +97,9 @@ metodológicas relevantes: cambio de marco muestral en 2020T3, redefinición
 del TCCO en 2020T1, gap documental ETOE en 2020T2, re-cálculo del dominio
 15+ en la etapa clásica pre-2020.
 
-## Examples
+## Ejemplos
 
-El directorio [`examples/`](examples/) contiene 5 notebooks Jupyter ejecutables que muestran flujos típicos del SDK con datos reales contra `https://api.datos-itam.org`:
+El directorio [`examples/`](examples/) contiene 6 notebooks Jupyter ejecutables que muestran flujos típicos del SDK con datos reales contra `https://api.datos-itam.org`:
 
 - [`01_quickstart.ipynb`](examples/01_quickstart.ipynb) — onboarding en 10 minutos
 - [`02_cdmx_servidores_publicos.ipynb`](examples/02_cdmx_servidores_publicos.ipynb) — análisis del padrón CDMX (distribuciones, top sectores, brecha por edad)
@@ -149,6 +149,7 @@ Si usas este cliente en una investigación o publicación académica, por favor 
   year = {2026},
   publisher = {Datos México},
   url = {https://github.com/Datos-Mexico/datos-mexico-py},
+  version = {0.2.0},
 }
 ```
 
