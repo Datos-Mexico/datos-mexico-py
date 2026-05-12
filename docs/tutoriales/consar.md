@@ -127,5 +127,5 @@ with DatosMexico() as client:
 ## Próximos pasos
 
 - [Tutorial cross-dataset](comparativo.md) — cobertura SAR vs PEA, aportes vs jubilaciones.
-- [Reference completo CONSAR](../reference/consar.md) — los 34 métodos del namespace.
+- [Reference completo CONSAR](../reference/consar.md) — los 34 endpoints del namespace.
 - [Notebook ejemplo](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/03_sar_composicion.ipynb) — composición histórica con gráficas.

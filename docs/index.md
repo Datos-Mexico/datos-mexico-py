@@ -22,14 +22,14 @@ Este SDK es la forma idiomática de consumirla desde Python: tipos Pydantic estr
 
 ## Lo que cubre el SDK
 
-El SDK expone 95 operaciones de lectura pública distribuidas en diez namespaces:
+El SDK expone **95 endpoints HTTP** de lectura pública (97 métodos en Python; el namespace `enoe` añade dos utilitarios — `microdatos_iter` y `microdatos_to_pandas` — sobre el endpoint paginado `microdatos/page`) distribuidos en diez namespaces:
 
-| Namespace | Cobertura | Endpoints |
+| Namespace | Cobertura | Endpoints HTTP |
 |---|---|---|
 | `client.cdmx` | Padrón de servidores públicos del Gobierno de la CDMX | 18 |
 | `client.consar` | Sistema de Ahorro para el Retiro (CONSAR/SAR) | 34 |
 | `client.enigh` | Encuesta Nacional de Ingresos y Gastos de los Hogares 2024 NS | 10 |
-| `client.enoe` | Encuesta Nacional de Ocupación y Empleo (INEGI, 2005T1–2025T1) | 17 |
+| `client.enoe` | Encuesta Nacional de Ocupación y Empleo (INEGI, 2005T1–2025T1) | 17 (+ 2 métodos) |
 | `client.comparativo` | Cruces editoriales CDMX × ENIGH (con caveats) | 7 |
 | `client.personas` | Tabla normalizada de personas del padrón CDMX | 2 |
 | `client.nombramientos` | Tabla normalizada de nombramientos del padrón CDMX | 2 |
@@ -37,7 +37,7 @@ El SDK expone 95 operaciones de lectura pública distribuidas en diez namespaces
 | `client.export` | Descarga CSV cruda del padrón | 1 |
 | `client.health()` | Sondeo del backend | 1 |
 
-Cobertura total: **95/114 operaciones** (83 %), 100 % de las lecturas públicas. El 17 % restante corresponde a escrituras administrativas (POST/PUT/DELETE) y endpoints `auth/*`, fuera del alcance del SDK.
+Cobertura: **95/114 operaciones HTTP** de la API (83 %); **100 % de los GET de lectura pública** que un consumidor externo puede invocar. El resto corresponde a escrituras administrativas (POST/PUT/DELETE) y endpoints `auth/*`, fuera del alcance del SDK.
 
 ## Cómo arrancar
 
