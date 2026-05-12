@@ -144,12 +144,15 @@ Si usas este cliente en una investigación o publicación académica, por favor 
 
 ```bibtex
 @software{datos_mexico_py,
-  author = {{Equipo de Datos México}},
-  title = {datos-mexico-py: Cliente Python para la API del Observatorio Datos México},
-  year = {2026},
+  author    = {{Equipo de Datos México}},
+  title     = {datos-mexico-py: Cliente Python para la API del Observatorio Datos México},
+  year      = {2026},
+  month     = {5},
+  version   = {0.2.0},
+  url       = {https://github.com/Datos-Mexico/datos-mexico-py},
   publisher = {Datos México},
-  url = {https://github.com/Datos-Mexico/datos-mexico-py},
-  version = {0.2.0},
+  license   = {MIT},
+  note      = {Documentación: https://docs.datosmexico.org}
 }
 ```
 
