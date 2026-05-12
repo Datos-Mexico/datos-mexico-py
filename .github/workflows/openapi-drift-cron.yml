@@ -1,0 +1,136 @@
+name: OpenAPI drift (daily cron)
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Dump live OpenAPI spec
+        run: python openapi/update_snapshot.py /tmp/openapi.live.json
+
+      - name: Compute diff against snapshot
+        id: diff
+        run: |
+          set +e
+          diff -u openapi/openapi.snapshot.json /tmp/openapi.live.json > /tmp/openapi.diff.txt
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo "drift=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "drift=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload diff artifact
+        if: steps.diff.outputs.drift == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-drift-diff
+          path: /tmp/openapi.diff.txt
+          retention-days: 30
+
+      - name: Open or update drift issue
+        if: steps.diff.outputs.drift == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const fullDiff = fs.readFileSync('/tmp/openapi.diff.txt', 'utf8');
+            const lines = fullDiff.split('\n');
+            const truncated = lines.length > 200;
+            const head = lines.slice(0, 200).join('\n');
+            const today = new Date().toISOString().slice(0, 10);
+            const sha = context.sha.slice(0, 7);
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+            const body = [
+              `**Detectado**: ${today} (snapshot en commit \`${sha}\`)`,
+              '',
+              'El spec live en `api.datos-itam.org` difiere del snapshot versionado.',
+              '',
+              '## Cómo resolver',
+              '',
+              '1. Revisar el diff completo (artifact `openapi-drift-diff` del run o abajo truncado).',
+              '2. Decidir si el SDK absorbe el cambio (cobertura editorial).',
+              '3. Si se absorbe: `uv run python openapi/update_snapshot.py` + cambios en el SDK + commit.',
+              '4. Si no se absorbe: dejar el issue abierto como registro.',
+              '',
+              `[Ver run](${runUrl})`,
+              '',
+              '## Diff',
+              '',
+              '```diff',
+              head,
+              '```',
+              '',
+              truncated ? `_Truncado a 200 líneas; el artifact tiene el diff completo._` : ''
+            ].join('\n');
+
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'openapi-drift'
+            });
+
+            if (issues.data.length > 0) {
+              const issue = issues.data[0];
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body
+              });
+              core.info(`Actualizado issue #${issue.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `[openapi-drift] API spec difiere del snapshot — ${today}`,
+                body,
+                labels: ['openapi-drift', 'automated']
+              });
+              core.info(`Creado issue #${created.data.number}`);
+            }
+
+      - name: Close drift issue if synced
+        if: steps.diff.outputs.drift == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.sha.slice(0, 7);
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'openapi-drift'
+            });
+            for (const issue of issues.data) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `Snapshot sincronizado en commit \`${sha}\`. Cerrando automáticamente.`
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed'
+              });
+              core.info(`Cerrado issue #${issue.number}`);
+            }
