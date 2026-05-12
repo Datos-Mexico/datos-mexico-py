@@ -19,8 +19,8 @@ with DatosMexico() as client:
         c for c in resp.componentes
         if c.categoria in ("component", "operativo")
     ]
-    suma = sum(c.recursos for c in componentes)
-    total = client.consar.recursos_totales().series[-1].recursos
+    suma = sum(c.monto_mxn_mm for c in componentes)
+    total = client.consar.recursos_totales().serie[-1].monto_mxn_mm
     diff_pct = abs(suma - total) / total * 100
     print(f"Suma componentes: {suma:,}")
     print(f"Total reportado:  {total:,}")
@@ -39,7 +39,7 @@ El cuadre típico está dentro del 0.1 %.
 ```python
 with DatosMexico() as client:
     deciles = client.enigh.hogares_by_decil()
-    total_decil = sum(d.hogares_expandido for d in deciles)
+    total_decil = sum(d.n_hogares_expandido for d in deciles)
     total_nacional = client.enigh.hogares_summary().n_hogares_expandido
     print(f"Suma deciles: {total_decil:,}")
     print(f"Total ENIGH:  {total_nacional:,}")
@@ -52,7 +52,7 @@ with DatosMexico() as client:
 ```python
 with DatosMexico() as client:
     rubros = client.enigh.gastos_by_rubro()
-    suma_pct = sum(r.pct for r in rubros.rubros)
+    suma_pct = sum(r.pct_del_monetario for r in rubros.rubros)
     print(f"Suma de pct: {suma_pct}")  # ≈ 100.0
 ```
 
@@ -78,4 +78,4 @@ El SDK te entrega los componentes para que puedas validar tú misma. El equipo d
 
 - [Caveats editoriales](caveats-editoriales.md) — los campos `note`, `narrative`, `caveats` complementan las identidades contables explicando contexto cualitativo.
 - [Tutorial ENIGH](../tutoriales/enigh.md) — workflow completo con validaciones INEGI.
-- [`tests/integration/test_data_integrity.py`](https://github.com/datos-mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py) — implementación de las validaciones automáticas.
+- [`tests/integration/test_data_integrity.py`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py) — implementación de las validaciones automáticas.

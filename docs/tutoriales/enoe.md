@@ -2,7 +2,7 @@
 
 El namespace `client.enoe` cubre la **Encuesta Nacional de Ocupación y Empleo** del INEGI, fuente oficial trimestral del mercado laboral en México. Es el dataset más amplio del observatorio: ~101.5 millones de microdatos en cinco tablas (`viv`, `hog`, `sdem`, `coe1`, `coe2`), 76 mil indicadores agregados nacionales y por entidad, y cobertura continua entre 2005T1 y 2025T1 (80 trimestres, con gap documental en 2020T2 por la suspensión COVID).
 
-Los 19 métodos del namespace se agrupan en cuatro familias: **catálogos** y metadata, **indicadores agregados** (serie / snapshot / ranking), **distribuciones** (por sector económico y por posición en la ocupación), y **microdatos** (schema / count / paginación / iter / pandas). El observatorio expone cada respuesta acompañada de sus caveats metodológicos tipados.
+El namespace expone **17 endpoints HTTP** de la API (19 métodos en Python: los 17 más dos utilitarios — `microdatos_iter` y `microdatos_to_pandas` — que iteran y materializan a pandas el endpoint paginado `microdatos/page`). Las cuatro familias funcionales son: **catálogos** y metadata, **indicadores agregados** (serie / snapshot / ranking), **distribuciones** (por sector económico y por posición en la ocupación), y **microdatos** (schema / count / paginación / iter / pandas). Cada respuesta llega acompañada de sus caveats metodológicos tipados.
 
 ## Catálogos y metadata
 
@@ -186,4 +186,4 @@ Los cuatro caveats tipados aparecen como objetos `CaveatMetodologico` en `series
 - [Tutorial ENIGH](enigh.md) — encuesta INEGI análoga (hogares en lugar de personas/empleo).
 - [Caveats editoriales](../conceptos/caveats-editoriales.md) — marco general de los caveats en el observatorio.
 - [Reference completo ENOE](../reference/enoe.md) — todos los métodos y modelos del namespace.
-- [Notebook ejemplo](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/06_enoe_mercado_laboral.ipynb) — análisis end-to-end con outputs persistidos.
+- [Notebook ejemplo](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/06_enoe_mercado_laboral.ipynb) — análisis end-to-end con outputs persistidos.

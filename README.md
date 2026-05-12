@@ -3,7 +3,8 @@
 [![PyPI version](https://img.shields.io/pypi/v/datos-mexico.svg)](https://pypi.org/project/datos-mexico/)
 [![Python versions](https://img.shields.io/pypi/pyversions/datos-mexico.svg)](https://pypi.org/project/datos-mexico/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml/badge.svg)](https://github.com/datos-mexico/datos-mexico-py/actions/workflows/tests.yml)
+[![Tests](https://github.com/Datos-Mexico/datos-mexico-py/actions/workflows/tests.yml/badge.svg)](https://github.com/Datos-Mexico/datos-mexico-py/actions/workflows/tests.yml)
+[![Coverage](https://img.shields.io/badge/coverage-99%25-brightgreen.svg)](https://github.com/Datos-Mexico/datos-mexico-py/actions/workflows/tests.yml)
 [![Docs](https://img.shields.io/badge/docs-docs.datosmexico.org-black?logo=materialformkdocs)](https://docs.datosmexico.org)
 
 Cliente Python oficial para la API del [Observatorio Datos México](https://datosmexico.org).
@@ -19,7 +20,7 @@ Acceso programático a microdatos públicos mexicanos curados, validados al peso
 - **ENIGH 2024 Nueva Serie**: 91,414 hogares en muestra · 38.8M expandidos · ingresos, gastos, demografía
 - **ENOE — Mercado laboral INEGI**: 101.5M microdatos · 76 mil indicadores agregados · cobertura 2005T1–2025T1 · nacional + 32 entidades federativas
 
-Próximamente: tipos comparativos cross-dataset.
+Además, el namespace `client.comparativo` expone 7 cruces editoriales entre servidores públicos CDMX y hogares ENIGH — ingreso, gasto, deciles, top vs bottom, bancarización, actividad económica y aportes vs jubilaciones — con interpretación y caveats redactados por el observatorio.
 
 ## Instalación
 
@@ -39,24 +40,23 @@ Requiere Python 3.10 o superior.
 ```python
 from datos_mexico import DatosMexico
 
-client = DatosMexico()
+with DatosMexico() as client:
+    # CDMX servidores públicos
+    stats = client.cdmx.dashboard_stats()
+    print(f"{stats.total_servidores:,} servidores públicos")
 
-# CDMX servidores públicos
-stats = client.cdmx.dashboard_stats()
-print(f"{stats['totalServidores']:,} servidores públicos")
+    # SAR composición
+    sar = client.consar.recursos_totales()
+    print(f"Última fecha: {sar.fecha_max}")
 
-# SAR composición
-sar = client.consar.recursos_totales()
-print(f"Última fecha: {sar['fecha_max']}")
+    # ENIGH hogares
+    hogares = client.enigh.hogares_summary()
+    print(f"{hogares.n_hogares_expandido:,} hogares estimados")
 
-# ENIGH hogares
-hogares = client.enigh.hogares_summary()
-print(f"{hogares['n_hogares_expandido']:,} hogares estimados")
-
-# ENOE — Top 5 estados con mayor desempleo (2025T1)
-top5 = client.enoe.ranking(periodo="2025T1", indicador="tasa_desocupacion", limit=5)
-for e in top5.ranking:
-    print(f"  {e.rank}. {e.entidad_nombre}: {e.valor:.2f}%")
+    # ENOE — Top 5 estados con mayor desempleo (2025T1)
+    top5 = client.enoe.ranking(periodo="2025T1", indicador="tasa_desocupacion", limit=5)
+    for e in top5.ranking:
+        print(f"  {e.rank}. {e.entidad_nombre}: {e.valor:.2f}%")
 ```
 
 ### ENOE — mercado laboral mexicano
@@ -97,9 +97,9 @@ metodológicas relevantes: cambio de marco muestral en 2020T3, redefinición
 del TCCO en 2020T1, gap documental ETOE en 2020T2, re-cálculo del dominio
 15+ en la etapa clásica pre-2020.
 
-## Examples
+## Ejemplos
 
-El directorio [`examples/`](examples/) contiene 5 notebooks Jupyter ejecutables que muestran flujos típicos del SDK con datos reales contra `https://api.datos-itam.org`:
+El directorio [`examples/`](examples/) contiene 6 notebooks Jupyter ejecutables que muestran flujos típicos del SDK con datos reales contra `https://api.datos-itam.org`:
 
 - [`01_quickstart.ipynb`](examples/01_quickstart.ipynb) — onboarding en 10 minutos
 - [`02_cdmx_servidores_publicos.ipynb`](examples/02_cdmx_servidores_publicos.ipynb) — análisis del padrón CDMX (distribuciones, top sectores, brecha por edad)
@@ -123,7 +123,7 @@ Documentación profesional en **[docs.datosmexico.org](https://docs.datosmexico.
 
 - [Quickstart](https://docs.datosmexico.org/quickstart/) — onboarding en 10 minutos
 - [Conceptos clave](https://docs.datosmexico.org/conceptos/decimal/) — Decimal, identidad contable, caveats editoriales, cache y retries
-- [Tutoriales](https://docs.datosmexico.org/tutoriales/cdmx/) — walkthroughs por dataset (CDMX, CONSAR, ENIGH, comparativo)
+- [Tutoriales](https://docs.datosmexico.org/tutoriales/cdmx/) — walkthroughs por dataset (CDMX, CONSAR, ENIGH, ENOE, comparativo)
 - [Reference completo](https://docs.datosmexico.org/reference/client/) — auto-generado desde docstrings
 - [FAQ](https://docs.datosmexico.org/faq/)
 
@@ -148,7 +148,8 @@ Si usas este cliente en una investigación o publicación académica, por favor 
   title = {datos-mexico-py: Cliente Python para la API del Observatorio Datos México},
   year = {2026},
   publisher = {Datos México},
-  url = {https://github.com/datos-mexico/datos-mexico-py},
+  url = {https://github.com/Datos-Mexico/datos-mexico-py},
+  version = {0.2.0},
 }
 ```
 

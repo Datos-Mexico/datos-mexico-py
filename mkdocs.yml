@@ -1,7 +1,7 @@
 site_name: datos-mexico
 site_description: Cliente Python oficial para la API del Observatorio Datos México
 site_url: https://docs.datosmexico.org
-repo_url: https://github.com/datos-mexico/datos-mexico-py
+repo_url: https://github.com/Datos-Mexico/datos-mexico-py
 repo_name: datos-mexico/datos-mexico-py
 edit_uri: edit/main/docs/
 
@@ -108,7 +108,7 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/datos-mexico/datos-mexico-py
+      link: https://github.com/Datos-Mexico/datos-mexico-py
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/datos-mexico/
   generator: false

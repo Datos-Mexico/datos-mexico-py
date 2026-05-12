@@ -48,4 +48,4 @@ Dado que el campo `sueldo_bruto` es `Decimal | None`, los tipos se mantienen con
 ## Lectura adicional
 
 - [PEP 327 — Decimal Data Type](https://peps.python.org/pep-0327/) explica la motivación para incluir `Decimal` en la stdlib de Python.
-- El docstring de [`datos_mexico._helpers`](https://github.com/datos-mexico/datos-mexico-py/blob/main/src/datos_mexico/_helpers.py) documenta la implementación de `_to_decimal` y los validators que usan los modelos.
+- El docstring de [`datos_mexico._helpers`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/src/datos_mexico/_helpers.py) documenta la implementación de `_to_decimal` y los validators que usan los modelos.

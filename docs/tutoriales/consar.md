@@ -12,7 +12,7 @@ from datos_mexico import DatosMexico
 with DatosMexico() as client:
     resp = client.consar.afores()
     for a in resp.afores:
-        print(f"{a.codigo:<6} {a.nombre}")
+        print(f"{a.codigo:<18} {a.nombre_corto}")
 ```
 
 El SAR mexicano tiene 11 AFOREs activas a 2025. La lista cambia ocasionalmente por fusiones / salidas; el endpoint refleja el estado actual.
@@ -22,8 +22,9 @@ El SAR mexicano tiene 11 AFOREs activas a 2025. La lista cambia ocasionalmente p
 ```python
 with DatosMexico() as client:
     resp = client.consar.recursos_totales()
-    for punto in resp.series[-5:]:
-        print(f"{punto.fecha} ${punto.recursos:,.0f}")
+    for punto in resp.serie[-5:]:
+        print(f"{punto.fecha}  ${punto.monto_mxn_mm:,.0f} mdp")
+    print(f"fecha_max: {resp.fecha_max}")
 ```
 
 La serie comienza en mayo de 1998 (inicio del SAR). El campo `fecha_max` te dice hasta qué fecha está actualizado el corte. A 2025 la fecha más reciente es **2025-06-01**.
@@ -38,7 +39,7 @@ Aquí está uno de los caveats más importantes del SDK, documentado explícitam
 with DatosMexico() as client:
     resp = client.consar.recursos_por_componente(fecha="2025-06-01")
     for fila in resp.componentes:
-        print(f"{fila.categoria:<12} {fila.componente:<30} ${fila.recursos:,.0f}")
+        print(f"{fila.categoria:<10} {fila.tipo_nombre_corto:<32} ${fila.monto_mxn_mm:,.0f} mdp")
 ```
 
 El array `componentes` es **jerárquico**, no plano. Cada fila trae un campo `categoria` con valores en `{'total', 'aggregate', 'component', 'operativo'}`:
@@ -55,37 +56,40 @@ componentes_validos = [
     c for c in resp.componentes
     if c.categoria in ("component", "operativo")
 ]
-suma = sum(c.recursos for c in componentes_validos)
-print(f"Suma componentes: ${suma:,.0f}")
+suma = sum(c.monto_mxn_mm for c in componentes_validos)
+print(f"Suma componentes: ${suma:,.0f} mdp")
+print(f"Total reportado:  ${resp.sar_total_mm:,.0f} mdp")
 ```
 
-Esto está validado por la suite integral del SDK ([`test_data_integrity.py`](https://github.com/datos-mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py)) — si el cuadre se rompe, el test falla.
+Esto está validado por la suite integral del SDK ([`test_data_integrity.py`](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/tests/integration/test_data_integrity.py)) — si el cuadre se rompe, el test falla.
 
 ## IMSS vs ISSSTE
 
-El SAR mexicano tiene dos universos de afiliados. El endpoint `recursos_imss_vs_issste()` los compara:
+El SAR mexicano cubre dos universos de afiliados (sector privado vía IMSS y sector público vía ISSSTE). El endpoint `recursos_imss_vs_issste()` devuelve la **serie mensual histórica** del componente RCV de cada uno:
 
 ```python
 with DatosMexico() as client:
-    cmp = client.consar.recursos_imss_vs_issste()
-    print(f"IMSS:    ${cmp.imss.recursos_totales:,.0f}  ({cmp.imss.cuentas:,} cuentas)")
-    print(f"ISSSTE:  ${cmp.issste.recursos_totales:,.0f}  ({cmp.issste.cuentas:,} cuentas)")
+    resp = client.consar.recursos_imss_vs_issste()
+    ultimo = resp.serie[-1]
+    print(f"{ultimo.fecha}:")
+    print(f"  RCV IMSS:   ${ultimo.rcv_imss_mm:,.0f} mdp")
+    print(f"  RCV ISSSTE: ${ultimo.rcv_issste_mm:,.0f} mdp")
+    print(f"  Ratio ISSSTE/IMSS: {ultimo.ratio_issste_sobre_imss}")
 ```
 
-ISSSTE es notablemente más pequeño en cuentas pero el ratio recursos/cuenta es distinto por la composición demográfica (sector público con más antigüedad típica).
+El RCV de IMSS representa aproximadamente 8 veces el de ISSSTE en monto absoluto, reflejando el tamaño relativo de cada universo. El campo `ratio_issste_sobre_imss` ya viene precomputado y es útil para graficar la convergencia/divergencia histórica entre ambos subsistemas.
 
 ## Recursos por AFORE — snapshot
 
 ```python
 with DatosMexico() as client:
     resp = client.consar.recursos_por_afore(fecha="2025-06-01")
-    afores_ord = sorted(resp.afores, key=lambda a: a.recursos, reverse=True)
+    afores_ord = sorted(resp.afores, key=lambda a: a.sar_total_mm or 0, reverse=True)
     for a in afores_ord:
-        share = a.recursos / sum(x.recursos for x in resp.afores) * 100
-        print(f"{a.codigo:<8} ${a.recursos:>15,.0f}  ({share:5.1f} %)")
+        print(f"{a.afore_codigo:<18} ${a.sar_total_mm:>12,.0f} mdp  ({a.pct_sistema:>5.1f} %)")
 ```
 
-La distribución típica está concentrada: las 3 AFOREs más grandes suelen sumar más del 60 % del SAR.
+La distribución típica está concentrada: las 4 AFOREs más grandes (Profuturo, XXI-Banorte, Banamex, SURA) suman aproximadamente dos tercios del SAR. El campo `pct_sistema` ya viene precomputado en el response, así que no hace falta recalcular el share.
 
 **Caveat para snapshots**: la API requiere que `fecha` sea día 01 de un mes (formato `YYYY-MM-01`). El helper `_format_fecha` del SDK enforza esto con un `ValueError` temprano si pasas un día distinto.
 
@@ -94,8 +98,8 @@ La distribución típica está concentrada: las 3 AFOREs más grandes suelen sum
 ```python
 with DatosMexico() as client:
     resp = client.consar.pea_cotizantes_serie()
-    for p in resp.series[-3:]:
-        print(f"{p.fecha} PEA: {p.pea:,.0f}  Cotizantes: {p.cotizantes:,.0f}")
+    for p in resp.serie[-3:]:
+        print(f"{p.anio}  PEA: {p.pea:,}  Cotizantes: {p.cotizantes:,}  ({p.porcentaje_pea_afore:.2f}%)")
 ```
 
 Útil para calcular tasa de cobertura del SAR sobre la población económicamente activa.
@@ -107,11 +111,11 @@ Estos son endpoints más especializados — útiles para análisis comparativo e
 ```python
 with DatosMexico() as client:
     com = client.consar.comisiones_snapshot(fecha="2025-06-01")
-    rend = client.consar.rendimientos_snapshot(fecha="2025-06-01")
+    rend = client.consar.rendimientos_snapshot(fecha="2025-06-01", plazo="5_anios")
     trasp = client.consar.traspasos_snapshot(fecha="2025-06-01")
 ```
 
-Para los detalles de cada modelo, consulta el [reference de CONSAR](../reference/consar.md).
+`rendimientos_snapshot` requiere el kwarg `plazo` con uno de los cinco valores válidos del catálogo: `12_meses`, `24_meses`, `36_meses`, `5_anios` o `historico`. Para los detalles de cada modelo, consulta el [reference de CONSAR](../reference/consar.md).
 
 ## Caveats globales del dataset
 
@@ -123,5 +127,5 @@ Para los detalles de cada modelo, consulta el [reference de CONSAR](../reference
 ## Próximos pasos
 
 - [Tutorial cross-dataset](comparativo.md) — cobertura SAR vs PEA, aportes vs jubilaciones.
-- [Reference completo CONSAR](../reference/consar.md) — los 34 métodos del namespace.
-- [Notebook ejemplo](https://github.com/datos-mexico/datos-mexico-py/blob/main/examples/03_sar_composicion.ipynb) — composición histórica con gráficas.
+- [Reference completo CONSAR](../reference/consar.md) — los 34 endpoints del namespace.
+- [Notebook ejemplo](https://github.com/Datos-Mexico/datos-mexico-py/blob/main/examples/03_sar_composicion.ipynb) — composición histórica con gráficas.

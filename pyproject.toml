@@ -76,9 +76,9 @@ docs = [
 [project.urls]
 Homepage = "https://datosmexico.org"
 Documentation = "https://docs.datosmexico.org"
-Repository = "https://github.com/datos-mexico/datos-mexico-py"
-Issues = "https://github.com/datos-mexico/datos-mexico-py/issues"
-Changelog = "https://github.com/datos-mexico/datos-mexico-py/releases"
+Repository = "https://github.com/Datos-Mexico/datos-mexico-py"
+Issues = "https://github.com/Datos-Mexico/datos-mexico-py/issues"
+Changelog = "https://github.com/Datos-Mexico/datos-mexico-py/releases"
 
 [tool.hatch.version]
 path = "src/datos_mexico/_version.py"
