@@ -85,12 +85,14 @@ nav:
       - CDMX servidores públicos: tutoriales/cdmx.md
       - SAR (CONSAR): tutoriales/consar.md
       - ENIGH (hogares): tutoriales/enigh.md
+      - ENOE (mercado laboral): tutoriales/enoe.md
       - Análisis cross-dataset: tutoriales/comparativo.md
   - Reference:
       - Cliente: reference/client.md
       - cdmx: reference/cdmx.md
       - consar: reference/consar.md
       - enigh: reference/enigh.md
+      - enoe: reference/enoe.md
       - comparativo: reference/comparativo.md
       - personas: reference/personas.md
       - nombramientos: reference/nombramientos.md
