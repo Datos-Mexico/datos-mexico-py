@@ -46,6 +46,42 @@ uv lock --check
 
 Esto es lo que CI espera; si falla en local, falla en CI.
 
+## Reproducibilidad del entorno
+
+El repo soporta dos caminos para instalar el entorno de desarrollo, y los dos son tratados como ciudadanos de primera clase:
+
+### Path moderno (recomendado para dev local)
+
+```bash
+uv sync --all-extras
+source .venv/bin/activate
+```
+
+Rápido (descarga paralela, resolución en segundos), usa `uv.lock` como fuente de verdad y mantiene `.venv/` actualizado automáticamente. Es el camino diario del equipo.
+
+### Path estándar (universal y verificable)
+
+```bash
+pip install --require-hashes -r requirements-dev.txt
+pip install -e . --no-deps
+```
+
+Funciona con cualquier `pip` reciente, no requiere `uv` instalado. `--require-hashes` verifica el SHA256 de cada wheel descargada contra el valor congelado en `requirements-dev.txt`; cualquier alteración intermedia (mirror comprometido, mismatch de versión) hace fallar la instalación. Es lo que CI usa en `.github/workflows/tests.yml` y lo que cualquier revisor académico externo puede ejecutar para reproducir el ambiente exacto del lockfile.
+
+### Cuándo regenerar `requirements-dev.txt`
+
+Cada vez que se modifiquen las dependencias del proyecto: agregar/quitar/bumpear una entrada en `pyproject.toml`, o actualizar `uv.lock`. El script auxiliar lo hace en un comando:
+
+```bash
+./scripts/sync_requirements.sh
+```
+
+Internamente corre `uv lock` para asegurar que el lockfile esté al día, y luego `uv export --format requirements-txt --extra dev --no-emit-project --output-file requirements-dev.txt`. El export excluye al proyecto editable (`-e .`): los workflows lo instalan por separado con `pip install -e . --no-deps` para no re-resolver el árbol completo de deps.
+
+### Por qué ambos paths
+
+`uv` es la herramienta moderna que el equipo usa día a día. Pero un revisor externo, un investigador que no tiene `uv` instalado, o un sistema de CI antiguo no debería necesitar adoptar `uv` para poder reproducir un análisis. `pip --require-hashes -r requirements-dev.txt` es el contrato universal: cualquier intérprete de Python con `pip` puede pararse en el mismo ambiente exacto, con verificación criptográfica de integridad.
+
 ## Correr los tests
 
 Hay dos suites con propósitos distintos.
@@ -223,6 +259,33 @@ Identificador numérico de la cuenta Cloudflare. Aparece en el sidebar derecho d
 
 Sin estos secretos, el workflow `docs-deploy.yml` falla al llegar al step de Cloudflare. El resto del CI (tests, lint, drift detection) no los necesita.
 
+## Antes de cortar release
+
+Cifras agregadas vivas (e.g. "246,836 servidores" en el README) deben sincronizarse con la API antes de cualquier tag de release. El repo provee un script de mantenimiento explícito:
+
+```bash
+# Detecta drift entre cifras de docs y API live
+python scripts/regen_docs_figures.py
+
+# Si hay drift, aplicar
+python scripts/regen_docs_figures.py --apply
+
+# Actualizar manualmente el campo expected_old de cada TARGET aplicado
+# en scripts/regen_docs_figures.py (el script no se auto-modifica por diseño)
+
+# Para CI / pre-commit: verificar que los TARGETS sigan presentes
+python scripts/regen_docs_figures.py --verify
+```
+
+El script tiene exit code distinto por modo: `0` cuando no hay drift o `--apply`/`--verify` son exitosos, `1` cuando dry-run encuentra drift pendiente, `2` cuando `--verify` falla (TARGETS stale).
+
+### Cifras NO cubiertas por el script (verificación manual al cortar release)
+
+- `README.md`: "101.5M microdatos · 76 mil indicadores agregados" — no hay endpoint público para validar; chequear contra el último anuncio del observatorio sobre cobertura ENOE.
+- `docs/conceptos/decimal.md`: número en el ejemplo pedagógico — no es cifra fría, deliberadamente fijo.
+- `docs/tutoriales/enoe.md` ranking TOP 5: cita explícita del boletín INEGI 265/25, congelada por design académico.
+- `CHANGELOG.md`: cifras de releases pasadas, no se actualizan.
+
 ## Versionado y releases
 
 El proyecto sigue [Semantic Versioning](https://semver.org/lang/es/):
@@ -246,3 +309,63 @@ Reglas duras al cortar release:
 Los PRs requieren OK explícito antes de merge cuando tocan código, workflows o `pyproject.toml`. Los PRs doc-only (cambios únicamente a `.md`) se pueden mergear sin OK explícito dado el bajo riesgo.
 
 Convención de revisión: comentario en español, foco en el *por qué*, no en el *qué*. Si bloquea, decirlo explícitamente; si es sugerencia, prefijar con `nit:` o `sugerencia:`.
+
+## Cortar un release
+
+Proceso completo para publicar una nueva versión del SDK a PyPI:
+
+1. **Bump de versión**
+    - Actualizar `version` en `pyproject.toml` siguiendo SemVer.
+    - Actualizar `version` y `date-released` en `CITATION.cff`.
+    - Replicar la nueva versión en los 3 BibTeX: `README.md`, `docs/citation.md`, `examples/05_paper_amafore_workflow.ipynb`.
+
+2. **CHANGELOG**
+    - Agregar entrada `[vX.Y.Z] — YYYY-MM-DD` en `CHANGELOG.md` con resumen de cambios.
+    - Seguir formato [Keep a Changelog](https://keepachangelog.com).
+
+3. **Refresh de datos vivos**
+    - `python scripts/regen_docs_figures.py --apply` para refrescar cifras frías en docs contra la API actual.
+    - Actualizar `expected_old` en `TARGETS` del script para los cambios aplicados.
+    - Verificar con `python scripts/regen_docs_figures.py --verify`.
+
+4. **Sync de requirements**
+    - `./scripts/sync_requirements.sh` para regenerar `requirements-dev.txt` desde `uv.lock`.
+
+5. **Snapshot OpenAPI**
+    - `python openapi/update_snapshot.py` para refrescar el snapshot del spec live.
+    - Si hubo cambios significativos en la API, mencionarlos en el CHANGELOG.
+
+6. **Validación local antes de PR**
+
+    ```bash
+    uv run pytest
+    uv run ruff check .
+    uv run mypy src/
+    uv run mkdocs build --strict
+    ```
+
+7. **PR de release**
+    - Commit en rama dedicada con mensaje `release: vX.Y.Z`.
+    - Abrir PR titulado "Release vX.Y.Z".
+    - Esperar CI verde en los 4 workflows: tests (3.10–3.13), openapi-drift, docs-deploy.
+
+8. **Merge y tag**
+
+    ```bash
+    # Tras mergear el PR
+    git checkout main
+    git pull origin main
+    git tag vX.Y.Z -m "Release vX.Y.Z"
+    git push origin vX.Y.Z
+    ```
+
+9. **Publicación automática**
+    - El tag dispara `.github/workflows/publish.yml` con OIDC trusted publishing.
+    - El workflow construye, publica a TestPyPI, y si TestPyPI queda verde publica a PyPI.
+    - Esperar ~5–15 minutos para que PyPI propague.
+
+10. **Verificación post-release**
+    - Verificar en [pypi.org/project/datos-mexico](https://pypi.org/project/datos-mexico/) que la nueva versión aparece.
+    - `pip install --upgrade datos-mexico` en venv limpio y probar el primer ejemplo del README.
+    - Verificar que [docs.datosmexico.org](https://docs.datosmexico.org) refleja los cambios (deploy automático tras el merge).
+    - Crear GitHub Release con notas extraídas del CHANGELOG.

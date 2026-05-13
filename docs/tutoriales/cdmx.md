@@ -1,6 +1,6 @@
 # Tutorial — CDMX servidores públicos
 
-El namespace `client.cdmx` expone el padrón de personal del Poder Ejecutivo del Gobierno de la Ciudad de México. Es el dataset más rico de los que cubre el observatorio: 246,831 servidores con campos sobre puesto, sector, sueldo bruto y neto, edad, sexo, antigüedad, tipo de contratación.
+El namespace `client.cdmx` expone el padrón de personal del Poder Ejecutivo del Gobierno de la Ciudad de México. Es el dataset más rico de los que cubre el observatorio: 246,836 servidores con campos sobre puesto, sector, sueldo bruto y neto, edad, sexo, antigüedad, tipo de contratación.
 
 Este tutorial recorre los flujos típicos de análisis con caveats explícitos en cada paso.
 
@@ -17,7 +17,7 @@ with DatosMexico() as client:
         print(f"{s.id:>3} · {s.nombre} ({s.total_servidores:,} servidores)")
 ```
 
-**Caveat**: la API trae 2 sectores test residuales (id=74 "Sector Test 6A3C4AA8" e id=77 "Sector Test B90B5FBA") con `total_servidores=0`. El SDK los tolera sin error pero conviene filtrarlos en análisis estadísticos. Está documentado server-side y pendiente de cleanup en la API.
+**Caveat**: La API actualmente expone algunos sectores residuales con `total_servidores = 0` (artefactos de testing en producción que no representan dependencias reales del Gobierno de la Ciudad de México). Filtrar por `total_servidores > 0` los excluye limpiamente, como ilustra el ejemplo. La cantidad puede variar entre releases mientras la limpieza server-side esté pendiente.
 
 ```python
 sectores_reales = [s for s in sectores if s.total_servidores > 0]
