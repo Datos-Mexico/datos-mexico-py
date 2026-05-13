@@ -309,3 +309,63 @@ Reglas duras al cortar release:
 Los PRs requieren OK explícito antes de merge cuando tocan código, workflows o `pyproject.toml`. Los PRs doc-only (cambios únicamente a `.md`) se pueden mergear sin OK explícito dado el bajo riesgo.
 
 Convención de revisión: comentario en español, foco en el *por qué*, no en el *qué*. Si bloquea, decirlo explícitamente; si es sugerencia, prefijar con `nit:` o `sugerencia:`.
+
+## Cortar un release
+
+Proceso completo para publicar una nueva versión del SDK a PyPI:
+
+1. **Bump de versión**
+    - Actualizar `version` en `pyproject.toml` siguiendo SemVer.
+    - Actualizar `version` y `date-released` en `CITATION.cff`.
+    - Replicar la nueva versión en los 3 BibTeX: `README.md`, `docs/citation.md`, `examples/05_paper_amafore_workflow.ipynb`.
+
+2. **CHANGELOG**
+    - Agregar entrada `[vX.Y.Z] — YYYY-MM-DD` en `CHANGELOG.md` con resumen de cambios.
+    - Seguir formato [Keep a Changelog](https://keepachangelog.com).
+
+3. **Refresh de datos vivos**
+    - `python scripts/regen_docs_figures.py --apply` para refrescar cifras frías en docs contra la API actual.
+    - Actualizar `expected_old` en `TARGETS` del script para los cambios aplicados.
+    - Verificar con `python scripts/regen_docs_figures.py --verify`.
+
+4. **Sync de requirements**
+    - `./scripts/sync_requirements.sh` para regenerar `requirements-dev.txt` desde `uv.lock`.
+
+5. **Snapshot OpenAPI**
+    - `python openapi/update_snapshot.py` para refrescar el snapshot del spec live.
+    - Si hubo cambios significativos en la API, mencionarlos en el CHANGELOG.
+
+6. **Validación local antes de PR**
+
+    ```bash
+    uv run pytest
+    uv run ruff check .
+    uv run mypy src/
+    uv run mkdocs build --strict
+    ```
+
+7. **PR de release**
+    - Commit en rama dedicada con mensaje `release: vX.Y.Z`.
+    - Abrir PR titulado "Release vX.Y.Z".
+    - Esperar CI verde en los 4 workflows: tests (3.10–3.13), openapi-drift, docs-deploy.
+
+8. **Merge y tag**
+
+    ```bash
+    # Tras mergear el PR
+    git checkout main
+    git pull origin main
+    git tag vX.Y.Z -m "Release vX.Y.Z"
+    git push origin vX.Y.Z
+    ```
+
+9. **Publicación automática**
+    - El tag dispara `.github/workflows/publish.yml` con OIDC trusted publishing.
+    - El workflow construye, publica a TestPyPI, y si TestPyPI queda verde publica a PyPI.
+    - Esperar ~5–15 minutos para que PyPI propague.
+
+10. **Verificación post-release**
+    - Verificar en [pypi.org/project/datos-mexico](https://pypi.org/project/datos-mexico/) que la nueva versión aparece.
+    - `pip install --upgrade datos-mexico` en venv limpio y probar el primer ejemplo del README.
+    - Verificar que [docs.datosmexico.org](https://docs.datosmexico.org) refleja los cambios (deploy automático tras el merge).
+    - Crear GitHub Release con notas extraídas del CHANGELOG.
