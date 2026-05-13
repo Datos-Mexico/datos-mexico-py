@@ -259,6 +259,33 @@ Identificador numérico de la cuenta Cloudflare. Aparece en el sidebar derecho d
 
 Sin estos secretos, el workflow `docs-deploy.yml` falla al llegar al step de Cloudflare. El resto del CI (tests, lint, drift detection) no los necesita.
 
+## Antes de cortar release
+
+Cifras agregadas vivas (e.g. "246,836 servidores" en el README) deben sincronizarse con la API antes de cualquier tag de release. El repo provee un script de mantenimiento explícito:
+
+```bash
+# Detecta drift entre cifras de docs y API live
+python scripts/regen_docs_figures.py
+
+# Si hay drift, aplicar
+python scripts/regen_docs_figures.py --apply
+
+# Actualizar manualmente el campo expected_old de cada TARGET aplicado
+# en scripts/regen_docs_figures.py (el script no se auto-modifica por diseño)
+
+# Para CI / pre-commit: verificar que los TARGETS sigan presentes
+python scripts/regen_docs_figures.py --verify
+```
+
+El script tiene exit code distinto por modo: `0` cuando no hay drift o `--apply`/`--verify` son exitosos, `1` cuando dry-run encuentra drift pendiente, `2` cuando `--verify` falla (TARGETS stale).
+
+### Cifras NO cubiertas por el script (verificación manual al cortar release)
+
+- `README.md`: "101.5M microdatos · 76 mil indicadores agregados" — no hay endpoint público para validar; chequear contra el último anuncio del observatorio sobre cobertura ENOE.
+- `docs/conceptos/decimal.md`: número en el ejemplo pedagógico — no es cifra fría, deliberadamente fijo.
+- `docs/tutoriales/enoe.md` ranking TOP 5: cita explícita del boletín INEGI 265/25, congelada por design académico.
+- `CHANGELOG.md`: cifras de releases pasadas, no se actualizan.
+
 ## Versionado y releases
 
 El proyecto sigue [Semantic Versioning](https://semver.org/lang/es/):
