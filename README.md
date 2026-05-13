@@ -148,7 +148,7 @@ Si usas este cliente en una investigación o publicación académica, por favor 
   title     = {datos-mexico-py: Cliente Python para la API del Observatorio Datos México},
   year      = {2026},
   month     = {5},
-  version   = {0.2.0},
+  version   = {0.2.1},
   url       = {https://github.com/Datos-Mexico/datos-mexico-py},
   publisher = {Datos México},
   license   = {MIT},
