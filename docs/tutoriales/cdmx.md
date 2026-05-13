@@ -1,6 +1,6 @@
 # Tutorial — CDMX servidores públicos
 
-El namespace `client.cdmx` expone el padrón de personal del Poder Ejecutivo del Gobierno de la Ciudad de México. Es el dataset más rico de los que cubre el observatorio: 246,831 servidores con campos sobre puesto, sector, sueldo bruto y neto, edad, sexo, antigüedad, tipo de contratación.
+El namespace `client.cdmx` expone el padrón de personal del Poder Ejecutivo del Gobierno de la Ciudad de México. Es el dataset más rico de los que cubre el observatorio: 246,836 servidores con campos sobre puesto, sector, sueldo bruto y neto, edad, sexo, antigüedad, tipo de contratación.
 
 Este tutorial recorre los flujos típicos de análisis con caveats explícitos en cada paso.
 

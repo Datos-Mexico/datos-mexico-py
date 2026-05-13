@@ -15,7 +15,7 @@ Acceso programático a microdatos públicos mexicanos curados, validados al peso
 
 ## Datasets disponibles
 
-- **CDMX servidores públicos**: 246,831 servidores · 75 sectores · padrón vigente del Gobierno de la Ciudad de México
+- **CDMX servidores públicos**: 246,836 servidores · 75 sectores · padrón vigente del Gobierno de la Ciudad de México
 - **CONSAR / SAR**: serie histórica 1998–2025 · 11 AFOREs · recursos administrados, composición, comisiones, traspasos
 - **ENIGH 2024 Nueva Serie**: 91,414 hogares en muestra · 38.8M expandidos · ingresos, gastos, demografía
 - **ENOE — Mercado laboral INEGI**: 101.5M microdatos · 76 mil indicadores agregados · cobertura 2005T1–2025T1 · nacional + 32 entidades federativas

@@ -24,6 +24,11 @@ Exit codes:
     0 — dry-run sin drift, --apply exitoso, o --verify OK
     1 — dry-run con drift detectado (cambios pendientes)
     2 — --verify falla: algún expected_old no está en el archivo (TARGETS stale)
+
+Política operativa: tras correr `--apply`, el operador debe actualizar
+manualmente el campo `expected_old` de cada TARGET aplicado, reemplazando
+la cifra vieja por la nueva. Esto mantiene `--verify` funcional como
+guardia de CI/pre-commit. No usamos self-modifying code por fragilidad.
 """
 
 from __future__ import annotations
@@ -48,14 +53,14 @@ def _format_servidores(n: int) -> str:
 TARGETS: list[dict] = [
     {
         "file": "README.md",
-        "expected_old": "246,831 servidores",
+        "expected_old": "246,836 servidores",
         "endpoint_call": _servidores_cdmx,
         "format_new": _format_servidores,
         "doc_context": "Sección Datasets cubiertos",
     },
     {
         "file": "docs/tutoriales/cdmx.md",
-        "expected_old": "246,831 servidores",
+        "expected_old": "246,836 servidores",
         "endpoint_call": _servidores_cdmx,
         "format_new": _format_servidores,
         "doc_context": "Header tutorial CDMX",
