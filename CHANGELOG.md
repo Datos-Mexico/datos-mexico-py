@@ -4,7 +4,11 @@ Todas las versiones notables del cliente `datos-mexico` quedan documentadas
 aquí. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado adhiere a [SemVer](https://semver.org/lang/es/).
 
-## [0.2.1] — 2026-05-13
+## [Unreleased]
+
+### Changed
+
+- **Snapshot OpenAPI refrescado** (`openapi/openapi.snapshot.json`) tras el cierre de FASE 2 del audit del backend del observatorio (`DabtcAvila/datos-itam@d1c5012`, deploy verificado a producción a las 22:04 UTC del 2026-05-23). El delta es exclusivamente metadata sobre la spec congelada del SDK v0.2.1: cobertura de `description` 67.5 % → 100 %, `example` en al menos una response 0 % → 100 %, 263 declaraciones nuevas de error responses 4xx no-422 (401/403/404/409/429). Cero cambios estructurales (cero nuevos paths, métodos o parámetros). Cinco schemas `HTTPError401/403/404/409/429` agregados como referencias reutilizables; el schema `TablaDisponible` gana un campo `status: Literal["available", "schema-ready", "deprecated"]` con default backwards-compatible, absorbido transparentemente por `extra="allow"` de los modelos del SDK. La spec congelada del SDK v0.2.1 sigue funcional sin breaking change para usuarios existentes; el refresh es alineación de la referencia que `openapi-drift-cron.yml` consulta. Trabajo precedido y respaldado por peer review externo en `audits/2026-05/peer-review-fase-2.md` (0 hallazgos bloqueantes).
 
 Pulido académico integral del SDK sin cambios en la API pública. Cero breaking changes para usuarios existentes. Cambios concentrados en infraestructura de reproducibilidad, metadata académica, sincronización docs↔código, y robustez operacional.
 
