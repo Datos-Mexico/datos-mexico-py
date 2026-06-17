@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-  { name = "David Fernando Ávila Díaz", email = "df.avila.diaz@gmail.com" }
+  { name = "Equipo de Datos México", email = "pypi@datosmexico.org" }
 ]
 maintainers = [
   { name = "Equipo de Datos México", email = "pypi@datosmexico.org" }
