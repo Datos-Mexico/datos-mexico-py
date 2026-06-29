@@ -175,4 +175,4 @@ MIT — ver [LICENSE](LICENSE).
 
 ---
 
-*Datos México es un observatorio independiente formado por estudiantes y egresados del Instituto Tecnológico Autónomo de México (ITAM).*
+*Datos México es un observatorio independiente formado por estudiantes, egresados y colaboradores del Instituto Tecnológico Autónomo de México (ITAM).*
