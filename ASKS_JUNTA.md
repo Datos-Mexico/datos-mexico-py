@@ -60,6 +60,12 @@ responde; todas las llamadas de validación corren en vivo con fallback estátic
    estático como CNSF/CONAPO?
 5. **Escala:** skeleton corre con 5,000 agentes (1.2s las 15 corridas).
    ¿Subimos a 50–100k ya o después de calibrar?
+6. **Serie de salario medio de cotización IMSS:** no está en el SDK
+   (verificado 2026-07-02: consar/enoe/enigh no la exponen) y el motor la
+   necesita dos veces — (a) el tope FPB equivale al salario medio IMSS del
+   año previo (hoy interpolamos entre las dos anclas oficiales 2024/2026,
+   bitácora #22), (b) calibración del nivel salarial (supuesto #7).
+   ¿Se absorbe al observatorio o archivo estático?
 
 ## 5. Qué NO prometemos aún (brief §9)
 

@@ -96,6 +96,46 @@ def vector_tasas_aportacion() -> dict[int, float]:
 
 
 # ---------------------------------------------------------------------------
+# Tope del complemento FPB.
+#
+# Mecánica legal: el tope equivale al salario mensual promedio de cotización
+# registrado en el IMSS el año previo ("salario mensual promedio registrado
+# en el año 2023 en el IMSS actualizado", Decreto FPB, DOF 01/05/2024).
+# NO se indexa a INPC: de 16,777.68 (2024) a 17,364.00 (2026, CONSAR) el
+# crecimiento implícito es ~1.7% anual, muy por debajo de la inflación
+# observada 2024-2025 (~4-5%).
+#
+# ⚠️ SUPUESTO PROVISIONAL (bitácora #22): tope_t = salario medio IMSS_{t-1}.
+# - Tramo observado 2024-2026: interpolación geométrica entre las dos anclas
+#   oficiales (la serie de salario medio IMSS no está en el SDK — ver
+#   ASKS_JUNTA.md). El valor 2025 implícito queda PENDIENTE DE VALIDACIÓN.
+# - Proyección 2027+: crece con el MISMO crecimiento salarial real secular
+#   de los agentes del motor (coherencia piso/salarios; 0 en el skeleton).
+# ---------------------------------------------------------------------------
+def tope_fpb_mensual(
+    anio: int,
+    tope_2024: float,
+    tope_2026: float,
+    crecimiento_salarial_real: float = 0.0,
+) -> float:
+    """Tope mensual del complemento FPB para el año dado.
+
+    Args:
+        anio: año calendario (el FPB existe desde 2024).
+        tope_2024: ancla de ley (DOF 01/05/2024): 16,777.68.
+        tope_2026: valor oficial CONSAR vigente: 17,364.00.
+        crecimiento_salarial_real: crecimiento salarial real secular del
+            motor (config ``economia.crecimiento_salarial_secular_real``).
+    """
+    factor_obs = (tope_2026 / tope_2024) ** 0.5  # ~1.0173 anual entre anclas
+    if anio <= 2024:
+        return tope_2024
+    if anio <= 2026:
+        return tope_2024 * factor_obs ** (anio - 2024)
+    return tope_2026 * (1.0 + crecimiento_salarial_real) ** (anio - 2026)
+
+
+# ---------------------------------------------------------------------------
 # Política SAR con overrides opcionales (Sección 9: evaluación de reformas).
 #
 # Los defaults son SIEMPRE los valores DOF/CONSAR vigentes definidos arriba

@@ -183,7 +183,9 @@ def simular(
         return cache_anualidad[clave]
 
     pg_mensual = cfg["pension_garantizada"]["pg_mensual_2025"]
-    tope_fpb = cfg["fpb"]["tope_mensual_2025"]
+    g_secular = cfg["economia"]["crecimiento_salarial_secular_real"]
+    tope_fpb_2024 = cfg["fpb"]["tope_mensual_2024"]
+    tope_fpb_2026 = cfg["fpb"]["tope_mensual_2026"]
 
     ledger_rows = []
     anual_rows = []
@@ -236,7 +238,9 @@ def simular(
             estado = np.where(activo, nuevo, estado)
 
         # -- salarios (pesos reales 2025) ------------------------------------
-        log_w = base_log_w + mu + _perfil_edad(edad, cfg)
+        # g_secular: crecimiento real de calendario, compartido con el tope
+        # FPB (0 en el skeleton — bitácora #22)
+        log_w = base_log_w + mu + _perfil_edad(edad, cfg) + g_secular * (anio - 2025)
         w = np.exp(log_w)
         w_cot = np.minimum(w, tope_salarial)  # tope 25 UMA
 
@@ -272,6 +276,9 @@ def simular(
         # -- retiro a la edad legal (65 vigente; reformable) ------------------
         cumple_edad = vivo & ~retirado & (edad >= edad_ret) & (anio > anio_val)
         salida_retiro = 0.0
+        tope_fpb = reglas_sar.tope_fpb_mensual(
+            anio, tope_fpb_2024, tope_fpb_2026, g_secular
+        )
         if cumple_edad.any():
             ids = np.where(cumple_edad)[0]
             sem_req = politica.semanas_requeridas(anio)

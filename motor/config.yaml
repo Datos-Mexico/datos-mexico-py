@@ -28,6 +28,10 @@ economia:
   uma_diaria_2025: 113.14          # DOF/INEGI, valor 2025
   crecimiento_salarial_edad: 0.020 # PROVISIONAL: pendiente inicial del perfil edad-salario
   curvatura_perfil_edad: 0.0004    # PROVISIONAL: decaimiento del crecimiento con la edad
+  # Crecimiento salarial real SECULAR (calendario, no edad). Lo consumen los
+  # salarios de los agentes Y la proyección del tope FPB — un solo parámetro
+  # para que piso y salarios se muevan con la misma fuerza (bitácora #22).
+  crecimiento_salarial_secular_real: 0.0  # PROVISIONAL: 0 en el skeleton
 
 salarios:
   mediana_uma_mensual: 3.5   # PROVISIONAL: mediana salario formal en UMAs mensuales — calibrar IMSS/ENOE (Sección 4, Emiliano)
@@ -46,7 +50,12 @@ pension_garantizada:
   pg_mensual_2025: 7750.0    # PROVISIONAL: promedio del tabulador post-2020 (edad x semanas x salario); usar tabulador completo en Fase 2 — confirmar con Fabiola/Yáñez
 
 fpb:
-  tope_mensual_2025: 17532.0 # 16,777.68 (2024) actualizado con inflación 2024->2025 (~4.5%) — PROVISIONAL, verificar contra DOF
+  # Tope del complemento FPB = salario mensual promedio de cotización IMSS
+  # del año previo (regla en reglas_sar.tope_fpb_mensual; bitácora #22).
+  # NO se indexa a INPC: 16,777.68 (2024) -> 17,364.00 (2026) implica ~1.7%
+  # anual, muy por debajo de la inflación observada 2024-2025 (~4-5%).
+  tope_mensual_2024: 16777.68  # ancla de LEY — Decreto FPB, DOF 01/05/2024
+  tope_mensual_2026: 17364.00  # oficial vigente — CONSAR (punto de validación)
 
 escenarios:
   base:
