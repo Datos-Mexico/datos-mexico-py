@@ -56,7 +56,7 @@ def main() -> None:
             try:
                 snap = client.consar.precios_gestion_snapshot(fecha)
                 pares |= {(f.afore_codigo, f.siefore_slug) for f in snap.filas}
-            except Exception:  # noqa: BLE001 — fecha inhábil, seguimos
+            except Exception:
                 continue
         print(f"universo: {len(pares)} pares AFORE x SIEFORE")
 
@@ -68,7 +68,7 @@ def main() -> None:
                 serie = client.consar.precios_gestion_serie(
                     afore_codigo=afore, siefore_slug=siefore
                 ).serie
-            except Exception:  # noqa: BLE001 — par sin serie
+            except Exception:
                 continue
             por_anio: dict[int, float] = {}
             for punto in serie:
@@ -89,7 +89,7 @@ def main() -> None:
                     f.afore_codigo: float(f.recursos_administrados_mm)
                     for f in r.afores
                 }
-            except Exception:  # noqa: BLE001 — sin dato (1997-1998): pesos iguales
+            except Exception:
                 pesos_afore[anio] = {}
 
     # 4. retorno anual agregado
@@ -98,10 +98,11 @@ def main() -> None:
         # retorno por par
         ret_por_afore: dict[str, list[float]] = defaultdict(list)
         for (afore, siefore), precios in cierre.items():
-            if anio == 1997:
-                p0 = base_1997.get((afore, siefore))
-            else:
-                p0 = precios.get(anio - 1)
+            p0 = (
+                base_1997.get((afore, siefore))
+                if anio == 1997
+                else precios.get(anio - 1)
+            )
             p1 = precios.get(anio)
             if p0 and p1 and p0 > 0:
                 ret_por_afore[afore].append(p1 / p0 - 1.0)
