@@ -22,7 +22,13 @@ import pandas as pd
 import yaml
 
 from motor import figuras
-from motor.datos import cargar_conapo, cargar_mortalidad, participaciones_enoe, qx_por_sexo
+from motor.datos import (
+    cargar_conapo,
+    cargar_mortalidad,
+    cargar_rendimientos_reales,
+    participaciones_enoe,
+    qx_por_sexo,
+)
 from motor.motor import simular
 from motor.reglas_sar import vector_tasas_aportacion
 from motor.validacion import comparar
@@ -48,6 +54,10 @@ def main() -> int:
     part = participaciones_enoe(usar_api=usar_api)
     resumen_part = ", ".join(f"{k}={v:.3f}" for k, v in part.items())
     print(f"      participaciones ENOE 2025T1: {resumen_part}")
+    r_hist = cargar_rendimientos_reales()
+    print(f"      rendimiento real bruto observado: {min(r_hist)}-{max(r_hist)} "
+          f"(media {sum(r_hist.values()) / len(r_hist):.2%}); proyección: "
+          f"{cfg['economia']['rendimiento_real_anual']:.1%} constante")
     print(f"      vector aportación RCV (extracto): 2022={vector_tasas_aportacion()[2022]:.3%} "
           f"2024={vector_tasas_aportacion()[2024]:.3%} 2030={vector_tasas_aportacion()[2030]:.3%}")
 
@@ -59,7 +69,10 @@ def main() -> int:
     for esc in cfg["escenarios"]:
         for rep in range(REPS):
             semilla = cfg["semilla"] + rep
-            res = simular(cfg, conapo, qx, part, escenario=esc, semilla=semilla)
+            res = simular(
+                cfg, conapo, qx, part, escenario=esc, semilla=semilla,
+                r_historico=r_hist,
+            )
             res.agentes["semilla"] = semilla
             res.anual["semilla"] = semilla
             agentes_all.append(res.agentes)

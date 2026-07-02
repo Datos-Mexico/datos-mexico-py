@@ -104,13 +104,19 @@ def simular(
     escenario: str = "base",
     semilla: int | None = None,
     politica: reglas_sar.PoliticaSAR | None = None,
+    r_historico: dict[int, float] | None = None,
 ) -> ResultadoSimulacion:
     """Corre el motor end-to-end: backcast 1997-2025 + proyección 2026-2070.
 
     Args:
         politica: parámetros de ley con overrides opcionales (Sección 9).
             ``None`` == ley vigente; el backcast es idéntico en ambos casos.
+        r_historico: rendimiento real BRUTO observado por año (serie CONSAR
+            de precios de gestión deflactada con INPC, bitácora #23). En los
+            años sin dato (proyección 2026+) aplica el r constante de config.
     """
+    if r_historico is None:
+        r_historico = {}
     if politica is None:
         politica = reglas_sar.PoliticaSAR()
     rng = np.random.default_rng(semilla if semilla is not None else cfg["semilla"])
@@ -254,7 +260,10 @@ def simular(
         cuenta = vivo & ~retirado
         C = np.where(cuenta, tasa_c * saldo, 0.0)
         base = np.where(cuenta, saldo + A - C, saldo)
-        R = np.where(cuenta, base * r_real, 0.0)
+        # r del año: serie observada CONSAR (backcast) o constante de config
+        # (proyección 2026+; el estocástico es Prioridad 3)
+        r_t = r_historico.get(anio, r_real)
+        R = np.where(cuenta, base * r_t, 0.0)
         saldo_nuevo = np.where(cuenta, base + R, saldo)
 
         # ============ CHECK CONTABLE ΔS = A + R - C (por agente) ============

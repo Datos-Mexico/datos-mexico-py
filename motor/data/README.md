@@ -19,6 +19,24 @@ Seguridad Social, 2009), qx por edad (0–109) y sexo. IMSS e ISSSTE.
   proyectadas; la circular define factores de mejora que no se aplican en
   el skeleton) — revisar con Dra. Yáñez.
 
+## `inpc_mensual.csv`
+
+INPC general mensual (serie **SP1**, base 2ª quincena julio 2018 = 100),
+1969-01 → 2026-05. Para deflactar las series nominales del motor.
+
+- **Fuente:** Banco de México, SIE (INPC elaborado por INEGI):
+  <https://www.banxico.org.mx/SieInternet/consultasieiqy?series=SP1&locale=es>
+- **Descarga:** 2026-07-02. Sanity check contra inflación dic-dic conocida:
+  2017 = 6.77% ✓, 2024 = 4.21% ✓.
+- ⚠️ Deuda: absorber la serie al SDK (ver `ASKS_JUNTA.md` #7).
+
+## `consar_rendimiento_bruto_anual.csv`
+
+Rendimiento anual **bruto** (antes de comisiones) del sistema, nominal y
+real, 1997–2025. Derivado de los precios de gestión CONSAR vía SDK y
+deflactado con `inpc_mensual.csv`. Reproducible con
+`build_rendimientos_brutos.py` (método y decisiones en bitácora #23).
+
 ## `conapo_proyecciones_nacional_2025_2070.csv`
 
 Proyecciones de población de CONAPO (Conciliación Demográfica 2023),

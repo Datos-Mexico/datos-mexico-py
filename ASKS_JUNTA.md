@@ -66,6 +66,10 @@ responde; todas las llamadas de validación corren en vivo con fallback estátic
    año previo (hoy interpolamos entre las dos anclas oficiales 2024/2026,
    bitácora #22), (b) calibración del nivel salarial (supuesto #7).
    ¿Se absorbe al observatorio o archivo estático?
+7. **Serie INPC al SDK:** el motor ya la necesita permanentemente (deflactar
+   rendimientos, bitácora #23; futuro: salidas nominales para Sección 8).
+   Hoy es estático `motor/data/inpc_mensual.csv` (Banxico SIE, serie SP1).
+   ¿Se absorbe al observatorio como dataset de precios?
 
 ## 5. Qué NO prometemos aún (brief §9)
 

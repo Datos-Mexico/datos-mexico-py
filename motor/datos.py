@@ -38,6 +38,17 @@ def cargar_conapo() -> pd.DataFrame:
     return df
 
 
+def cargar_rendimientos_reales() -> dict[int, float]:
+    """Serie anual de rendimiento BRUTO real del sistema 1997-2025.
+
+    Derivada de precios de gestión CONSAR (brutos: la comisión se carga
+    explícita en C) deflactados con INPC. Ver
+    ``data/build_rendimientos_brutos.py`` y bitácora #23.
+    """
+    df = pd.read_csv(DATA_DIR / "consar_rendimiento_bruto_anual.csv")
+    return dict(zip(df["anio"], df["r_real_bruto"], strict=True))
+
+
 # ---------------------------------------------------------------------------
 # Targets de validación 2025 (CONSAR vía SDK, con fallback estático).
 # ---------------------------------------------------------------------------
