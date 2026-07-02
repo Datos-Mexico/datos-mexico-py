@@ -45,7 +45,7 @@ def figura_validacion(df_val: pd.DataFrame, ruta: Path) -> None:
     """Figura 1 — agregados simulados vs observados 2025 (small multiples,
     una métrica por panel: las unidades difieren y NUNCA comparten eje)."""
     fig, axes = plt.subplots(1, 3, figsize=(10.5, 3.8))
-    for ax, (_, row) in zip(axes, df_val.iterrows()):
+    for ax, (_, row) in zip(axes, df_val.iterrows(), strict=True):
         vals = [row["simulado"], row["observado"]]
         bars = ax.bar(
             ["Simulado", "Observado"],
@@ -55,7 +55,7 @@ def figura_validacion(df_val: pd.DataFrame, ruta: Path) -> None:
             edgecolor=SURFACE,
             linewidth=2,
         )
-        for b, v in zip(bars, vals):
+        for b, v in zip(bars, vals, strict=True):
             ax.text(
                 b.get_x() + b.get_width() / 2,
                 v,
@@ -124,7 +124,7 @@ def figura_tasa_reemplazo(
     ax.set_ylabel("Agentes")
     ax.grid(axis="x", visible=False)
     ax.tick_params(length=0)
-    for p, v in zip([10, 50, 90], [pcts[0], pcts[2], pcts[4]]):
+    for p, v in zip([10, 50, 90], [pcts[0], pcts[2], pcts[4]], strict=True):
         ax.axvline(v, color=INK2, linewidth=1.2, linestyle="--", alpha=0.75)
         ax.text(
             v,
@@ -138,7 +138,7 @@ def figura_tasa_reemplazo(
         )
     ax.set_title(
         f"Distribución de tasa de reemplazo — cohorte {cohorte} "
-        f"(retiros {cohorte - ventana}–{cohorte + ventana}), escenario base\n"
+        f"(retiros {cohorte - ventana}-{cohorte + ventana}), escenario base\n"
         f"p10={pcts[0]:.2f} · p25={pcts[1]:.2f} · p50={pcts[2]:.2f} · "
         f"p75={pcts[3]:.2f} · p90={pcts[4]:.2f} · n={len(tr)} agentes",
         fontsize=11,

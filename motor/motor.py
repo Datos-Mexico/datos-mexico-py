@@ -30,7 +30,7 @@ from motor import reglas_sar
 from motor.reglas_sar import factor_anualidad
 
 ESTADOS = ["formal", "informal", "desempleado", "fuera"]
-F, I, D, X = 0, 1, 2, 3
+FORMAL, INFORMAL, DESEMPLEADO, FUERA = 0, 1, 2, 3
 
 # ⚠️ SUPUESTO PROVISIONAL: PIB real 2025 y crecimiento real 2% — solo para
 # expresar el costo FPB como % del PIB; reemplazar con senda de Sección 8.
@@ -38,7 +38,7 @@ PIB_2025_MM = 34_900_000.0  # millones de pesos de 2025
 CRECIMIENTO_PIB_REAL = 0.02
 
 
-class ErrorContable(RuntimeError):
+class ContabilidadError(RuntimeError):
     """La identidad ΔS = A + R - C no cuadró: hay una fuga en la tubería."""
 
 
@@ -71,10 +71,10 @@ def matriz_markov(part: dict[str, float], cfg: dict, delta_densidad_pp: float = 
     if delta_densidad_pp != 0.0:
         d = delta_densidad_pp / 100.0
         for i in range(4):
-            objetivo = min(max(M[i, F] + d, 0.001), 0.999)
-            ajuste = objetivo - M[i, F]
-            otros = [j for j in range(4) if j != F]
-            M[i, F] = objetivo
+            objetivo = min(max(M[i, FORMAL] + d, 0.001), 0.999)
+            ajuste = objetivo - M[i, FORMAL]
+            otros = [j for j in range(4) if j != FORMAL]
+            M[i, FORMAL] = objetivo
             M[i, otros] -= ajuste * M[i, otros] / M[i, otros].sum()
         M = np.clip(M, 0.0, 1.0)
         M /= M.sum(axis=1, keepdims=True)
@@ -191,7 +191,7 @@ def simular(
         if anio > anio_val:
             ent = entrantes[anio]
             pob15 = ent["poblacion"].sum()
-            n_new = int(round(pob15 / W))
+            n_new = round(pob15 / W)
             if n_new > 0:
                 p_h = ent[ent["sexo"] == "H"]["poblacion"].sum() / pob15
                 edad = np.append(edad, np.full(n_new, 15.0))
@@ -228,7 +228,7 @@ def simular(
         w = np.exp(log_w)
         w_cot = np.minimum(w, tope_salarial)  # tope 25 UMA
 
-        formal = activo & (estado == F)
+        formal = activo & (estado == FORMAL)
 
         # -- acumulación: S' = (S + A - C)(1 + r) ----------------------------
         tasa_a = reglas_sar.tasa_aportacion(anio)
@@ -246,7 +246,7 @@ def simular(
         flujo = A[cuenta] + R[cuenta] - C[cuenta]
         if not np.allclose(delta, flujo, rtol=1e-9, atol=1e-6):
             peor = np.abs(delta - flujo).max()
-            raise ErrorContable(
+            raise ContabilidadError(
                 f"ΔS != A + R - C en {anio} (desvío máximo {peor:.6e} pesos)"
             )
         saldo_total_pre = saldo[vivo].sum()
@@ -321,7 +321,7 @@ def simular(
         delta_total = saldo_total_post - saldo_total_pre
         esperado = flujo_neto - salida_retiro - salida_muerte
         if not np.isclose(delta_total, esperado, rtol=1e-9, atol=1e-3):
-            raise ErrorContable(
+            raise ContabilidadError(
                 f"Conciliación global falla en {anio}: ΔS={delta_total:.2f} "
                 f"vs A+R-C-salidas={esperado:.2f}"
             )

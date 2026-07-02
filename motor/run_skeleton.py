@@ -46,7 +46,8 @@ def main() -> int:
     qx = qx_por_sexo(mort)
     conapo = cargar_conapo()
     part = participaciones_enoe(usar_api=usar_api)
-    print(f"      participaciones ENOE 2025T1: " + ", ".join(f"{k}={v:.3f}" for k, v in part.items()))
+    resumen_part = ", ".join(f"{k}={v:.3f}" for k, v in part.items())
+    print(f"      participaciones ENOE 2025T1: {resumen_part}")
     print(f"      vector aportación RCV (extracto): 2022={vector_tasas_aportacion()[2022]:.3%} "
           f"2024={vector_tasas_aportacion()[2024]:.3%} 2030={vector_tasas_aportacion()[2030]:.3%}")
 
@@ -66,7 +67,7 @@ def main() -> int:
             if esc == "base" and rep == 0:
                 validacion_base = res.validacion
                 ledger_base = res.ledger
-    print(f"      listo en {time.time() - t0:.1f}s — check contable ΔS=A+R−C: OK en "
+    print(f"      listo en {time.time() - t0:.1f}s — check contable ΔS=A+R-C: OK en "
           f"{len(ledger_base)} periodos x {3 * REPS} corridas")
 
     df_ag = pd.concat(agentes_all, ignore_index=True)

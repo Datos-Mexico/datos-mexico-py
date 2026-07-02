@@ -80,7 +80,7 @@ def targets_validacion(usar_api: bool = True) -> dict:
             cuentas = client.consar.cuentas_sistema(metrica="total_cuentas_sar")
             targets["cuentas_totales"] = int(cuentas.serie[-1].valor)
             targets["fuente"] = "client.consar en vivo (api.datos-itam.org)"
-    except Exception as exc:  # noqa: BLE001 — offline es caso esperado
+    except Exception as exc:
         targets["fuente"] = f"fallback estático (API no disponible: {exc})"
     return targets
 
@@ -100,7 +100,7 @@ def participaciones_enoe(usar_api: bool = True) -> dict[str, float]:
                 for ind in snap.indicadores:
                     if ind.indicador in vals:
                         vals[ind.indicador] = float(ind.valor)
-        except Exception:  # noqa: BLE001
+        except Exception:
             pass
     pob = vals["pob_15ymas"]
     formales = vals["ocupados_total"] - vals["informales_total"]
