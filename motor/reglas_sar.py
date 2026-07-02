@@ -7,6 +7,8 @@ contra fuente primaria (DOF/CONSAR) antes del envío.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import numpy as np
 
 # ---------------------------------------------------------------------------
@@ -91,6 +93,79 @@ EDAD_RETIRO = 65
 def vector_tasas_aportacion() -> dict[int, float]:
     """Vector año→tasa explícito (para citarlo en el paper, brief §4.5)."""
     return {a: round(tasa_aportacion(a), 5) for a in range(1997, 2036)}
+
+
+# ---------------------------------------------------------------------------
+# Política SAR con overrides opcionales (Sección 9: evaluación de reformas).
+#
+# Los defaults son SIEMPRE los valores DOF/CONSAR vigentes definidos arriba
+# (con su cita). Una reforma declara solo lo que cambia y desde qué año entra
+# en vigor; antes de `desde` aplican los valores vigentes sin excepción, de
+# modo que el backcast 1997-2025 y la validación son idénticos con o sin
+# reforma.
+# ---------------------------------------------------------------------------
+@dataclass(frozen=True)
+class PoliticaSAR:
+    """Parámetros de ley del SAR, con overrides opcionales para reformas.
+
+    ``PoliticaSAR()`` sin argumentos == ley vigente (equivalencia verificada
+    contra las funciones de módulo con la misma semilla).
+    """
+
+    desde: int = 2026                              # año de entrada en vigor
+    tasa_aportacion_total: float | None = None     # % plano del SBC
+    semanas_requeridas_fijas: int | None = None    # p. ej. 1250
+    edad_retiro: int | None = None                 # p. ej. 67
+    cuota_social_diaria: float | None = None       # pesos reales 2025/día
+    cuota_social_tope_uma: float | None = None     # banda de elegibilidad
+    tope_salarial_uma: float | None = None         # tope de cotización
+    comision_pct: float | None = None              # % anual sobre saldo
+
+    def tasa_aportacion(self, anio: int) -> float:
+        if self.tasa_aportacion_total is not None and anio >= self.desde:
+            return self.tasa_aportacion_total
+        return tasa_aportacion(anio)
+
+    def tasa_comision(self, anio: int) -> float:
+        if self.comision_pct is not None and anio >= self.desde:
+            return self.comision_pct
+        return tasa_comision(anio)
+
+    def semanas_requeridas(self, anio: int) -> int:
+        if self.semanas_requeridas_fijas is not None and anio >= self.desde:
+            return self.semanas_requeridas_fijas
+        return semanas_requeridas(anio)
+
+    def edad_retiro_en(self, anio: int) -> int:
+        if self.edad_retiro is not None and anio >= self.desde:
+            return self.edad_retiro
+        return EDAD_RETIRO
+
+    def cuota_social_diaria_en(self, anio: int) -> float:
+        if self.cuota_social_diaria is not None and anio >= self.desde:
+            return self.cuota_social_diaria
+        return CUOTA_SOCIAL_DIARIA_2025
+
+    def cuota_social_tope_uma_en(self, anio: int) -> float:
+        if self.cuota_social_tope_uma is not None and anio >= self.desde:
+            return self.cuota_social_tope_uma
+        return CUOTA_SOCIAL_TOPE_UMA
+
+    def tope_salarial_uma_en(self, anio: int) -> float:
+        if self.tope_salarial_uma is not None and anio >= self.desde:
+            return self.tope_salarial_uma
+        return TOPE_SALARIAL_UMA
+
+    @classmethod
+    def desde_config(cls, reforma: dict | None) -> PoliticaSAR:
+        """Construye la política desde una entrada de ``reformas:`` en config.
+
+        ``None`` o dict vacío devuelve la ley vigente.
+        """
+        if not reforma:
+            return cls()
+        overrides = reforma.get("overrides", {})
+        return cls(desde=reforma.get("desde", 2026), **overrides)
 
 
 def factor_anualidad(qx: np.ndarray, edad: int, tasa_tecnica: float) -> float:

@@ -32,12 +32,6 @@ from motor.reglas_sar import factor_anualidad
 ESTADOS = ["formal", "informal", "desempleado", "fuera"]
 FORMAL, INFORMAL, DESEMPLEADO, FUERA = 0, 1, 2, 3
 
-# ⚠️ SUPUESTO PROVISIONAL: PIB real 2025 y crecimiento real 2% — solo para
-# expresar el costo FPB como % del PIB; reemplazar con senda de Sección 8.
-PIB_2025_MM = 34_900_000.0  # millones de pesos de 2025
-CRECIMIENTO_PIB_REAL = 0.02
-
-
 class ContabilidadError(RuntimeError):
     """La identidad ΔS = A + R - C no cuadró: hay una fuga en la tubería."""
 
@@ -109,8 +103,16 @@ def simular(
     participaciones: dict[str, float],
     escenario: str = "base",
     semilla: int | None = None,
+    politica: reglas_sar.PoliticaSAR | None = None,
 ) -> ResultadoSimulacion:
-    """Corre el motor end-to-end: backcast 1997-2025 + proyección 2026-2070."""
+    """Corre el motor end-to-end: backcast 1997-2025 + proyección 2026-2070.
+
+    Args:
+        politica: parámetros de ley con overrides opcionales (Sección 9).
+            ``None`` == ley vigente; el backcast es idéntico en ambos casos.
+    """
+    if politica is None:
+        politica = reglas_sar.PoliticaSAR()
     rng = np.random.default_rng(semilla if semilla is not None else cfg["semilla"])
     sim = cfg["simulacion"]
     n0 = sim["n_agentes"]
@@ -160,6 +162,7 @@ def simular(
     pension = np.zeros(n)
     piso_fpb_i = np.zeros(n)
     anio_retiro = np.full(n, -1)
+    edad_al_retiro = np.full(n, -1)
     requiere_pg = np.zeros(n, dtype=bool)
     requiere_fpb = np.zeros(n, dtype=bool)
     tasa_reemplazo = np.full(n, np.nan)
@@ -167,18 +170,20 @@ def simular(
 
     base_log_w = np.log(cfg["salarios"]["mediana_uma_mensual"] * uma_mensual)
 
-    # Factores de anualidad (renta vitalicia anual anticipada, EMSSA-09)
+    # Factores de anualidad (renta vitalicia anual anticipada, EMSSA-09),
+    # cacheados por (sexo, edad de retiro) — la edad puede cambiar por reforma
     i_tec = cfg["economia"]["tasa_tecnica_anualidad"]
-    a65 = {
-        0: factor_anualidad(qx["H"], reglas_sar.EDAD_RETIRO, i_tec),
-        1: factor_anualidad(qx["M"], reglas_sar.EDAD_RETIRO, i_tec),
-    }
+    cache_anualidad: dict[tuple[int, int], float] = {}
+
+    def a_retiro(sexo_j: int, edad_ret: int) -> float:
+        clave = (sexo_j, edad_ret)
+        if clave not in cache_anualidad:
+            tabla = qx["H"] if sexo_j == 0 else qx["M"]
+            cache_anualidad[clave] = factor_anualidad(tabla, edad_ret, i_tec)
+        return cache_anualidad[clave]
 
     pg_mensual = cfg["pension_garantizada"]["pg_mensual_2025"]
     tope_fpb = cfg["fpb"]["tope_mensual_2025"]
-    tope_salarial = reglas_sar.TOPE_SALARIAL_UMA * uma_mensual
-    cs_anual = reglas_sar.CUOTA_SOCIAL_DIARIA_2025 * 365.0
-    cs_tope = reglas_sar.CUOTA_SOCIAL_TOPE_UMA * uma_mensual
 
     ledger_rows = []
     anual_rows = []
@@ -208,13 +213,20 @@ def simular(
                 pension = np.append(pension, np.zeros(n_new))
                 piso_fpb_i = np.append(piso_fpb_i, np.zeros(n_new))
                 anio_retiro = np.append(anio_retiro, np.full(n_new, -1))
+                edad_al_retiro = np.append(edad_al_retiro, np.full(n_new, -1))
                 requiere_pg = np.append(requiere_pg, np.zeros(n_new, dtype=bool))
                 requiere_fpb = np.append(requiere_fpb, np.zeros(n_new, dtype=bool))
                 tasa_reemplazo = np.append(tasa_reemplazo, np.full(n_new, np.nan))
                 saldo_final = np.append(saldo_final, np.full(n_new, np.nan))
                 n += n_new
 
-        activo = vivo & ~retirado & (edad >= 15) & (edad < reglas_sar.EDAD_RETIRO)
+        # -- parámetros de ley del año (con overrides de reforma si aplican) --
+        edad_ret = politica.edad_retiro_en(anio)
+        tope_salarial = politica.tope_salarial_uma_en(anio) * uma_mensual
+        cs_anual = politica.cuota_social_diaria_en(anio) * 365.0
+        cs_tope = politica.cuota_social_tope_uma_en(anio) * uma_mensual
+
+        activo = vivo & ~retirado & (edad >= 15) & (edad < edad_ret)
 
         # -- transición laboral (solo activos en el mercado) -----------------
         if activo.any():
@@ -231,8 +243,8 @@ def simular(
         formal = activo & (estado == FORMAL)
 
         # -- acumulación: S' = (S + A - C)(1 + r) ----------------------------
-        tasa_a = reglas_sar.tasa_aportacion(anio)
-        tasa_c = reglas_sar.tasa_comision(anio)
+        tasa_a = politica.tasa_aportacion(anio)
+        tasa_c = politica.tasa_comision(anio)
         A = np.where(formal, tasa_a * w_cot * 12.0, 0.0)
         A = A + np.where(formal & (w_cot <= cs_tope), cs_anual, 0.0)  # cuota social
         cuenta = vivo & ~retirado
@@ -257,12 +269,12 @@ def simular(
         anios_activo = anios_activo + activo
         suma_sal_formal = suma_sal_formal + np.where(formal, w_cot, 0.0)
 
-        # -- retiro a los 65 --------------------------------------------------
-        cumple_edad = vivo & ~retirado & (edad >= reglas_sar.EDAD_RETIRO) & (anio > anio_val)
+        # -- retiro a la edad legal (65 vigente; reformable) ------------------
+        cumple_edad = vivo & ~retirado & (edad >= edad_ret) & (anio > anio_val)
         salida_retiro = 0.0
         if cumple_edad.any():
             ids = np.where(cumple_edad)[0]
-            sem_req = reglas_sar.semanas_requeridas(anio)
+            sem_req = politica.semanas_requeridas(anio)
             for j in ids:
                 sal_prom = (
                     suma_sal_formal[j] / anios_formal[j]
@@ -270,7 +282,7 @@ def simular(
                     else np.nan
                 )
                 if semanas[j] >= sem_req:
-                    p = saldo[j] / (12.0 * a65[sexo[j]])
+                    p = saldo[j] / (12.0 * a_retiro(sexo[j], edad_ret))
                     if p < pg_mensual:
                         # ⚠️ PROVISIONAL: PG como piso plano (el vigente es
                         # tabulador edad x semanas x salario) pagada por el
@@ -298,6 +310,7 @@ def simular(
                     tasa_reemplazo[j] = 0.0 if anios_formal[j] > 0 else np.nan
                 saldo_final[j] = saldo[j]
                 anio_retiro[j] = anio
+                edad_al_retiro[j] = int(edad[j])
                 salida_retiro += saldo[j]
                 saldo[j] = 0.0
             retirado[cumple_edad] = True
@@ -354,7 +367,11 @@ def simular(
             jub & requiere_fpb, np.maximum(piso_fpb_i - pension, 0.0), 0.0
         )
         costo_fpb = compl.sum() * 12.0 * W
-        pib_t = PIB_2025_MM * (1 + CRECIMIENTO_PIB_REAL) ** (anio - 2025) * 1e6
+        pib_t = (
+            cfg["macro"]["pib_2025_mm"]
+            * (1 + cfg["macro"]["crecimiento_pib_real"]) ** (anio - 2025)
+            * 1e6
+        )
         anual_rows.append(
             {
                 "anio": anio,
@@ -388,7 +405,7 @@ def simular(
             "complemento_FPB_anual": np.where(
                 requiere_fpb, 12.0 * np.maximum(piso_fpb_i - pension, 0.0), 0.0
             ),
-            "edad_retiro": np.where(anio_retiro > 0, reglas_sar.EDAD_RETIRO, -1),
+            "edad_retiro": edad_al_retiro,
             "semilla": semilla if semilla is not None else cfg["semilla"],
         }
     )

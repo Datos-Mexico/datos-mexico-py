@@ -45,9 +45,10 @@
 
 | # | Decisión / supuesto | Dónde vive | Valida |
 |---|--------------------|------------|--------|
-| 18 | **PIB:** 34.9 billones MXN (2025), crecimiento real 2% anual — solo para expresar costo FPB como % del PIB; reemplazar con la senda de Sección 8. | `motor.py` | Ian |
+| 18 | **PIB:** 34.9 billones MXN (2025), crecimiento real 2% anual — solo para expresar costo FPB como % del PIB; reemplazar con la senda de Sección 8. *(2026-07-02: movido de `motor.py` a `config.yaml` sección `macro` — es supuesto de modelado y eje de sensibilidad, no ley; verificado byte-idéntico con misma semilla.)* | `config.yaml::macro` | Ian |
 | 19 | **Escenarios** (§6): ±2 pp sobre la probabilidad de transitar a formal, a partir de 2026. Intervalos con 5 semillas por escenario. | `config.yaml`, `run_skeleton.py` | Equipo |
 | 20 | **Cohorte 2050 de la Figura 2** = retiros 2048–2052 (ventana ±2 años) para tener n≈420 con 5,000 agentes; se etiqueta explícito en la figura. Escalar a 50–100k agentes cuando el motor valide (§10). | `figuras.py` | Equipo |
+| 21 | **Reformas como overrides de ley (2026-07-02):** `reglas_sar.PoliticaSAR` acepta overrides opcionales (aportación, semanas, edad de retiro, cuota social, topes, comisión) con año de entrada en vigor `desde`; los defaults DOF/CONSAR quedan intactos con su cita. `PoliticaSAR()` vacía reproduce byte-idéntico la corrida vigente (verificado con misma semilla); el backcast 1997–2025 nunca se ve afectado por un override. Reformas se declaran en `config.yaml::reformas` (ejemplo ejecutable: `semanas_1250`, smoke test: % sin pensión 68%→80%, costo FPB 2050 0.39→0.18 billones). Piso PG y tope FPB se reforman directo en config (secciones `pension_garantizada`/`fpb`). | `reglas_sar.py::PoliticaSAR`, `config.yaml::reformas` | Equipo (Sección 9) |
 
 ## Estado de la validación 2025 (corrida 2026-07-01, vía API en vivo)
 

@@ -17,6 +17,11 @@ simulacion:
 # La UMA está indexada a inflación por ley => UMA real constante es exacta
 # post-2016 y aproximación aceptable pre-2016 (PROVISIONAL).
 
+# Supuestos macro (NO son ley: ejes del análisis de sensibilidad, Sección 8)
+macro:
+  pib_2025_mm: 34900000.0        # PROVISIONAL: PIB real 2025 en millones MXN — reemplazar con senda de Sección 8 (Ian)
+  crecimiento_pib_real: 0.02     # PROVISIONAL: crecimiento real anual del PIB
+
 economia:
   rendimiento_real_anual: 0.04     # PROVISIONAL: r real constante 4% — calibrar con serie SIEFOREs (rendimientos 36m nominales 6.5-9.4% 2019-2025, client.consar)
   tasa_tecnica_anualidad: 0.03     # PROVISIONAL: tasa técnica real para ä_x — cerrar con Dra. Yáñez
@@ -50,3 +55,17 @@ escenarios:
     delta_densidad_pp: 2.0    # +2 pp densidad de cotización (brief §6)
   pesimista:
     delta_densidad_pp: -2.0
+
+# Reformas (Sección 9): overrides de PARÁMETROS DE LEY sobre reglas_sar.PoliticaSAR.
+# Los valores vigentes (DOF/CONSAR, con cita) viven en reglas_sar.py y son el
+# default; una reforma declara SOLO lo que cambia y desde qué año entra en vigor.
+# El backcast 1997-2025 nunca se ve afectado (los overrides aplican desde `desde`).
+# Claves de override disponibles: tasa_aportacion_total, semanas_requeridas_fijas,
+# edad_retiro, cuota_social_diaria, cuota_social_tope_uma, tope_salarial_uma,
+# comision_pct.
+reformas:
+  semanas_1250:
+    descripcion: Revertir el requisito a 1,250 semanas (nivel pre-reforma 2020)
+    desde: 2027
+    overrides:
+      semanas_requeridas_fijas: 1250
