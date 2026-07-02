@@ -1,0 +1,52 @@
+# Configuración del motor de microsimulación actuarial — Sección 6
+# Paper Amafore-ITAM 2026 · Equipo Datos México
+#
+# Todo parámetro marcado PROVISIONAL está registrado en BITACORA_DECISIONES.md
+# con el responsable de validarlo.
+
+semilla: 20260701          # semilla global NumPy (reproducibilidad commit 1)
+
+simulacion:
+  n_agentes: 5000          # agentes iniciales (población 15-64 en 2025)
+  anio_backcast: 1997      # inicio del SAR (ley 97)
+  anio_validacion: 2025    # el motor debe reproducir este año
+  anio_fin: 2070           # horizonte CONAPO
+  paso: anual              # PROVISIONAL: migrar a trimestral si el calendario lo permite
+
+# Unidades: todos los montos en PESOS REALES DE 2025.
+# La UMA está indexada a inflación por ley => UMA real constante es exacta
+# post-2016 y aproximación aceptable pre-2016 (PROVISIONAL).
+
+economia:
+  rendimiento_real_anual: 0.04     # PROVISIONAL: r real constante 4% — calibrar con serie SIEFOREs (rendimientos 36m nominales 6.5-9.4% 2019-2025, client.consar)
+  tasa_tecnica_anualidad: 0.03     # PROVISIONAL: tasa técnica real para ä_x — cerrar con Dra. Yáñez
+  uma_diaria_2025: 113.14          # DOF/INEGI, valor 2025
+  crecimiento_salarial_edad: 0.020 # PROVISIONAL: pendiente inicial del perfil edad-salario
+  curvatura_perfil_edad: 0.0004    # PROVISIONAL: decaimiento del crecimiento con la edad
+
+salarios:
+  mediana_uma_mensual: 3.5   # PROVISIONAL: mediana salario formal en UMAs mensuales — calibrar IMSS/ENOE (Sección 4, Emiliano)
+  sigma_log: 0.65            # PROVISIONAL: dispersión lognormal — calibrar ENOE
+
+mercado_laboral:
+  # Participaciones observadas ENOE 2025T1 (client.enoe.snapshot_nacional):
+  # pob15+ 101.53M, ocupados 58.92M, desocupados 1.48M, informales 32.10M
+  # => formal 26.4%, informal 31.6%, desempleo 1.5%, fuera de PEA 40.8%
+  persistencia_formal: 0.88      # PROVISIONAL: hand-coded, estimar del panel ENOE (Prioridad 1)
+  persistencia_informal: 0.82    # PROVISIONAL
+  persistencia_desempleo: 0.30   # PROVISIONAL
+  persistencia_fuera: 0.90       # PROVISIONAL
+
+pension_garantizada:
+  pg_mensual_2025: 7750.0    # PROVISIONAL: promedio del tabulador post-2020 (edad x semanas x salario); usar tabulador completo en Fase 2 — confirmar con Fabiola/Yáñez
+
+fpb:
+  tope_mensual_2025: 17532.0 # 16,777.68 (2024) actualizado con inflación 2024->2025 (~4.5%) — PROVISIONAL, verificar contra DOF
+
+escenarios:
+  base:
+    delta_densidad_pp: 0.0
+  optimista:
+    delta_densidad_pp: 2.0    # +2 pp densidad de cotización (brief §6)
+  pesimista:
+    delta_densidad_pp: -2.0

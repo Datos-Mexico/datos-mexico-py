@@ -74,3 +74,6 @@ site/
 # AI agent / operational notes (private — not for the public repo)
 .claude/
 CLAUDE.md
+
+# Motor Sección 6: outputs generados (reproducibles con run_skeleton)
+motor/outputs/
