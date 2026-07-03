@@ -105,6 +105,7 @@ def simular(
     semilla: int | None = None,
     politica: reglas_sar.PoliticaSAR | None = None,
     r_historico: dict[int, float] | None = None,
+    indice_salarial: dict[int, float] | None = None,
 ) -> ResultadoSimulacion:
     """Corre el motor end-to-end: backcast 1997-2025 + proyección 2026-2070.
 
@@ -114,9 +115,15 @@ def simular(
         r_historico: rendimiento real BRUTO observado por año (serie CONSAR
             de precios de gestión deflactada con INPC, bitácora #23). En los
             años sin dato (proyección 2026+) aplica el r constante de config.
+        indice_salarial: nivel salarial real por año calendario (2025=1.0,
+            SBC IMSS deflactado, bitácora #24). Corrige el NIVEL transversal
+            del backcast; el perfil individual edad-salario es TODO Fase 2.
+            Años sin dato (2026+): 1.0 (el secular lo pone g_secular).
     """
     if r_historico is None:
         r_historico = {}
+    if indice_salarial is None:
+        indice_salarial = {}
     if politica is None:
         politica = reglas_sar.PoliticaSAR()
     rng = np.random.default_rng(semilla if semilla is not None else cfg["semilla"])
@@ -244,9 +251,17 @@ def simular(
             estado = np.where(activo, nuevo, estado)
 
         # -- salarios (pesos reales 2025) ------------------------------------
-        # g_secular: crecimiento real de calendario, compartido con el tope
-        # FPB (0 en el skeleton — bitácora #22)
-        log_w = base_log_w + mu + _perfil_edad(edad, cfg) + g_secular * (anio - 2025)
+        # nivel_t: índice salarial real observado del año (backcast, #24);
+        # g_secular: crecimiento real de calendario en proyección, compartido
+        # con el tope FPB (0 en el skeleton — bitácora #22)
+        nivel_t = indice_salarial.get(anio, 1.0)
+        log_w = (
+            base_log_w
+            + mu
+            + _perfil_edad(edad, cfg)
+            + np.log(nivel_t)
+            + g_secular * (anio - 2025)
+        )
         w = np.exp(log_w)
         w_cot = np.minimum(w, tope_salarial)  # tope 25 UMA
 

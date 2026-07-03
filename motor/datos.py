@@ -38,6 +38,29 @@ def cargar_conapo() -> pd.DataFrame:
     return df
 
 
+def cargar_indice_salarial_real() -> dict[int, float]:
+    """Índice de NIVEL salarial real por año calendario (2025 = 1.0).
+
+    SBC promedio de diciembre (microdatos IMSS, ``imss_sbc_promedio.csv``)
+    deflactado con INPC general (SP1). Corrige el nivel transversal del
+    backcast: cada año usa el salario real de su época, no el de 2025.
+
+    ⚠️ [I] El índice mezcla crecimiento salarial puro con RECOMPOSICIÓN del
+    universo cotizante (10.3M cotizantes en 1997 → 22.5M en 2025); NO es
+    "crecimiento del salario individual". Ver bitácora #24.
+    """
+    sbc = pd.read_csv(DATA_DIR / "imss_sbc_promedio.csv")
+    sbc = sbc[sbc["mes"] == 12]
+    inpc = pd.read_csv(DATA_DIR / "inpc_mensual.csv")
+    inpc_dic = inpc[inpc["mes"] == 12].set_index("anio")["inpc"]
+    real = {
+        int(r.anio): float(r.sbc_diario_nominal) / float(inpc_dic[r.anio])
+        for r in sbc.itertuples()
+    }
+    base = real[2025]
+    return {a: v / base for a, v in real.items()}
+
+
 def cargar_rendimientos_reales() -> dict[int, float]:
     """Serie anual de rendimiento BRUTO real del sistema 1997-2025.
 

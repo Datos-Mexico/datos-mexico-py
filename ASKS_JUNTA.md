@@ -60,12 +60,16 @@ responde; todas las llamadas de validación corren en vivo con fallback estátic
    estático como CNSF/CONAPO?
 5. **Escala:** skeleton corre con 5,000 agentes (1.2s las 15 corridas).
    ¿Subimos a 50–100k ya o después de calibrar?
-6. **Serie de salario medio de cotización IMSS:** no está en el SDK
-   (verificado 2026-07-02: consar/enoe/enigh no la exponen) y el motor la
-   necesita dos veces — (a) el tope FPB equivale al salario medio IMSS del
-   año previo (hoy interpolamos entre las dos anclas oficiales 2024/2026,
-   bitácora #22), (b) calibración del nivel salarial (supuesto #7).
-   ¿Se absorbe al observatorio o archivo estático?
+6. **Serie de salario medio de cotización IMSS — LOCALIZADA, absorber al
+   SDK:** no existe agregada en ningún lado; la derivamos de los microdatos
+   de Datos Abiertos IMSS (datos.imss.gob.mx, `asg-1997`…`asg-2026`,
+   ~390 MB/mes; SBC = masa_sal_ta/ta_sal). Validada al 0.007% contra el
+   punto público de may-2026 (bitácora #24). Hoy es estático anual
+   (diciembres) en `motor/data/imss_sbc_promedio.csv`. **Triple uso:**
+   (a) tope FPB (= salario medio IMSS del año previo, #22), (b) calibración
+   del nivel salarial (#7), (c) backcast salarial del motor (#24, ya en
+   producción). El microdato trae sexo/edad/entidad/sector — absorber al
+   observatorio daría además el perfil por sexo/edad para Fase 2.
 7. **Serie INPC al SDK:** el motor ya la necesita permanentemente (deflactar
    rendimientos, bitácora #23; futuro: salidas nominales para Sección 8).
    Hoy es estático `motor/data/inpc_mensual.csv` (Banxico SIE, serie SP1).

@@ -24,6 +24,7 @@ import yaml
 from motor import figuras
 from motor.datos import (
     cargar_conapo,
+    cargar_indice_salarial_real,
     cargar_mortalidad,
     cargar_rendimientos_reales,
     participaciones_enoe,
@@ -58,6 +59,9 @@ def main() -> int:
     print(f"      rendimiento real bruto observado: {min(r_hist)}-{max(r_hist)} "
           f"(media {sum(r_hist.values()) / len(r_hist):.2%}); proyección: "
           f"{cfg['economia']['rendimiento_real_anual']:.1%} constante")
+    indice_sal = cargar_indice_salarial_real()
+    print(f"      índice salarial real (2025=1.0): 1997={indice_sal[1997]:.3f} "
+          f"2005={indice_sal[2005]:.3f} 2015={indice_sal[2015]:.3f}")
     print(f"      vector aportación RCV (extracto): 2022={vector_tasas_aportacion()[2022]:.3%} "
           f"2024={vector_tasas_aportacion()[2024]:.3%} 2030={vector_tasas_aportacion()[2030]:.3%}")
 
@@ -71,7 +75,7 @@ def main() -> int:
             semilla = cfg["semilla"] + rep
             res = simular(
                 cfg, conapo, qx, part, escenario=esc, semilla=semilla,
-                r_historico=r_hist,
+                r_historico=r_hist, indice_salarial=indice_sal,
             )
             res.agentes["semilla"] = semilla
             res.anual["semilla"] = semilla
