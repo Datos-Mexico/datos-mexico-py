@@ -76,14 +76,17 @@ def cargar_rendimientos_reales() -> dict[int, float]:
 # Targets de validación 2025 (CONSAR vía SDK, con fallback estático).
 # ---------------------------------------------------------------------------
 
-# Valores observados consultados en vivo el 2026-07-01 (api.datos-itam.org):
+# Targets IMSS-solo (alcance de #25). Valores consultados 2026-07-02:
 _FALLBACK_TARGETS = {
     # RCV-IMSS dic-2025, millones MXN corrientes (consar.recursos_composicion)
     "rcv_imss_mm": 6_891_289.59,
-    # Cotizantes 2024 (consar.pea_cotizantes_serie, último punto)
-    "cotizantes": 29_119_328,
-    # Total cuentas SAR dic-2025 (consar.cuentas_sistema total_cuentas_sar)
-    "cuentas_totales": 77_772_954,
+    # Cotizantes IMSS dic-2025 (ta_sal, microdatos IMSS — data/imss_sbc_promedio.csv).
+    # Nota: ta_sal cuenta PUESTOS con salario, no personas; ENOE reporta
+    # 19.5M personas IMSS (brecha encuesta-vs-registro ~13%, bitácora #25).
+    "cotizantes": 22_451_506,
+    # Cuentas de trabajadores IMSS dic-2025 (consar.cuentas_snapshot,
+    # métrica trabajadores_imss)
+    "cuentas_totales": 50_125_301,
 }
 
 # Participaciones ENOE 2025T1 (client.enoe.snapshot_nacional):
@@ -98,7 +101,14 @@ _FALLBACK_ENOE = {
 def targets_validacion(usar_api: bool = True) -> dict:
     """Agregados observados 2025 contra los que valida el motor."""
     targets = dict(_FALLBACK_TARGETS)
-    targets["fuente"] = "fallback estático (consultado 2026-07-01)"
+    targets["fuente"] = "fallback estático (consultado 2026-07-02)"
+    try:
+        # cotizantes IMSS: ta_sal del estático (fuente primaria IMSS, dic-2025)
+        sbc = pd.read_csv(DATA_DIR / "imss_sbc_promedio.csv")
+        dic = sbc[(sbc["mes"] == 12) & (sbc["anio"] == 2025)]
+        targets["cotizantes"] = int(dic["ta_sal"].iloc[0])
+    except Exception:
+        pass
     if not usar_api:
         return targets
     try:
@@ -109,10 +119,15 @@ def targets_validacion(usar_api: bool = True) -> dict:
             for item in comp.componentes:
                 if item.tipo_codigo == "rcv_imss":
                     targets["rcv_imss_mm"] = float(item.monto_mxn_mm)
-            pea = client.consar.pea_cotizantes_serie()
-            targets["cotizantes"] = int(pea.serie[-1].cotizantes)
-            cuentas = client.consar.cuentas_sistema(metrica="total_cuentas_sar")
-            targets["cuentas_totales"] = int(cuentas.serie[-1].valor)
+            # cuentas de trabajadores IMSS (alcance IMSS-solo, #25)
+            snap = client.consar.cuentas_snapshot("2025-12-01")
+            targets["cuentas_totales"] = int(
+                sum(
+                    f.valor
+                    for f in snap.filas
+                    if f.metrica_slug == "trabajadores_imss" and f.valor is not None
+                )
+            )
             targets["fuente"] = "client.consar en vivo (api.datos-itam.org)"
     except Exception as exc:
         targets["fuente"] = f"fallback estático (API no disponible: {exc})"

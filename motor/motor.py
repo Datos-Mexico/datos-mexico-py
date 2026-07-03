@@ -165,6 +165,12 @@ def simular(
     n = n0
     estado = rng.choice(4, size=n, p=pi0)
     mu = rng.normal(0.0, cfg["salarios"]["sigma_log"], size=n)
+    # ⚠️ Alcance IMSS-solo (bitácora #25): flag persistente de sector.
+    # Los ISSSTE se modelan (transitan, ganan salario) pero no aportan al
+    # agregado RCV-IMSS ni acumulan semanas IMSS. Activable si el equipo
+    # amplía el alcance a IMSS+ISSSTE (decisión PENDIENTE).
+    p_issste = cfg["mercado_laboral"]["prop_issste_formales"]
+    sector_issste = rng.random(n) < p_issste
     saldo = np.zeros(n)
     semanas = np.zeros(n)
     anios_formal = np.zeros(n)
@@ -216,6 +222,7 @@ def simular(
                 p_h = ent[ent["sexo"] == "H"]["poblacion"].sum() / pob15
                 edad = np.append(edad, np.full(n_new, 15.0))
                 sexo = np.append(sexo, (rng.random(n_new) > p_h).astype(int))
+                sector_issste = np.append(sector_issste, rng.random(n_new) < p_issste)
                 estado = np.append(estado, rng.choice(4, size=n_new, p=pi0))
                 mu = np.append(mu, rng.normal(0.0, cfg["salarios"]["sigma_log"], n_new))
                 saldo = np.append(saldo, np.zeros(n_new))
@@ -265,13 +272,16 @@ def simular(
         w = np.exp(log_w)
         w_cot = np.minimum(w, tope_salarial)  # tope 25 UMA
 
+        # formal_imss: canal que aporta al RCV-IMSS (target de validación).
+        # Los formales ISSSTE quedan modelados pero fuera del target (#25).
         formal = activo & (estado == FORMAL)
+        formal_imss = formal & ~sector_issste
 
         # -- acumulación: S' = (S + A - C)(1 + r) ----------------------------
         tasa_a = politica.tasa_aportacion(anio)
         tasa_c = politica.tasa_comision(anio)
-        A = np.where(formal, tasa_a * w_cot * 12.0, 0.0)
-        A = A + np.where(formal & (w_cot <= cs_tope), cs_anual, 0.0)  # cuota social
+        A = np.where(formal_imss, tasa_a * w_cot * 12.0, 0.0)
+        A = A + np.where(formal_imss & (w_cot <= cs_tope), cs_anual, 0.0)  # cuota social
         cuenta = vivo & ~retirado
         C = np.where(cuenta, tasa_c * saldo, 0.0)
         base = np.where(cuenta, saldo + A - C, saldo)
@@ -292,10 +302,10 @@ def simular(
         saldo_total_pre = saldo[vivo].sum()
         saldo = saldo_nuevo
 
-        semanas = semanas + np.where(formal, 52.0, 0.0)
-        anios_formal = anios_formal + formal
+        semanas = semanas + np.where(formal_imss, 52.0, 0.0)
+        anios_formal = anios_formal + formal_imss
         anios_activo = anios_activo + activo
-        suma_sal_formal = suma_sal_formal + np.where(formal, w_cot, 0.0)
+        suma_sal_formal = suma_sal_formal + np.where(formal_imss, w_cot, 0.0)
 
         # -- retiro a la edad legal (65 vigente; reformable) ------------------
         cumple_edad = vivo & ~retirado & (edad >= edad_ret) & (anio > anio_val)
@@ -387,7 +397,7 @@ def simular(
         if anio == anio_val:
             validacion = {
                 "saldo_rcv_simulado_mm": saldo[vivo & ~retirado].sum() * W / 1e6,
-                "cotizantes_simulados": int(formal.sum() * W),
+                "cotizantes_simulados": int(formal_imss.sum() * W),
                 "cuentas_simuladas": int((vivo & (saldo > 0)).sum() * W),
                 "peso_agente": W,
             }
@@ -437,6 +447,7 @@ def simular(
                 requiere_fpb, 12.0 * np.maximum(piso_fpb_i - pension, 0.0), 0.0
             ),
             "edad_retiro": edad_al_retiro,
+            "sector_issste": sector_issste,  # fuera del target IMSS; activable (#25)
             "semilla": semilla if semilla is not None else cfg["semilla"],
         }
     )

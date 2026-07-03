@@ -45,6 +45,11 @@ mercado_laboral:
   persistencia_informal: 0.82    # PROVISIONAL
   persistencia_desempleo: 0.30   # PROVISIONAL
   persistencia_fuera: 0.90       # PROVISIONAL
+  # Fracción de formales afiliados a ISSSTE (federal 15.2% + estatal 1.2%),
+  # ENOE 2025T1 ponderado con fac_tri, variable imssissste (bitácora #25).
+  # El motor los modela pero NO aportan al agregado RCV-IMSS (alcance
+  # IMSS-solo; IMSS+ISSSTE es decisión de equipo PENDIENTE).
+  prop_issste_formales: 0.164
 
 pension_garantizada:
   pg_mensual_2025: 7750.0    # PROVISIONAL: promedio del tabulador post-2020 (edad x semanas x salario); usar tabulador completo en Fase 2 — confirmar con Fabiola/Yáñez

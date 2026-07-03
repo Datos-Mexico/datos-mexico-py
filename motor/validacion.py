@@ -22,12 +22,12 @@ def comparar(validacion_sim: dict, usar_api: bool = True) -> pd.DataFrame:
             "observado": obs["rcv_imss_mm"] / 1e6,
         },
         {
-            "metrica": "Cotizantes (millones)",
+            "metrica": "Cotizantes IMSS (millones)",
             "simulado": validacion_sim["cotizantes_simulados"] / 1e6,
             "observado": obs["cotizantes"] / 1e6,
         },
         {
-            "metrica": "Cuentas con saldo (millones)",
+            "metrica": "Cuentas trabajadores IMSS (millones)",
             "simulado": validacion_sim["cuentas_simuladas"] / 1e6,
             "observado": obs["cuentas_totales"] / 1e6,
         },
