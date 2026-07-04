@@ -11,6 +11,8 @@ Remapeos aplicados (bitácora Fase 4, smoke test):
 3. Semántica formal: formal_IMSS (solo IMSS) se carga en FORMAL[0] del
    motor (que incluye ISSSTE). Aproximación aceptada SOLO para smoke
    test; se loguea advertencia al cargar.
+4. Anualización: el CSV es UN trimestre (2024T3→T4) y el motor transita
+   una vez por año → P_anual = P_trim^4 (ver docstring de cargar_matrices).
 """
 
 import csv
@@ -30,8 +32,18 @@ ESTADO_A_IDX = {"formal_IMSS": 0, "informal": 1, "desempleado": 2, "fuera_PEA": 
 SEXO_A_MOTOR = {"hombre": 0, "mujer": 1}
 
 
-def cargar_matrices(ruta: Path = RUTA_CSV_DEFAULT) -> dict:
-    """Devuelve {(grupo_edad, sexo_motor, escolaridad): P 4x4 row-stochastic}."""
+def cargar_matrices(ruta: Path = RUTA_CSV_DEFAULT, anualizar: bool = True) -> dict:
+    """Devuelve {(grupo_edad, sexo_motor, escolaridad): P 4x4 row-stochastic}.
+
+    Anualización (fix Fase 4): el CSV trae transiciones de UN trimestre
+    (2024T3→T4) y el motor transita una vez por AÑO, así que con
+    anualizar=True (default) se devuelve P_anual = P_trim^4 (potencia de
+    matriz, np.linalg.matrix_power). Supuesto: cadena de Markov de primer
+    orden estacionaria dentro del año; el sesgo por dependencia de
+    duración (p.ej. permanencia formal correlacionada entre trimestres)
+    se absorbe en el re-anclaje contra densidad observada (Fase 5).
+    anualizar=False devuelve la matriz trimestral cruda (diagnóstico).
+    """
     # Remapeo 3: advertencia de semántica formal, siempre visible al cargar
     logger.warning(
         "SEMÁNTICA FORMAL: formal_IMSS del CSV (solo IMSS) se mapea a "
@@ -64,6 +76,18 @@ def cargar_matrices(ruta: Path = RUTA_CSV_DEFAULT) -> dict:
             raise ValueError(
                 f"Perfil {llave}: filas no suman 1 (sumas={p.sum(axis=1)})"
             )
+
+    if anualizar:
+        for llave, p in matrices.items():
+            p_anual = np.linalg.matrix_power(p, 4)
+            if not np.allclose(p_anual.sum(axis=1), 1.0, atol=1e-9):
+                raise ValueError(
+                    f"Perfil {llave}: P^4 no row-stochastic "
+                    f"(sumas={p_anual.sum(axis=1)})"
+                )
+            matrices[llave] = p_anual
+        logger.info("Anualización aplicada: P_anual = P_trim^4 en %d perfiles",
+                    len(matrices))
 
     logger.info("Perfiles cargados: %d (esperado 48)", len(matrices))
     if baja_confianza:
