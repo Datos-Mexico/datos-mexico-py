@@ -106,6 +106,7 @@ def simular(
     politica: reglas_sar.PoliticaSAR | None = None,
     r_historico: dict[int, float] | None = None,
     indice_salarial: dict[int, float] | None = None,
+    matriz_heterogenea: bool = False,
 ) -> ResultadoSimulacion:
     """Corre el motor end-to-end: backcast 1997-2025 + proyección 2026-2070.
 
@@ -119,6 +120,11 @@ def simular(
             SBC IMSS deflactado, bitácora #24). Corrige el NIVEL transversal
             del backcast; el perfil individual edad-salario es TODO Fase 2.
             Años sin dato (2026+): 1.0 (el secular lo pone g_secular).
+        matriz_heterogenea: ⚠️ SMOKE TEST Fase 4 (Brecha 2). Si True, la
+            transición usa matrices ENOE por perfil (edad x sexo x escolaridad,
+            analisis/matrices/) en vez de la M homogénea. La ruta homogénea
+            queda intacta con False. Limitación: el delta de escenario
+            (delta_densidad_pp) NO aplica a la ruta heterogénea en v1.
     """
     if r_historico is None:
         r_historico = {}
@@ -153,6 +159,37 @@ def simular(
     idx = rng.choice(len(c25), size=n0, p=pesos_pob / pesos_pob.sum())
     edad_2025 = c25["edad"].to_numpy()[idx]
     sexo = np.where(c25["sexo"].to_numpy()[idx] == "H", 0, 1)
+
+    # ------------------------------------------------------------------
+    # ⚠️ SMOKE TEST Fase 4 (Brecha 2): matrices de transición heterogéneas.
+    # Import perezoso desde analisis/matrices — solo se toca esta ruta con
+    # el flag activo; con False el motor no importa ni carga nada extra.
+    # ------------------------------------------------------------------
+    tensor_P = None
+    esc_idx = None
+    if matriz_heterogenea:
+        import sys
+        from pathlib import Path
+
+        ruta_mat = str(Path(__file__).resolve().parent.parent / "analisis" / "matrices")
+        if ruta_mat not in sys.path:
+            sys.path.insert(0, ruta_mat)
+        from asignacion_perfiles import (
+            ESCOLARIDADES,
+            asigna_escolaridad_idx,
+            construye_tensor,
+            filas_transicion,
+            marginal_escolaridad,
+        )
+        from carga_matrices import cargar_matrices
+
+        marginal_esc = marginal_escolaridad()
+        tensor_P = construye_tensor(cargar_matrices())
+        # Escolaridad v1: estática, muestreada de la marginal ENOE 2024T3
+        # con la edad observada en 2025 (la marginal es transversal).
+        esc_idx = asigna_escolaridad_idx(
+            edad_2025.astype(float), sexo, rng, marginal_esc
+        )
 
     # Entrantes 2026-2070: cohortes de 15 años según CONAPO
     entrantes = {
@@ -222,6 +259,11 @@ def simular(
                 p_h = ent[ent["sexo"] == "H"]["poblacion"].sum() / pob15
                 edad = np.append(edad, np.full(n_new, 15.0))
                 sexo = np.append(sexo, (rng.random(n_new) > p_h).astype(int))
+                if matriz_heterogenea:
+                    # entrantes de 15: proxy 25-29 (mismo fallback del Paso 2)
+                    esc_idx = np.append(esc_idx, asigna_escolaridad_idx(
+                        np.full(n_new, 15.0), sexo[-n_new:], rng, marginal_esc
+                    ))
                 sector_issste = np.append(sector_issste, rng.random(n_new) < p_issste)
                 estado = np.append(estado, rng.choice(4, size=n_new, p=pi0))
                 mu = np.append(mu, rng.normal(0.0, cfg["salarios"]["sigma_log"], n_new))
@@ -253,7 +295,13 @@ def simular(
         # -- transición laboral (solo activos en el mercado) -----------------
         if activo.any():
             u = rng.random(n)
-            cum = np.cumsum(M[estado], axis=1)
+            if matriz_heterogenea:
+                # fila origen de P^(g) por agente; bin de edad recalculado
+                # cada año (el perfil envejece con el agente)
+                filas = filas_transicion(tensor_P, edad, sexo, esc_idx, estado)
+            else:
+                filas = M[estado]
+            cum = np.cumsum(filas, axis=1)
             nuevo = np.clip((u[:, None] > cum).sum(axis=1), 0, 3)
             estado = np.where(activo, nuevo, estado)
 
@@ -448,9 +496,12 @@ def simular(
             ),
             "edad_retiro": edad_al_retiro,
             "sector_issste": sector_issste,  # fuera del target IMSS; activable (#25)
+            "semanas_cotizadas": semanas,
             "semilla": semilla if semilla is not None else cfg["semilla"],
         }
     )
+    if matriz_heterogenea:
+        df_ag["escolaridad"] = np.array(ESCOLARIDADES, dtype=object)[esc_idx]
     return ResultadoSimulacion(
         agentes=df_ag,
         anual=pd.DataFrame(anual_rows),
