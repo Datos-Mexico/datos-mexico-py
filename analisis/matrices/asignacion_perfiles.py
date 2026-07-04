@@ -143,12 +143,18 @@ def asigna_escolaridad_idx(
 
 # ------------------------------------------------- vectorización (Paso 3)
 def construye_tensor(matrices: dict) -> np.ndarray:
-    """Tensor (8 grupos_edad, 2 sexos, 3 escolaridades, 4, 4) row-stochastic.
+    """Tensor (8 grupos_edad, 2 sexos, 3 escolaridades, E, E) row-stochastic.
 
+    E = nº de estados, inferido de las matrices (4 en v1 trimestral, 5 en
+    las anuales de Fase 2.5; el orden de estados lo fija el loader que
+    produjo el dict: ESTADO_A_IDX o ESTADOS_ANUALES de carga_matrices).
     Permite indexar P^(g) por agente sin romper la vectorización del motor:
-    tensor[g_idx, sexo, esc_idx] es la matriz 4x4 del perfil.
+    tensor[g_idx, sexo, esc_idx] es la matriz ExE del perfil.
     """
-    tensor = np.empty((len(GRUPOS_EDAD), 2, len(ESCOLARIDADES), 4, 4))
+    n_estados = next(iter(matrices.values())).shape[0]
+    tensor = np.empty(
+        (len(GRUPOS_EDAD), 2, len(ESCOLARIDADES), n_estados, n_estados)
+    )
     for gi, g in enumerate(GRUPOS_EDAD):
         for sx in (0, 1):
             for ei, esc in enumerate(ESCOLARIDADES):
@@ -161,7 +167,7 @@ def filas_transicion(
     tensor: np.ndarray, edad: np.ndarray, sexo: np.ndarray,
     esc_idx: np.ndarray, estado: np.ndarray,
 ) -> np.ndarray:
-    """Fila origen=estado de P^(g) de cada agente, vectorizado → (n, 4).
+    """Fila origen=estado de P^(g) de cada agente, vectorizado → (n, E).
 
     Binning con los mismos fallbacks de grupo_edad_de:
     - edad < 25 (incluye edades negativas del backcast) → grupo 0
@@ -178,24 +184,30 @@ def filas_transicion(
 # ---------------------------------------------------------------- pieza 3
 def marginales_por_grupo(
     matrices: dict, ruta_csv: Path | None = None,
+    estado_a_idx: dict[str, int] | None = None,
 ) -> dict[str, np.ndarray]:
-    """Matriz marginal 4x4 por grupo_edad, para fallback del lookup.
+    """Matriz marginal ExE por grupo_edad, para fallback del lookup.
 
     Promedio de los 6 perfiles (2 sexos x 3 escolaridades) del grupo,
     ponderando cada fila-origen por su n_muestra_pond en el CSV.
+    Defaults = ruta y estados v1 (4x4); para las anuales 5x5 pasar
+    RUTA_CSV_ANUALES y ESTADO_A_IDX_ANUALES de carga_matrices.
     """
     from carga_matrices import ESTADO_A_IDX, RUTA_CSV_DEFAULT, SEXO_A_MOTOR
 
+    if estado_a_idx is None:
+        estado_a_idx = ESTADO_A_IDX
+    n_estados = len(estado_a_idx)
     df = pd.read_csv(ruta_csv or RUTA_CSV_DEFAULT, sep="|")
     pesos = df.drop_duplicates(["grupo_edad", "sexo", "escolaridad", "estado_origen"])
     out: dict[str, np.ndarray] = {}
     for g in GRUPOS_EDAD:
-        num = np.zeros((4, 4))
-        den = np.zeros(4)
+        num = np.zeros((n_estados, n_estados))
+        den = np.zeros(n_estados)
         sub = pesos[pesos["grupo_edad"] == g]
         for _, fila in sub.iterrows():
             llave = (g, SEXO_A_MOTOR[fila["sexo"]], fila["escolaridad"])
-            i = ESTADO_A_IDX[fila["estado_origen"]]
+            i = estado_a_idx[fila["estado_origen"]]
             w = float(fila["n_muestra_pond"])
             num[i] += w * matrices[llave][i]
             den[i] += w
@@ -277,3 +289,91 @@ if __name__ == "__main__":
               f"grupo={grupo_edad_de(edad[k])}")
         with np.printoptions(precision=6, suppress=True):
             print(f"  fila formal: {P[0]}  (suma={P[0].sum():.9f})")
+
+    # ================= VERIFICACIÓN PASO 2: 5 estados =================
+    print("\n" + "=" * 64)
+    print("VERIFICACIÓN PASO 2: tensor y perfiles a 5 estados")
+    print("=" * 64)
+    from carga_matrices import (
+        ESTADO_A_IDX_ANUALES,
+        ESTADOS_ANUALES,
+        RUTA_CSV_ANUALES,
+        cargar_matrices_anuales,
+    )
+
+    # 1) tensor 5x5 anual
+    anuales = cargar_matrices_anuales()
+    t5 = construye_tensor(anuales)
+    assert t5.shape == (8, 2, 3, 5, 5), t5.shape
+    assert np.allclose(t5.sum(axis=-1), 1.0, atol=1e-9)
+    print(f"tensor ANUAL: shape {t5.shape}; filas del último eje suman 1 ✓")
+
+    # 2) tensor v1 4x4 intacto: shape y contenido celda a celda
+    t4 = construye_tensor(matrices)
+    assert t4.shape == (8, 2, 3, 4, 4), t4.shape
+    for gi, g in enumerate(GRUPOS_EDAD):
+        for sx in (0, 1):
+            for ei, e5 in enumerate(ESCOLARIDADES):
+                assert np.array_equal(t4[gi, sx, ei], matrices[(g, sx, e5)])
+    print(f"tensor v1: shape {t4.shape}; contenido == matrices v1 celda a celda ✓")
+
+    # 3) filas_transicion 5x5, 3 agentes de perfiles distintos
+    edad3 = np.array([30.0, 52.0, 30.0])
+    sexo3 = np.array([0, 1, 1])
+    esc3 = np.array([ESC_A_IDX["superior"], ESC_A_IDX["basica-"],
+                     ESC_A_IDX["media_sup"]])
+    est3 = np.array([0, 2, 4])  # formal_IMSS, informal, fuera_PEA
+    f3 = filas_transicion(t5, edad3, sexo3, esc3, est3)
+    assert f3.shape == (3, 5), f3.shape
+    assert np.array_equal(f3[0], anuales[("30-34", 0, "superior")][0])
+    assert np.array_equal(f3[1], anuales[("50-54", 1, "basica-")][2])
+    assert np.array_equal(f3[2], anuales[("30-34", 1, "media_sup")][4])
+    assert not np.allclose(f3[0], f3[1]) and not np.allclose(f3[1], f3[2])
+    print("filas_transicion: shape (3, 5); lookup directo coincide; filas "
+          "difieren entre perfiles ✓")
+    with np.printoptions(precision=4, suppress=True):
+        for k, desc in enumerate([
+            "H 30 superior, origen formal_IMSS",
+            "M 52 basica-, origen informal",
+            "M 30 media_sup, origen fuera_PEA",
+        ]):
+            print(f"  {desc}: {f3[k]}")
+
+    # 4) marginales_por_grupo 5x5: row-stochastic + promedio ponderado manual
+    marg5 = marginales_por_grupo(anuales, RUTA_CSV_ANUALES,
+                                 ESTADO_A_IDX_ANUALES)
+    assert set(marg5) == set(GRUPOS_EDAD)
+    for g, m in marg5.items():
+        assert m.shape == (5, 5), (g, m.shape)
+        assert np.allclose(m.sum(axis=1), 1.0, atol=1e-9), g
+    df_csv = pd.read_csv(RUTA_CSV_ANUALES, sep="|")
+    pesos = df_csv.drop_duplicates(
+        ["grupo_edad", "sexo", "escolaridad", "estado_origen"])
+    sub = pesos[(pesos["grupo_edad"] == "30-34")
+                & (pesos["estado_origen"] == "formal_IMSS")]
+    assert len(sub) == 6  # 2 sexos x 3 escolaridades del grupo
+    num = np.zeros(5)
+    den = 0.0
+    for _, fila in sub.iterrows():
+        llave5 = ("30-34", {"hombre": 0, "mujer": 1}[fila["sexo"]],
+                  fila["escolaridad"])
+        num += float(fila["n_muestra_pond"]) * anuales[llave5][0]
+        den += float(fila["n_muestra_pond"])
+    manual = num / den
+    manual = manual / manual.sum()
+    assert np.allclose(manual, marg5["30-34"][0], atol=1e-12)
+    print("marginales 5x5: row-stochastic los 8 grupos; fila formal_IMSS de "
+          "30-34 == promedio manual sobre los 6 perfiles ✓")
+
+    # 5) fallback 15-24 y marginal de escolaridad: sin cambios
+    assert sorted(set(df_csv["grupo_edad"])) == sorted(GRUPOS_EDAD)
+    assert grupo_edad_de(17.0) == "25-29"
+    assert grupo_edad_de(24.9) == "25-29"
+    assert grupo_edad_de(66.0) is None
+    assert list(marginal.columns) == ESCOLARIDADES
+    assert len(marginal) == 2 * len(GRUPOS_EDAD)
+    print("fallback 15-24→'25-29' y ≥65→None intactos; CSV anual usa los "
+          "mismos 8 quinquenios 25-64; marginal escolaridad sin cambios "
+          f"({len(marginal)} filas = 2 sexos x 8 grupos) ✓")
+    print(f"\nestados (orden del contrato): {ESTADOS_ANUALES}")
+    print("VERIFICACIÓN PASO 2 COMPLETA ✓")
