@@ -120,11 +120,21 @@ def simular(
             SBC IMSS deflactado, bitácora #24). Corrige el NIVEL transversal
             del backcast; el perfil individual edad-salario es TODO Fase 2.
             Años sin dato (2026+): 1.0 (el secular lo pone g_secular).
-        matriz_heterogenea: ⚠️ SMOKE TEST Fase 4 (Brecha 2). Si True, la
-            transición usa matrices ENOE por perfil (edad x sexo x escolaridad,
-            analisis/matrices/) en vez de la M homogénea. La ruta homogénea
-            queda intacta con False. Limitación: el delta de escenario
-            (delta_densidad_pp) NO aplica a la ruta heterogénea en v1.
+        matriz_heterogenea: ruta de 5 ESTADOS (Fase 2.5/Paso 3, Brecha 2).
+            Si True, la transición usa las matrices ANUALES 5x5 por perfil
+            (edad x sexo x escolaridad; formal_IMSS, formal_ISSSTE,
+            informal, desempleado, fuera_PEA — orden de ESTADOS_ANUALES en
+            analisis/matrices/carga_matrices.py), estimadas directas del
+            panel ENOE 1ª↔5ª entrevista 2015-2024. El estado inicial
+            (stock 2025 y entrantes) se sortea de los shares ENOE 2025T1
+            partiendo formal con prop_issste_formales; el flag
+            sector_issste NO se sortea (el estado gobierna el sector, la
+            columna de salida se deriva del estado final). SUPUESTO
+            backcast: el tensor 5x5 (promedio 2015-2024) aplica en TODO el
+            horizonte 1997-2070, también hacia atrás. La ruta homogénea (4
+            estados, False) queda intacta bit a bit. Limitación vigente:
+            el delta de escenario (delta_densidad_pp) NO aplica a la ruta
+            heterogénea (pendiente de paso dedicado).
     """
     if r_historico is None:
         r_historico = {}
@@ -161,12 +171,13 @@ def simular(
     sexo = np.where(c25["sexo"].to_numpy()[idx] == "H", 0, 1)
 
     # ------------------------------------------------------------------
-    # ⚠️ SMOKE TEST Fase 4 (Brecha 2): matrices de transición heterogéneas.
+    # Ruta heterogénea (Fase 2.5, 5 estados): matrices ANUALES por perfil.
     # Import perezoso desde analisis/matrices — solo se toca esta ruta con
     # el flag activo; con False el motor no importa ni carga nada extra.
     # ------------------------------------------------------------------
     tensor_P = None
     esc_idx = None
+    etiquetas_estado = np.array(ESTADOS, dtype=object)
     if matriz_heterogenea:
         import sys
         from pathlib import Path
@@ -181,10 +192,31 @@ def simular(
             filas_transicion,
             marginal_escolaridad,
         )
-        from carga_matrices import cargar_matrices
+        from carga_matrices import (
+            ESTADO_A_IDX_ANUALES,
+            ESTADOS_ANUALES,
+            cargar_matrices_anuales,
+        )
 
         marginal_esc = marginal_escolaridad()
-        tensor_P = construye_tensor(cargar_matrices())
+        # Tensor 5x5 ANUAL (sin P^4). ⚠️ SUPUESTO backcast (decisión c):
+        # el promedio 2015-2024 aplica en todo el horizonte, también
+        # hacia atrás — continuidad individual sobre fidelidad de época.
+        tensor_P = construye_tensor(cargar_matrices_anuales())
+        etiquetas_estado = np.array(ESTADOS_ANUALES, dtype=object)
+        n_est_het = len(ESTADOS_ANUALES)
+        idx_f_imss = ESTADO_A_IDX_ANUALES["formal_IMSS"]
+        idx_f_issste = ESTADO_A_IDX_ANUALES["formal_ISSSTE"]
+        # Distribución inicial de 5 estados (decisión b, fix punto ciego
+        # pi0): shares ENOE 2025T1 con formal partido por prop_issste.
+        p_issste_h = cfg["mercado_laboral"]["prop_issste_formales"]
+        pi0_het = np.empty(n_est_het)
+        pi0_het[idx_f_imss] = participaciones["formal"] * (1.0 - p_issste_h)
+        pi0_het[idx_f_issste] = participaciones["formal"] * p_issste_h
+        pi0_het[ESTADO_A_IDX_ANUALES["informal"]] = participaciones["informal"]
+        pi0_het[ESTADO_A_IDX_ANUALES["desempleado"]] = participaciones["desempleado"]
+        pi0_het[ESTADO_A_IDX_ANUALES["fuera_PEA"]] = participaciones["fuera"]
+        pi0_het = pi0_het / pi0_het.sum()
         # Escolaridad v1: estática, muestreada de la marginal ENOE 2024T3
         # con la edad observada en 2025 (la marginal es transversal).
         esc_idx = asigna_escolaridad_idx(
@@ -200,14 +232,23 @@ def simular(
     # Arrays de estado (crecen con los entrantes)
     edad = (edad_2025 - (2025 - anio_ini)).astype(float)  # edad en 1997
     n = n0
-    estado = rng.choice(4, size=n, p=pi0)
+    if matriz_heterogenea:
+        # 5 estados: distribución inicial ENOE (pi0_het), no la
+        # estacionaria homogénea de 4. El flag sector_issste NO se
+        # sortea: el estado gobierna el sector (decisión b).
+        estado = rng.choice(n_est_het, size=n, p=pi0_het)
+        sector_issste = np.zeros(n, dtype=bool)  # placeholder; derivado al final
+    else:
+        estado = rng.choice(4, size=n, p=pi0)
+        sector_issste = None  # se sortea abajo (ruta homogénea intacta)
     mu = rng.normal(0.0, cfg["salarios"]["sigma_log"], size=n)
     # ⚠️ Alcance IMSS-solo (bitácora #25): flag persistente de sector.
     # Los ISSSTE se modelan (transitan, ganan salario) pero no aportan al
     # agregado RCV-IMSS ni acumulan semanas IMSS. Activable si el equipo
     # amplía el alcance a IMSS+ISSSTE (decisión PENDIENTE).
     p_issste = cfg["mercado_laboral"]["prop_issste_formales"]
-    sector_issste = rng.random(n) < p_issste
+    if not matriz_heterogenea:
+        sector_issste = rng.random(n) < p_issste
     saldo = np.zeros(n)
     semanas = np.zeros(n)
     anios_formal = np.zeros(n)
@@ -264,8 +305,12 @@ def simular(
                     esc_idx = np.append(esc_idx, asigna_escolaridad_idx(
                         np.full(n_new, 15.0), sexo[-n_new:], rng, marginal_esc
                     ))
-                sector_issste = np.append(sector_issste, rng.random(n_new) < p_issste)
-                estado = np.append(estado, rng.choice(4, size=n_new, p=pi0))
+                    # sin sorteo de flag; estado inicial de la dist. de 5
+                    sector_issste = np.append(sector_issste, np.zeros(n_new, dtype=bool))
+                    estado = np.append(estado, rng.choice(n_est_het, size=n_new, p=pi0_het))
+                else:
+                    sector_issste = np.append(sector_issste, rng.random(n_new) < p_issste)
+                    estado = np.append(estado, rng.choice(4, size=n_new, p=pi0))
                 mu = np.append(mu, rng.normal(0.0, cfg["salarios"]["sigma_log"], n_new))
                 saldo = np.append(saldo, np.zeros(n_new))
                 semanas = np.append(semanas, np.zeros(n_new))
@@ -302,7 +347,8 @@ def simular(
             else:
                 filas = M[estado]
             cum = np.cumsum(filas, axis=1)
-            nuevo = np.clip((u[:, None] > cum).sum(axis=1), 0, 3)
+            # cota superior = nº de estados de la ruta (4 u 5)
+            nuevo = np.clip((u[:, None] > cum).sum(axis=1), 0, filas.shape[1] - 1)
             estado = np.where(activo, nuevo, estado)
 
         # -- salarios (pesos reales 2025) ------------------------------------
@@ -322,8 +368,12 @@ def simular(
 
         # formal_imss: canal que aporta al RCV-IMSS (target de validación).
         # Los formales ISSSTE quedan modelados pero fuera del target (#25).
-        formal = activo & (estado == FORMAL)
-        formal_imss = formal & ~sector_issste
+        if matriz_heterogenea:
+            # 5 estados: el estado gobierna el sector (formal_IMSS explícito)
+            formal_imss = activo & (estado == idx_f_imss)
+        else:
+            formal = activo & (estado == FORMAL)
+            formal_imss = formal & ~sector_issste
 
         # -- acumulación: S' = (S + A - C)(1 + r) ----------------------------
         tasa_a = politica.tasa_aportacion(anio)
@@ -474,6 +524,12 @@ def simular(
 
         edad = edad + 1.0
 
+    if matriz_heterogenea:
+        # sector_issste DERIVADO del estado final (no hay flag en esta
+        # ruta): True == terminó en formal_ISSSTE. Solo compatibilidad de
+        # post-proceso; el sector es dinámico vía transiciones 5x5.
+        sector_issste = estado == idx_f_issste
+
     df_ag = pd.DataFrame(
         {
             "agente_id": np.arange(n),
@@ -499,8 +555,8 @@ def simular(
             "semanas_cotizadas": semanas,
             # ⚠️ instrumentación diagnóstico NaN Paso 4 (solo exposición; el
             # estado se congela al retirarse, así que para retirados es el
-            # estado laboral al momento del retiro)
-            "estado_final": np.array(ESTADOS, dtype=object)[estado],
+            # estado laboral al momento del retiro). Etiquetas por ruta.
+            "estado_final": etiquetas_estado[estado],
             "anios_formal": anios_formal,
             "vivo_final": vivo,
             "semilla": semilla if semilla is not None else cfg["semilla"],
