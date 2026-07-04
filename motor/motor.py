@@ -497,6 +497,12 @@ def simular(
             "edad_retiro": edad_al_retiro,
             "sector_issste": sector_issste,  # fuera del target IMSS; activable (#25)
             "semanas_cotizadas": semanas,
+            # ⚠️ instrumentación diagnóstico NaN Paso 4 (solo exposición; el
+            # estado se congela al retirarse, así que para retirados es el
+            # estado laboral al momento del retiro)
+            "estado_final": np.array(ESTADOS, dtype=object)[estado],
+            "anios_formal": anios_formal,
+            "vivo_final": vivo,
             "semilla": semilla if semilla is not None else cfg["semilla"],
         }
     )
