@@ -3,6 +3,15 @@
 Mismo protocolo que comparacion_paso4.py (5k agentes, escenario base,
 3 semillas por régimen), pero las métricas excluyen del denominador a
 ISSSTE y nunca-formales. Solo post-procesamiento; cero cambios al motor.
+
+CAMBIO DE SEMÁNTICA (motor a 5 estados, Fase 2.5/Paso 3): en el régimen
+heterogéneo la columna sector_issste ya NO es un flag sorteado al nacer —
+el motor la DERIVA del estado final (True == terminó en formal_ISSSTE,
+con transiciones IMSS↔ISSSTE endógenas). El desglose de no-cobertura
+"ISSSTE vs nunca-formal" usa esa columna: en B es un proxy por estado
+FINAL (un no-cubierto que pasó por ISSSTE y terminó en otro estado cuenta
+como nunca-formal; el motor no exporta trayectorias). En el régimen A
+(homogéneo, 4 estados) la semántica vieja del flag sorteado sigue vigente.
 """
 
 import logging
@@ -36,6 +45,7 @@ ind_sal = cargar_indice_salarial_real()
 
 SEMILLAS = [cfg["semilla"] + k for k in range(3)]
 filas = []
+dfs_b = []  # retirados del régimen B (3 semillas) para los desgloses
 
 for regimen, flag in [("A_homogenea", False), ("B_heterogenea", True)]:
     for s in SEMILLAS:
@@ -46,6 +56,8 @@ for regimen, flag in [("A_homogenea", False), ("B_heterogenea", True)]:
             matriz_heterogenea=flag,
         )
         ret = res.agentes[res.agentes["cohorte_retiro"] >= 2026]
+        if flag:
+            dfs_b.append(ret.copy())
         cot = ret[ret["anios_formal"] > 0]          # cotizantes IMSS
         nocov = ret[ret["anios_formal"] == 0]       # sin cobertura
         tr = cot["tasa_reemplazo"]
@@ -66,6 +78,8 @@ for regimen, flag in [("A_homogenea", False), ("B_heterogenea", True)]:
             # densidad de cotización (años formales IMSS / años activos)
             "dens_media_retirados": ret["densidad_cotizacion"].mean(),
             "dens_media_cotizantes": cot["densidad_cotizacion"].mean(),
+            # percentiles de TR sobre cotizantes IMSS
+            **{f"tr_p{q}": tr.quantile(q / 100) for q in (10, 25, 50, 75, 90)},
             # métricas viejas para referencia
             "vieja_pension_cero_pct": 100 * (ret["pension_mensual"] == 0).mean(),
             "vieja_tasa_cero_dropna_pct": 100
@@ -84,4 +98,24 @@ print("\n===== PROMEDIO ± STD ENTRE SEMILLAS =====")
 prom = tabla.drop(columns=["semilla", "segundos"]).groupby("regimen").agg(
     ["mean", "std"]
 )
-print(prom.round(2).T.to_string())
+print(prom.round(3).T.to_string())
+
+# ===== desgloses régimen B (3 semillas apiladas), masa en cero corregida =====
+b = pd.concat(dfs_b, ignore_index=True)
+bcot = b[b["anios_formal"] > 0].copy()
+bcot["cero"] = bcot["tasa_reemplazo"] == 0
+
+print("\n===== B: masa en cero (TR=0 sobre cotizantes IMSS) por perfil =====")
+g = bcot.groupby(["genero", "escolaridad"], observed=True)["cero"].agg(
+    n_cotizantes="size", pct_cero=lambda x: 100 * x.mean()
+)
+g["share_de_los_ceros"] = (
+    100 * bcot.groupby(["genero", "escolaridad"], observed=True)["cero"].sum()
+    / bcot["cero"].sum()
+)
+print(g.round(1).to_string())
+
+print("\n===== B: masa en cero por década de retiro =====")
+bcot["decada"] = (bcot["cohorte_retiro"] // 10) * 10
+print(bcot.groupby("decada")["cero"].agg(
+    n_cotizantes="size", pct_cero=lambda x: 100 * x.mean()).round(1).to_string())
