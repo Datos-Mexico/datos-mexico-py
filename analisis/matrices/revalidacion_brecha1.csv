@@ -1,0 +1,16 @@
+bloque,regimen,semilla,saldo_sim_bn,saldo_obs_bn,ratio_saldo,ratio_cotizantes,ratio_cuentas,cotizantes_anio_M,personas_aportantes_M,anios_aportacion_prom,salario_prom_eq_mensual,aportes_backcast_bn,rend_netos_backcast_bn,dlog_saldo,dlog_cotizantes_anio,dlog_personas,dlog_anios_aportacion,dlog_salario_prom,residual_rendimientos_timing
+1_ratios,A_homogeneo,20260701,7.9736,6.8913,1.1571,1.048,1.0662,,,,,,,,,,,,
+1_ratios,A_homogeneo,20260702,7.757,6.8913,1.1256,1.0143,1.0281,,,,,,,,,,,,
+1_ratios,A_homogeneo,20260703,7.8853,6.8913,1.1442,1.084,1.0529,,,,,,,,,,,,
+1_ratios,B_heterogeneo,20260701,7.695,6.8913,1.1166,1.0327,1.3651,,,,,,,,,,,,
+1_ratios,B_heterogeneo,20260702,7.9307,6.8913,1.1508,1.0351,1.3648,,,,,,,,,,,,
+1_ratios,B_heterogeneo,20260703,7.8512,6.8913,1.1393,1.0616,1.377,,,,,,,,,,,,
+2_canales,A_homogeneo,20260701,,,,,,448.263,53.443,8.388,15159.0,5.6087,2.3649,,,,,,
+2_canales,A_homogeneo,20260702,,,,,,436.859,51.536,8.477,15137.9,5.4574,2.2996,,,,,,
+2_canales,A_homogeneo,20260703,,,,,,444.504,52.777,8.422,15200.7,5.5932,2.2921,,,,,,
+2_canales,B_heterogeneo,20260701,,,,,,437.686,68.427,6.396,15099.0,5.4511,2.244,,,,,,
+2_canales,B_heterogeneo,20260702,,,,,,447.184,68.409,6.537,15134.2,5.5856,2.3451,,,,,,
+2_canales,B_heterogeneo,20260703,,,,,,445.385,69.02,6.453,15175.4,5.5893,2.262,,,,,,
+3_descomposicion_AtoB,,20260701,,,,,,,,,,,,-0.0356,-0.0239,0.2472,-0.271,-0.004,-0.0077
+3_descomposicion_AtoB,,20260702,,,,,,,,,,,,0.0221,0.0234,0.2832,-0.2599,-0.0002,-0.001
+3_descomposicion_AtoB,,20260703,,,,,,,,,,,,-0.0043,0.002,0.2683,-0.2663,-0.0017,-0.0046
