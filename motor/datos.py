@@ -1,0 +1,162 @@
+"""Carga de insumos del motor.
+
+- Estáticos locales: tabla de mortalidad CNSF EMSSA-09 y proyecciones CONAPO
+  (ver motor/data/README.md para fuentes y fecha de descarga).
+- Vía SDK datos-mexico (api.datos-itam.org): agregados CONSAR observados
+  para la validación 2025 y participaciones ENOE para la matriz de Markov.
+  Con fallback estático (valores consultados 2026-07-01) para correr offline.
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+DATA_DIR = Path(__file__).parent / "data"
+
+
+def cargar_mortalidad() -> pd.DataFrame:
+    """Tabla EMSSA-09: columnas edad, qx_hombres, qx_mujeres (0-109)."""
+    df = pd.read_csv(DATA_DIR / "cnsf_emssa09_mortalidad.csv")
+    assert df["edad"].tolist() == list(range(110)), "tabla EMSSA incompleta"
+    return df
+
+
+def qx_por_sexo(df_mort: pd.DataFrame) -> dict[str, np.ndarray]:
+    return {
+        "H": df_mort["qx_hombres"].to_numpy(),
+        "M": df_mort["qx_mujeres"].to_numpy(),
+    }
+
+
+def cargar_conapo() -> pd.DataFrame:
+    """Proyecciones CONAPO nacionales 2025-2070 por edad simple y sexo."""
+    df = pd.read_csv(DATA_DIR / "conapo_proyecciones_nacional_2025_2070.csv")
+    df["sexo"] = df["sexo"].map({"Hombres": "H", "Mujeres": "M"})
+    return df
+
+
+def cargar_indice_salarial_real() -> dict[int, float]:
+    """Índice de NIVEL salarial real por año calendario (2025 = 1.0).
+
+    SBC promedio de diciembre (microdatos IMSS, ``imss_sbc_promedio.csv``)
+    deflactado con INPC general (SP1). Corrige el nivel transversal del
+    backcast: cada año usa el salario real de su época, no el de 2025.
+
+    ⚠️ [I] El índice mezcla crecimiento salarial puro con RECOMPOSICIÓN del
+    universo cotizante (10.3M cotizantes en 1997 → 22.5M en 2025); NO es
+    "crecimiento del salario individual". Ver bitácora #24.
+    """
+    sbc = pd.read_csv(DATA_DIR / "imss_sbc_promedio.csv")
+    sbc = sbc[sbc["mes"] == 12]
+    inpc = pd.read_csv(DATA_DIR / "inpc_mensual.csv")
+    inpc_dic = inpc[inpc["mes"] == 12].set_index("anio")["inpc"]
+    real = {
+        int(r.anio): float(r.sbc_diario_nominal) / float(inpc_dic[r.anio])
+        for r in sbc.itertuples()
+    }
+    base = real[2025]
+    return {a: v / base for a, v in real.items()}
+
+
+def cargar_rendimientos_reales() -> dict[int, float]:
+    """Serie anual de rendimiento BRUTO real del sistema 1997-2025.
+
+    Derivada de precios de gestión CONSAR (brutos: la comisión se carga
+    explícita en C) deflactados con INPC. Ver
+    ``data/build_rendimientos_brutos.py`` y bitácora #23.
+    """
+    df = pd.read_csv(DATA_DIR / "consar_rendimiento_bruto_anual.csv")
+    return dict(zip(df["anio"], df["r_real_bruto"], strict=True))
+
+
+# ---------------------------------------------------------------------------
+# Targets de validación 2025 (CONSAR vía SDK, con fallback estático).
+# ---------------------------------------------------------------------------
+
+# Targets IMSS-solo (alcance de #25). Valores consultados 2026-07-02:
+_FALLBACK_TARGETS = {
+    # RCV-IMSS dic-2025, millones MXN corrientes (consar.recursos_composicion)
+    "rcv_imss_mm": 6_891_289.59,
+    # Cotizantes IMSS dic-2025 (ta_sal, microdatos IMSS — data/imss_sbc_promedio.csv).
+    # Nota: ta_sal cuenta PUESTOS con salario, no personas; ENOE reporta
+    # 19.5M personas IMSS (brecha encuesta-vs-registro ~13%, bitácora #25).
+    "cotizantes": 22_451_506,
+    # Cuentas de trabajadores IMSS dic-2025 (consar.cuentas_snapshot,
+    # métrica trabajadores_imss)
+    "cuentas_totales": 50_125_301,
+}
+
+# Participaciones ENOE 2025T1 (client.enoe.snapshot_nacional):
+_FALLBACK_ENOE = {
+    "pob_15ymas": 101_527_324.0,
+    "ocupados_total": 58_921_494.0,
+    "desocupados_total": 1_483_994.0,
+    "informales_total": 32_104_097.0,
+}
+
+
+def targets_validacion(usar_api: bool = True) -> dict:
+    """Agregados observados 2025 contra los que valida el motor."""
+    targets = dict(_FALLBACK_TARGETS)
+    targets["fuente"] = "fallback estático (consultado 2026-07-02)"
+    try:
+        # cotizantes IMSS: ta_sal del estático (fuente primaria IMSS, dic-2025)
+        sbc = pd.read_csv(DATA_DIR / "imss_sbc_promedio.csv")
+        dic = sbc[(sbc["mes"] == 12) & (sbc["anio"] == 2025)]
+        targets["cotizantes"] = int(dic["ta_sal"].iloc[0])
+    except Exception:
+        pass
+    if not usar_api:
+        return targets
+    try:
+        from datos_mexico import DatosMexico
+
+        with DatosMexico() as client:
+            comp = client.consar.recursos_composicion("2025-12-01")
+            for item in comp.componentes:
+                if item.tipo_codigo == "rcv_imss":
+                    targets["rcv_imss_mm"] = float(item.monto_mxn_mm)
+            # cuentas de trabajadores IMSS (alcance IMSS-solo, #25)
+            snap = client.consar.cuentas_snapshot("2025-12-01")
+            targets["cuentas_totales"] = int(
+                sum(
+                    f.valor
+                    for f in snap.filas
+                    if f.metrica_slug == "trabajadores_imss" and f.valor is not None
+                )
+            )
+            targets["fuente"] = "client.consar en vivo (api.datos-itam.org)"
+    except Exception as exc:
+        targets["fuente"] = f"fallback estático (API no disponible: {exc})"
+    return targets
+
+
+def participaciones_enoe(usar_api: bool = True) -> dict[str, float]:
+    """Participaciones {formal, informal, desempleado, fuera} de la población 15+.
+
+    Derivadas del snapshot nacional ENOE 2025T1: formal = ocupados - informales.
+    """
+    vals = dict(_FALLBACK_ENOE)
+    if usar_api:
+        try:
+            from datos_mexico import DatosMexico
+
+            with DatosMexico() as client:
+                snap = client.enoe.snapshot_nacional(periodo="2025T1")
+                for ind in snap.indicadores:
+                    if ind.indicador in vals:
+                        vals[ind.indicador] = float(ind.valor)
+        except Exception:
+            pass
+    pob = vals["pob_15ymas"]
+    formales = vals["ocupados_total"] - vals["informales_total"]
+    return {
+        "formal": formales / pob,
+        "informal": vals["informales_total"] / pob,
+        "desempleado": vals["desocupados_total"] / pob,
+        "fuera": 1.0
+        - (vals["ocupados_total"] + vals["desocupados_total"]) / pob,
+    }
