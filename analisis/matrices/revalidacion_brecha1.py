@@ -43,7 +43,7 @@ import yaml
 RAIZ = Path("/Users/andrebutron/datos-mexico/datos-mexico-py")
 sys.path.insert(0, str(RAIZ))
 
-from motor.datos import (  # noqa: E402
+from motor.datos import (
     cargar_conapo,
     cargar_indice_salarial_real,
     cargar_mortalidad,
@@ -52,8 +52,8 @@ from motor.datos import (  # noqa: E402
     qx_por_sexo,
     targets_validacion,
 )
-from motor.motor import simular  # noqa: E402
-from motor.reglas_sar import vector_tasas_aportacion  # noqa: E402
+from motor.motor import simular
+from motor.reglas_sar import vector_tasas_aportacion
 
 N_SEMILLAS = 3
 REGIMENES = {"A_homogeneo": False, "B_heterogeneo": True}
@@ -120,7 +120,7 @@ def main() -> int:
             masa_eq = float(
                 (led["aportaciones_mm"] / (12.0 * led["anio"].map(tasas))).sum()
             )  # mm MXN — "meses-salario equivalentes"
-            sal_prom_eq = masa_eq * 1e6 / cy                          # MXN mensuales por cotizante-año
+            sal_prom_eq = masa_eq * 1e6 / cy  # MXN mensuales por cotizante-año
 
             canales[(nombre, semilla)] = {
                 "saldo": v["saldo_rcv_simulado_mm"], "cy": cy, "n_aport": n_aport,

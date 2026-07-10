@@ -24,7 +24,8 @@ import logging
 logging.disable(logging.WARNING)
 
 from asignacion_perfiles import GRUPOS_EDAD, marginal_escolaridad
-from carga_matrices import ESTADO_A_IDX_ANUALES, ESTADOS_ANUALES, cargar_matrices_anuales
+from carga_matrices import ESTADOS_ANUALES, cargar_matrices_anuales
+
 from motor.datos import cargar_conapo
 
 # ---------------- 1. benchmark ENOE 2025T1, 25-64, 5 estados ----------------

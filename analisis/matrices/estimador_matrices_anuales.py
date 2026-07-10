@@ -222,13 +222,13 @@ def ejemplo(panel: pd.DataFrame, bitacora: pd.DataFrame) -> None:
     """Checkpoint: (a) pares apilados, (b) matriz ejemplo, (c) permanencia."""
     print("\n===== (bitácora por par) =====")
     print(bitacora.to_string(index=False))
-    print(f"\n===== (a) PARES APILADOS =====")
+    print("\n===== (a) PARES APILADOS =====")
     print(f"pares: {len(bitacora)}  observaciones panel 25-64: {len(panel):,}")
 
     priors = priors_por_edad(panel)
     sel = panel[(panel["sexo"] == "hombre") & (panel["grupo_edad"] == "30-34")
                 & (panel["escolaridad"] == "superior")]
-    p, w, n = matriz_cruda(sel)
+    p, _, n = matriz_cruda(sel)
     ps = suaviza(p, n, priors["30-34"], KAPPA)
     valida(ps, "ejemplo")
     print(f"\n===== (b) PERFIL hombre | 30-34 | superior (n={len(sel):,}) =====")
@@ -292,13 +292,14 @@ def full(panel: pd.DataFrame, bitacora: pd.DataFrame) -> None:
     bc = filas_perfil[filas_perfil["baja_confianza"]]
     print(f"CSV: {dest} ({len(out)} filas)")
     print(f"Sensibilidad: {dest_sens} ({len(sens)} filas)")
-    print(f"\n===== RESUMEN =====")
-    print(f"perfiles: {out.groupby(['grupo_edad', 'sexo', 'escolaridad'], observed=True).ngroups} de 48")
+    print("\n===== RESUMEN =====")
+    n_perf = out.groupby(["grupo_edad", "sexo", "escolaridad"], observed=True).ngroups
+    print(f"perfiles: {n_perf} de 48")
     print(f"filas-perfil-origen baja_confianza (n<30): {len(bc)} de {len(filas_perfil)}")
     print("  por estado origen:")
     print(bc.groupby("estado_origen", observed=True).size().to_string())
     print(f"celdas NaN (denominador 0): {int(out.probabilidad.isna().sum())}")
-    print(f"\n3 filas-perfil-origen con menor n sin ponderar:")
+    print("\n3 filas-perfil-origen con menor n sin ponderar:")
     print(filas_perfil.nsmallest(3, "n_muestra_sin_pond")[
         ["grupo_edad", "sexo", "escolaridad", "estado_origen",
          "n_muestra_sin_pond"]].to_string(index=False))

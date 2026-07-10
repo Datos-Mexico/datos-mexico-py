@@ -110,6 +110,17 @@ ignore = []
 # El motor usa notación matemática en mayúsculas (A, R, C, M, W) que espeja
 # las ecuaciones del brief de la Sección 6 (ΔS = A + R - C).
 "motor/**" = ["N803", "N806"]
+# Scripts de análisis (Fase 2.5/5, resultados citables del paper):
+# - RUF001/RUF002/RUF003: tipografía deliberada (×, –, −, ≈, ↔) en strings,
+#   docstrings y comentarios en español; no son confusiones de identificador.
+# - E402: patrón estructural sys.path.insert(REPO) ANTES de importar motor/ y
+#   carga_matrices — los imports no pueden ir al tope del módulo.
+# - N806: notación matemática en mayúsculas (W, AF, H, M, P), consistente con
+#   el ignore de motor/**.
+# TODO(post-envío): migrar analisis/ a paquete instalable (pip install -e) y
+# retirar E402 de esta lista; reestructurar los 9 scripts a 26 días del
+# deadline es riesgo injustificado.
+"analisis/matrices/**" = ["RUF001", "RUF002", "RUF003", "E402", "N806"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

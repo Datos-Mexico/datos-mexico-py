@@ -104,7 +104,7 @@ for anio in range(2025, 2036):
     print(f"{anio:>5d} " + " ".join(f"{v:>13.2f}" for v in shares)
           + f" {np.abs(difs).max():>11.2f}")
     panel_af[anio] = r.agentes.iloc[:N0]["anios_formal"].to_numpy()
-    for e, v, dif in zip(ESTADOS_ANUALES, shares, difs):
+    for e, v, dif in zip(ESTADOS_ANUALES, shares, difs, strict=False):
         filas_csv.append({"bloque": "1_transversal", "anio": anio,
                           "categoria": e, "valor": round(v, 3),
                           "referencia": round(100 * pi0[ESTADO_A_IDX_ANUALES[e]], 3),

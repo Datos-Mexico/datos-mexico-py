@@ -149,13 +149,13 @@ def ejemplo(panel: pd.DataFrame, bit: dict) -> None:
     priors = priors_por_edad(panel)
     sel = panel[(panel["sexo"] == "hombre") & (panel["grupo_edad"] == "30-34")
                 & (panel["escolaridad"] == "superior")]
-    p, w, n = matriz_cruda(sel)
+    p, _, n = matriz_cruda(sel)
     print(f"bitácora: {bit}")
     print(f"\nPERFIL hombre | 30-34 | superior — n sin ponderar = {len(sel)}")
     print("\nn sin ponderar por fila:", n.sum(axis=1).to_dict())
     print("\n-- Matriz cruda ponderada (fac_tri) --")
     print(p.round(4).to_string())
-    print(f"\n-- Prior (marginal quinquenio 30-34) --")
+    print("\n-- Prior (marginal quinquenio 30-34) --")
     print(priors["30-34"].round(4).to_string())
     for k in (1.0, 5.0, 20.0):
         ps = suaviza(p, n, priors["30-34"], k)
@@ -241,17 +241,17 @@ def full(panel: pd.DataFrame, bit: dict) -> None:
     bc = filas_perfil[filas_perfil["baja_confianza"]]
     print(f"CSV: {dest} ({len(out)} filas)")
     print(f"Sensibilidad: {dest_sens} ({len(sens)} filas)")
-    print(f"\n===== RESUMEN =====")
+    print("\n===== RESUMEN =====")
     print(f"perfiles estimados: {perfiles} de 48")
     print(f"filas-perfil-origen baja_confianza (n<30): {len(bc)} de "
           f"{len(filas_perfil)}")
     print("  por estado origen:")
     print(bc.groupby('estado_origen', observed=True).size().to_string())
     print(f"celdas NaN (denominador 0): {int(out.probabilidad.isna().sum())}")
-    print(f"\nsesgo ISSSTE (% ponderado del estado informal con "
-          f"imssissste 2/3):")
+    print("\nsesgo ISSSTE (% ponderado del estado informal con "
+          "imssissste 2/3):")
     print(issste.to_string(index=False))
-    print(f"\n3 filas-perfil-origen con menor n sin ponderar:")
+    print("\n3 filas-perfil-origen con menor n sin ponderar:")
     print(filas_perfil.nsmallest(3, "n_muestra_sin_pond")[
         ["grupo_edad", "sexo", "escolaridad", "estado_origen",
          "n_muestra_sin_pond"]].to_string(index=False))

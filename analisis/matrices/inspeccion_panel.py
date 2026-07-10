@@ -54,7 +54,7 @@ def main() -> None:
         for c in REQUERIDAS:
             if c in df.columns:
                 nn = df[c].isna().sum()
-                print(f"  {c:12s} {str(df[c].dtype):10s} NA={nn}")
+                print(f"  {c:12s} {df[c].dtype!s:10s} NA={nn}")
             else:
                 print(f"  {c:12s} *** AUSENTE ***")
         for col in ("clase1", "clase2", "imssissste"):

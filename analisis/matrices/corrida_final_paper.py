@@ -43,22 +43,21 @@ import sys
 import time
 from pathlib import Path
 
+import matplotlib
 import numpy as np
 import pandas as pd
 import yaml
 
-import matplotlib
-
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.ticker import PercentFormatter  # noqa: E402
+import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 
 REPO = Path("/Users/andrebutron/datos-mexico/datos-mexico-py")
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "analisis" / "matrices"))
 logging.disable(logging.WARNING)
 
-from motor.datos import (  # noqa: E402
+from motor.datos import (
     cargar_conapo,
     cargar_indice_salarial_real,
     cargar_mortalidad,
@@ -66,7 +65,7 @@ from motor.datos import (  # noqa: E402
     participaciones_enoe,
     qx_por_sexo,
 )
-from motor.motor import simular  # noqa: E402
+from motor.motor import simular
 
 # ---------------------------------------------------------------- parámetros
 N_AGENTES = 100_000
@@ -212,14 +211,14 @@ def main() -> int:
             masas.append(100 * (sub["tasa_reemplazo"] == 0).mean())
             shares.append(100 * len(sub) / len(d))
         m, ic, sd = ic95(masas)
-        ms, ics, _ = ic95(shares)
+        ms, _, _ = ic95(shares)
         filas.append({
             "denominador": clave, "descripcion": desc,
             "masa_en_cero_pct": round(m, 2), "ic95_semiancho": round(ic, 2),
             "sd_entre_semillas": round(sd, 3),
             "pct_del_total_retirados": round(ms, 2),
-            "n_agentes_pooled": int(len(r_all[f(r_all)])),
-            **{f"semilla_{s}": round(v, 2) for s, v in zip(semillas, masas)},
+            "n_agentes_pooled": len(r_all[f(r_all)]),
+            **{f"semilla_{s}": round(v, 2) for s, v in zip(semillas, masas, strict=False)},
         })
     pd.DataFrame(filas).to_csv(OUT / "tabla_maestra_masa_cero.csv", index=False)
 
@@ -256,7 +255,7 @@ def main() -> int:
             "cubierto": cat in ORDEN_COB[:3],
             "pct_retirados": round(m, 2), "ic95_semiancho": round(ic, 2),
             "sd_entre_semillas": round(sd, 3),
-            **{f"semilla_{s}": round(v, 2) for s, v in zip(semillas, vals)},
+            **{f"semilla_{s}": round(v, 2) for s, v in zip(semillas, vals, strict=False)},
         })
     cob = pd.DataFrame(filas)
     tot_cub = [100 * por_sem[s].isin(ORDEN_COB[:3]).mean() for s in semillas]
@@ -265,7 +264,7 @@ def main() -> int:
         "categoria": "TOTAL_cubiertos", "etiqueta": "Total con pensión (cobertura)",
         "cubierto": True, "pct_retirados": round(m, 2),
         "ic95_semiancho": round(ic, 2), "sd_entre_semillas": round(sd, 3),
-        **{f"semilla_{s}": round(v, 2) for s, v in zip(semillas, tot_cub)},
+        **{f"semilla_{s}": round(v, 2) for s, v in zip(semillas, tot_cub, strict=False)},
     }])], ignore_index=True)
     cob.to_csv(OUT / "cobertura.csv", index=False)
 
@@ -282,7 +281,7 @@ def main() -> int:
         filas.append({"percentil": f"p{p}", "tr": round(m, 4),
                       "ic95_semiancho": round(ic, 4),
                       **{f"semilla_{s}": round(v, 4)
-                         for s, v in zip(semillas, vals)}})
+                         for s, v in zip(semillas, vals, strict=False)}})
     for nombre, fn in [("media", np.mean),
                        ("pct_TR_cero", lambda a: 100 * (np.asarray(a) == 0).mean()),
                        ("pct_TR_igual_1", lambda a: 100 * (np.asarray(a) == 1).mean()),
@@ -292,7 +291,7 @@ def main() -> int:
         filas.append({"percentil": nombre, "tr": round(m, 4),
                       "ic95_semiancho": round(ic, 4),
                       **{f"semilla_{s}": round(v, 4)
-                         for s, v in zip(semillas, vals)}})
+                         for s, v in zip(semillas, vals, strict=False)}})
     # condicionales a recibir pensión (pension_mensual>0): la masa en cero
     # domina hasta el p75, así que la distribución condicional es la que
     # describe a los pensionados
@@ -306,7 +305,7 @@ def main() -> int:
         filas.append({"percentil": f"p{p}_pensionados", "tr": round(m, 4),
                       "ic95_semiancho": round(ic, 4),
                       **{f"semilla_{s}": round(v, 4)
-                         for s, v in zip(semillas, vals)}})
+                         for s, v in zip(semillas, vals, strict=False)}})
     pd.DataFrame(filas).to_csv(OUT / "tr_percentiles.csv", index=False)
 
     # histograma: masa discreta en 0 + bins de 0.05 en (0, 1.2] + overflow
@@ -322,7 +321,8 @@ def main() -> int:
         hist_sem.append(pcts)
     H = np.array(hist_sem)  # (5, n_bins)
     etiquetas = (["TR = 0 (masa en cero)"]
-                 + [f"({lo:.2f}, {hi:.2f}]" for lo, hi in zip(bordes[:-1], bordes[1:])]
+                 + [f"({lo:.2f}, {hi:.2f}]"
+                    for lo, hi in zip(bordes[:-1], bordes[1:], strict=False)]  # noqa: RUF007
                  + ["TR > 1.20"])
     for i, et in enumerate(etiquetas):
         m, ic, sd = ic95(list(H[:, i]))
@@ -460,7 +460,7 @@ def main() -> int:
     y = np.arange(len(tm))[::-1]
     ax.barh(y, tm["masa_en_cero_pct"], height=0.5, color=AZUL, zorder=3,
             xerr=tm["ic95_semiancho"], error_kw=dict(ecolor=INK, lw=1, capsize=3))
-    for yi, v in zip(y, tm["masa_en_cero_pct"]):
+    for yi, v in zip(y, tm["masa_en_cero_pct"], strict=False):
         ax.text(v - 1.2, yi, f"{v:.1f}%", va="center", ha="right",
                 color=SURF, fontweight="bold", fontsize=10)
     ax.set_yticks(y, et)
@@ -481,7 +481,7 @@ def main() -> int:
     col = np.where(cb["cubierto"], AZUL, MUTED)
     ax.barh(y, cb["pct_retirados"], height=0.55, color=col, zorder=3,
             xerr=cb["ic95_semiancho"], error_kw=dict(ecolor=INK, lw=1, capsize=3))
-    for yi, v in zip(y, cb["pct_retirados"]):
+    for yi, v in zip(y, cb["pct_retirados"], strict=False):
         ax.text(v + 1.0, yi, f"{v:.1f}%", va="center", color=INK, fontsize=9)
     ax.set_yticks(y, cb["etiqueta"])
     ax.set_xlim(0, max(cb["pct_retirados"]) * 1.22)
@@ -507,7 +507,7 @@ def main() -> int:
                     xerr=sub["masa_cero_ic95_semiancho"], fmt="o", ms=7,
                     color=colr, ecolor=colr, capsize=3, lw=1.2, zorder=3,
                     label=sexo)
-        for xi, yi in zip(sub["masa_cero_pct_def_a"], y + dy):
+        for xi, yi in zip(sub["masa_cero_pct_def_a"], y + dy, strict=False):
             ax.text(xi, yi + 0.16, f"{xi:.1f}%", ha="center", fontsize=8,
                     color=SEC)
     ax.set_yticks(y, [ETIQ_ESC[e] for e in ORDEN_ESC])
@@ -528,7 +528,7 @@ def main() -> int:
     x = np.arange(len(dd))
     ax.errorbar(x, dd["masa_cero_pct_def_a"], yerr=dd["masa_cero_ic95_semiancho"],
                 fmt="-o", color=AZUL, ms=6, lw=2, capsize=3, zorder=3)
-    for xi, v in zip(x, dd["masa_cero_pct_def_a"]):
+    for xi, v in zip(x, dd["masa_cero_pct_def_a"], strict=False):
         ax.text(xi, v + 2.2, f"{v:.1f}%", ha="center", fontsize=8, color=SEC)
     ax.set_xticks(x, dd["decada_retiro"], fontsize=8.5)
     ax.set_ylim(60, 100)
@@ -564,7 +564,7 @@ def main() -> int:
     #       bloque 1 de auditoria_anclaje.csv — tolerancia ±0.5pp
     aud = pd.read_csv(REPO / "analisis" / "matrices" / "auditoria_anclaje.csv")
     aud25 = aud[(aud["bloque"] == "1_transversal") & (aud["anio"] == 2025)]
-    ref = dict(zip(aud25["categoria"], aud25["valor"]))
+    ref = dict(zip(aud25["categoria"], aud25["valor"], strict=False))
     r25 = corre(2025, SEMILLA0)
     rng = np.random.default_rng(SEMILLA0)  # réplica del primer draw del motor
     c25 = conapo[(conapo["anio"] == 2025) & conapo["edad"].between(15, 64)]

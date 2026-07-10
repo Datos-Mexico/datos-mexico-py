@@ -100,7 +100,8 @@ g = (
 )
 tot_ceros = b["cero"].sum()
 g["share_de_los_ceros"] = [
-    100 * b[(b["genero"] == r.genero) & (b["escolaridad"] == r.escolaridad)]["cero"].sum() / tot_ceros
+    100 * b[(b["genero"] == r.genero)
+            & (b["escolaridad"] == r.escolaridad)]["cero"].sum() / tot_ceros
     for r in g.itertuples()
 ]
 print(g.round(1).to_string(index=False))
