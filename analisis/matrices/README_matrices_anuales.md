@@ -144,5 +144,5 @@ estado "desempleado" observado en t rara vez persiste un año.
 - `sensibilidad_kappa_anuales.csv` — mismas llaves + p_kappa1|p_kappa5|
   p_kappa20 y deltas absolutos vs κ=5.
 - Estimación: `estimador_matrices_anuales.py` (pickles sdem por trimestre
-  en scratchpad de sesión, descarga reproducible con descarga_enoe.py
-  parametrizado).
+  en cache local gitignorado junto al script, descarga reproducible con
+  descarga_enoe.py parametrizado).

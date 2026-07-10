@@ -52,7 +52,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.ticker import PercentFormatter
 
-REPO = Path("/Users/andrebutron/datos-mexico/datos-mexico-py")
+REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "analisis" / "matrices"))
 logging.disable(logging.WARNING)

@@ -37,10 +37,7 @@ import numpy as np
 import pandas as pd
 
 AQUI = Path(__file__).parent
-RUTA_PICKLES = Path(
-    "/private/tmp/claude-501/-Users-andrebutron-datos-mexico-datos-mexico-py/"
-    "243b3eaf-791c-4f71-9a38-3c27a14becab/scratchpad"
-)
+RUTA_PICKLES = AQUI
 CACHE_PANEL = RUTA_PICKLES / "panel_apilado_2015_2024.pkl"
 
 LLAVE = ["cd_a", "ent", "con", "v_sel", "n_hog", "h_mud", "n_ren"]
@@ -432,8 +429,8 @@ estado "desempleado" observado en t rara vez persiste un año.
 - `sensibilidad_kappa_anuales.csv` — mismas llaves + p_kappa1|p_kappa5|
   p_kappa20 y deltas absolutos vs κ=5.
 - Estimación: `estimador_matrices_anuales.py` (pickles sdem por trimestre
-  en scratchpad de sesión, descarga reproducible con descarga_enoe.py
-  parametrizado).
+  en cache local gitignorado junto al script, descarga reproducible con
+  descarga_enoe.py parametrizado).
 """
     dest = AQUI / "README_matrices_anuales.md"
     dest.write_text(texto, encoding="utf-8")

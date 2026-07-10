@@ -40,7 +40,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-RAIZ = Path("/Users/andrebutron/datos-mexico/datos-mexico-py")
+RAIZ = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ))
 
 from motor.datos import (

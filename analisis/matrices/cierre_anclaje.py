@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-REPO = Path("/Users/andrebutron/datos-mexico/datos-mexico-py")
+REPO = Path(__file__).resolve().parents[2]
 SCRATCH = Path(__file__).parent
 sys.path.insert(0, str(REPO))
 sys.path.insert(0, str(REPO / "analisis" / "matrices"))

@@ -25,7 +25,7 @@ from motor.motor import simular
 
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(message)s")
 
-REPO = Path("/Users/andrebutron/datos-mexico/datos-mexico-py")
+REPO = Path(__file__).resolve().parents[2]
 cfg = yaml.safe_load((REPO / "motor/config.yaml").read_text())
 assert cfg["simulacion"]["n_agentes"] == 5000
 

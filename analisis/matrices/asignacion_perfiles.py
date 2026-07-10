@@ -12,9 +12,9 @@ Tres piezas, todas fuera de motor/motor.py:
    n_muestra_pond de cada fila-perfil) si el perfil no existiera.
 
 La marginal de escolaridad se deriva del cache de microdatos de Fase 1
-(pickle en scratchpad) y se persiste en marginal_escolaridad_2024T3.csv
-junto a este módulo, para no depender del pickle de 52 MB en corridas
-posteriores. Mismo universo y cortes que estimador_matrices.py.
+(pickle local gitignorado, regenerable con descarga_enoe.py) y se persiste
+en marginal_escolaridad_2024T3.csv junto a este módulo, para no depender
+del pickle de 52 MB en corridas posteriores. Mismo universo y cortes que estimador_matrices.py.
 """
 
 from __future__ import annotations
@@ -30,10 +30,7 @@ from carga_matrices import cargar_matrices
 logger = logging.getLogger(__name__)
 
 AQUI = Path(__file__).parent
-RUTA_SDEM_T3 = Path(
-    "/private/tmp/claude-501/-Users-andrebutron-datos-mexico-datos-mexico-py/"
-    "398128e3-c9a5-48ed-ac55-59eef2d16e9a/scratchpad/sdem_2024T3_v2.pkl"
-)
+RUTA_SDEM_T3 = AQUI / "sdem_2024T3_v2.pkl"
 RUTA_MARGINAL_CSV = AQUI / "marginal_escolaridad_2024T3.csv"
 
 GRUPOS_EDAD = [f"{a}-{a + 4}" for a in range(25, 65, 5)]
