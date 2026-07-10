@@ -61,6 +61,9 @@ dev = [
   "build>=1.2",
   "twine>=5.0",
   "respx>=0.21.0",
+  "pyyaml>=6.0",
+  "numpy>=1.26",
+  "pandas>=2.0",
 ]
 examples = [
   "jupyter>=1.0",
