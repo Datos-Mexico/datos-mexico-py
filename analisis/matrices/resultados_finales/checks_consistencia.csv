@@ -1,0 +1,16 @@
+check,semilla,valor,ok,referencia_5k,dif_pp
+cobertura_suma_100,20260701,100.0,True,,
+cobertura_suma_100,20260702,100.0,True,,
+cobertura_suma_100,20260703,100.0,True,,
+cobertura_suma_100,20260704,100.0,True,,
+cobertura_suma_100,20260705,100.0,True,,
+tr_nan_entre_cotizantes,20260701,0.0,True,,
+tr_nan_entre_cotizantes,20260702,0.0,True,,
+tr_nan_entre_cotizantes,20260703,0.0,True,,
+tr_nan_entre_cotizantes,20260704,0.0,True,,
+tr_nan_entre_cotizantes,20260705,0.0,True,,
+transversal_2025_formal_IMSS,20260701,23.9,False,24.456,-0.556
+transversal_2025_formal_ISSSTE,20260701,4.916,True,4.939,-0.023
+transversal_2025_informal,20260701,40.51,False,39.963,0.547
+transversal_2025_desempleado,20260701,1.9,True,2.151,-0.251
+transversal_2025_fuera_PEA,20260701,28.774,True,28.492,0.282

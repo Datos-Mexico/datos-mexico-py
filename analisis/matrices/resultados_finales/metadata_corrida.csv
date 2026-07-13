@@ -1,0 +1,13 @@
+clave,valor
+n_agentes,100000
+peso_por_agente_personas,899.4
+semillas,20260701;20260702;20260703;20260704;20260705
+motor,"heterogéneo 5 estados, matrices anuales ENOE 2015-2024 (matriz_heterogenea=True)"
+escenario,base
+horizonte,1997-2070
+retirados_2026plus_pooled,391487
+participaciones_enoe,"formal=0.2641; informal=0.3162; desempleado=0.0146; fuera=0.4050 (fallback estático, usar_api=False)"
+ic95_metodo,"t de Student 4 gl (2.7764) x sd/sqrt(5), entre semillas"
+commit_codigo,c922f87
+runtime_total_s,203.9
+runtime_por_semilla_s,40;41;41;40;40

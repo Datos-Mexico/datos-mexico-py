@@ -77,3 +77,7 @@ CLAUDE.md
 
 # Motor Sección 6: outputs generados (reproducibles con run_skeleton)
 motor/outputs/
+
+# Caches pesados de datos (microdatos ENOE, pickles intermedios)
+*.pkl
+*.parquet
