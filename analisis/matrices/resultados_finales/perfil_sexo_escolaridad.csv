@@ -1,0 +1,7 @@
+sexo,escolaridad,n_pooled,pct_nunca_cotizo,masa_cero_pct_def_a,pct_con_pension,pct_FPB,pct_PG,densidad_media_def_a,tr_mediana_pensionados,tr_p25_pensionados,tr_p75_pensionados,masa_cero_ic95_semiancho
+Hombres,Básica o menos,82511,5.03,91.41,8.15,5.94,5.95,0.2238,1.0,0.9,1.0,0.26
+Hombres,Media superior,44210,0.67,64.54,35.23,25.25,21.6,0.3558,1.0,0.8687,1.0,0.86
+Hombres,Superior,48582,0.41,59.67,40.16,28.46,24.32,0.3748,1.0,0.8764,1.0,0.55
+Mujeres,Básica o menos,104908,23.99,98.35,1.26,0.96,1.02,0.1349,1.0,0.9017,1.0,0.08
+Mujeres,Media superior,52827,7.0,92.41,7.06,5.31,5.34,0.2029,1.0,0.9224,1.0,0.39
+Mujeres,Superior,58449,1.58,83.67,16.07,11.89,11.38,0.2678,1.0,0.8777,1.0,0.23

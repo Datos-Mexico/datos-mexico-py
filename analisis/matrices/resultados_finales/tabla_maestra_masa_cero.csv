@@ -1,0 +1,3 @@
+denominador,descripcion,masa_en_cero_pct,ic95_semiancho,sd_entre_semillas,pct_del_total_retirados,n_agentes_pooled,semilla_20260701,semilla_20260702,semilla_20260703,semilla_20260704,semilla_20260705
+a_anios_formal_gt0,anios_formal > 0 (cotizó alguna vez),84.25,0.14,0.114,91.2,357056,84.08,84.22,84.39,84.24,84.3
+c_anios_formal_ge10,anios_formal >= 10 (cotizante sustantivo),70.36,0.31,0.246,48.48,189783,70.0,70.25,70.61,70.38,70.55

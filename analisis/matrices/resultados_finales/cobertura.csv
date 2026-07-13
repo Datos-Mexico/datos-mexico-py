@@ -1,0 +1,7 @@
+categoria,etiqueta,cubierto,pct_retirados,ic95_semiancho,sd_entre_semillas,semilla_20260701,semilla_20260702,semilla_20260703,semilla_20260704,semilla_20260705
+contributiva_plena,Pensión contributiva plena,True,0.81,0.02,0.013,0.84,0.81,0.81,0.81,0.8
+contributiva_con_complemento_FPB,Contributiva + complemento FPB,True,4.15,0.07,0.057,4.14,4.16,4.06,4.21,4.18
+pension_garantizada,Pensión garantizada (PG),True,9.41,0.1,0.084,9.54,9.43,9.35,9.38,9.33
+sin_pension_saldo_en_exhibicion,Sin pensión (saldo en una exhibición),False,76.84,0.14,0.109,76.65,76.85,76.87,76.94,76.87
+nunca_cotizo,Nunca cotizó al IMSS,False,8.8,0.12,0.093,8.84,8.75,8.91,8.66,8.81
+TOTAL_cubiertos,Total con pensión (cobertura),True,14.37,0.14,0.109,14.51,14.4,14.22,14.4,14.32
