@@ -4,6 +4,13 @@ Todas las versiones notables del cliente `datos-mexico` quedan documentadas
 aquí. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el versionado adhiere a [SemVer](https://semver.org/lang/es/).
 
+
+## 0.3.0 — 2026-09-21
+
+- **La API por omisión es `https://api.datosmexico.org`** (Cloudflare Workers + D1 + R2), en lugar de `https://api.datos-itam.org`. La API nueva reproduce ruta por ruta los contratos del sistema anterior (comparador de paridad en el repositorio `datos-mexico-api`, `docs/paridad/`) y además corrige la serie de la ENOE: los indicadores 2005T1-2026T2 se recalculan desde los microdatos oficiales y coinciden exactamente con el Banco de Indicadores del INEGI (la serie del sistema anterior estaba 0.7 % por debajo). Batería de integración de este cliente: 27/27 contra la API nueva.
+- El sistema anterior sigue en línea; para usarlo, `Client(base_url="https://api.datos-itam.org")`.
+- Referencias de la documentación actualizadas a la API nueva.
+
 ## [Unreleased]
 
 ### Changed

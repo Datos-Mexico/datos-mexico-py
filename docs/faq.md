@@ -36,7 +36,7 @@ Bajar TTL global a cero al construir: `DatosMexico(cache_ttl=0)`.
 
 El SDK reintenta automáticamente con backoff exponencial en errores transitorios (5xx, 429, timeouts, conexión perdida). Por default hace 3 reintentos.
 
-Si después de los reintentos la llamada sigue fallando, levanta `NetworkError` o `ServerError`. Esto es señal de que el problema persiste — verifica https://api.datos-itam.org/docs y reporta en https://github.com/Datos-Mexico/datos-mexico-py/issues si parece estar caído.
+Si después de los reintentos la llamada sigue fallando, levanta `NetworkError` o `ServerError`. Esto es señal de que el problema persiste — verifica https://api.datosmexico.org/docs y reporta en https://github.com/Datos-Mexico/datos-mexico-py/issues si parece estar caído.
 
 ## ¿Cómo cito el SDK en mi paper?
 

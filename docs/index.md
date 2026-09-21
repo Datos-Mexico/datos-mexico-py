@@ -16,7 +16,7 @@ with DatosMexico() as client:
 
 El Observatorio Datos México es un esfuerzo independiente de estudiantes y egresados del ITAM para hacer accesibles, comparables y reproducibles los datos públicos mexicanos. Los microdatos del SAR, ENIGH, padrones de servidores públicos y otros conjuntos están dispersos en formatos heterogéneos, fuentes con cobertura desigual, y publicaciones intermitentes.
 
-La API del observatorio (`api.datos-itam.org`) reprocesa esas fuentes preservando el dato bruto, agregando una capa de validaciones cruzadas (identidades contables, cuadres con publicaciones oficiales) y documentando cada caveat metodológico relevante.
+La API del observatorio (`api.datosmexico.org`) reprocesa esas fuentes preservando el dato bruto, agregando una capa de validaciones cruzadas (identidades contables, cuadres con publicaciones oficiales) y documentando cada caveat metodológico relevante.
 
 Este SDK es la forma idiomática de consumirla desde Python: tipos Pydantic estrictos, `Decimal` para campos monetarios, cache configurable, retries con backoff exponencial y errores tipados que respetan la jerarquía HTTP. Está pensado para que un investigador, un analista o un periodista de datos pueda escribir un script reproducible sin tener que normalizar respuestas crudas de un endpoint REST.
 

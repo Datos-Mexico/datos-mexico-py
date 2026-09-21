@@ -99,7 +99,7 @@ del TCCO en 2020T1, gap documental ETOE en 2020T2, re-cálculo del dominio
 
 ## Ejemplos
 
-El directorio [`examples/`](examples/) contiene 6 notebooks Jupyter ejecutables que muestran flujos típicos del SDK con datos reales contra `https://api.datos-itam.org`:
+El directorio [`examples/`](examples/) contiene 6 notebooks Jupyter ejecutables que muestran flujos típicos del SDK con datos reales contra `https://api.datosmexico.org`:
 
 - [`01_quickstart.ipynb`](examples/01_quickstart.ipynb) — onboarding en 10 minutos
 - [`02_cdmx_servidores_publicos.ipynb`](examples/02_cdmx_servidores_publicos.ipynb) — análisis del padrón CDMX (distribuciones, top sectores, brecha por edad)
@@ -130,7 +130,7 @@ Documentación profesional en **[docs.datosmexico.org](https://docs.datosmexico.
 Otros recursos:
 
 - **Ejemplos en notebooks**: [examples/](examples/)
-- **Documentación de la API HTTP**: https://api.datos-itam.org/docs
+- **Documentación de la API HTTP**: https://api.datosmexico.org/docs
 
 ## Salvedades metodológicas
 

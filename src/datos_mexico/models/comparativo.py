@@ -185,7 +185,7 @@ class ComparativoDecilServidores(DatosMexicoModel):
     estructurada vía ``caveats_interpretativos``.
 
     El campo ``cdmx_servidor`` es schema-libre. Estructura schema-libre;
-    ver https://api.datos-itam.org/docs para el shape actual del payload.
+    ver https://api.datosmexico.org/docs para el shape actual del payload.
     """
 
     cdmx_servidor: dict[str, Any]
@@ -203,7 +203,7 @@ class ComparativoTopVsBottom(DatosMexicoModel):
     percentiles vs hogar ENIGH decil 1/decil 10).
 
     Los campos ``top_bracket`` y ``bottom_bracket`` son schema-libre.
-    Estructura schema-libre; ver https://api.datos-itam.org/docs para
+    Estructura schema-libre; ver https://api.datosmexico.org/docs para
     el shape actual del payload.
     """
 

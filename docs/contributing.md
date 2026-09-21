@@ -108,7 +108,7 @@ El badge de cobertura en el README es **estático** (hard-coded). El workflow de
 
 ### Tests integrales
 
-Pegan a `api.datos-itam.org` y validan identidades contables, validaciones INEGI, cross-namespace workflows y propagación de errores. Lentos (~60–90 segundos), gated por variable de entorno para evitar que corran sin querer.
+Pegan a `api.datosmexico.org` y validan identidades contables, validaciones INEGI, cross-namespace workflows y propagación de errores. Lentos (~60–90 segundos), gated por variable de entorno para evitar que corran sin querer.
 
 ```bash
 DATOS_MEXICO_INTEGRATION_TESTS=1 pytest tests/integration/
@@ -160,7 +160,7 @@ El flujo típico cuando la API expone un dataset nuevo (ej. una sección `educac
 1. **Verificar el spec**: descarga el `openapi.json` live para tener los paths y schemas reales en mano.
 
    ```bash
-   curl -s https://api.datos-itam.org/openapi.json > /tmp/spec.json
+   curl -s https://api.datosmexico.org/openapi.json > /tmp/spec.json
    ```
 
 2. **Definir los modelos Pydantic** en `src/datos_mexico/models/educacion.py`. Convenciones:
@@ -190,7 +190,7 @@ El flujo típico cuando la API expone un dataset nuevo (ej. una sección `educac
 
 ## Gestión del drift del OpenAPI spec
 
-El repo versiona un snapshot del spec live en `openapi/openapi.snapshot.json`. Dos workflows de CI vigilan el drift entre ese snapshot y la API en `https://api.datos-itam.org/openapi.json`:
+El repo versiona un snapshot del spec live en `openapi/openapi.snapshot.json`. Dos workflows de CI vigilan el drift entre ese snapshot y la API en `https://api.datosmexico.org/openapi.json`:
 
 - **Continuo** (`.github/workflows/openapi-drift.yml`) — en cada push a `main` y cada PR. Si detecta drift, deja warning en el run summary, sube el diff como artifact (`openapi-drift-diff`, retention 30 días) y comenta el PR con un diff truncado. **No falla CI**.
 - **Cron diario** (`.github/workflows/openapi-drift-cron.yml`) — 09:00 UTC. Si detecta drift, abre o actualiza un issue con label `openapi-drift`. Si el snapshot está sincronizado, cierra automáticamente cualquier issue abierto con esa label.
