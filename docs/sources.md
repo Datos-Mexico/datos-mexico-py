@@ -36,5 +36,5 @@ El Observatorio Datos México reprocesa datos de las siguientes fuentes oficiale
 
 Todos los endpoints expuestos por este cliente Python están documentados en formato OpenAPI 3.1.0:
 
-- **URL del spec**: https://api.datos-itam.org/openapi.json
-- **Documentación interactiva (Swagger UI)**: https://api.datos-itam.org/docs
+- **URL del spec**: https://api.datosmexico.org/openapi.json
+- **Documentación interactiva (Swagger UI)**: https://api.datosmexico.org/docs

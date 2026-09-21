@@ -69,7 +69,7 @@ El SDK aún no tiene DOI asignado para esta versión. Cuando se asigne (probable
 
 Si tu paper usa también la API HTTP directamente (por ejemplo desde otro lenguaje), considera citar la API además del SDK:
 
-> Datos provenientes de la API del Observatorio Datos México (`https://api.datos-itam.org`).
+> Datos provenientes de la API del Observatorio Datos México (`https://api.datosmexico.org`).
 
 ## Sobre el observatorio
 

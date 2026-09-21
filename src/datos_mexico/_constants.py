@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datos_mexico._version import __version__
 
-DEFAULT_BASE_URL: str = "https://api.datos-itam.org"
+DEFAULT_BASE_URL: str = "https://api.datosmexico.org"
 DEFAULT_TIMEOUT_SECONDS: float = 30.0
 DEFAULT_CACHE_TTL_SECONDS: int = 300
 DEFAULT_MAX_RETRIES: int = 3
