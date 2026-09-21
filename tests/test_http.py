@@ -25,7 +25,7 @@ from datos_mexico.exceptions import (
 def test_constructor_defaults() -> None:
     client = HttpClient()
     try:
-        assert client.base_url == "https://api.datos-itam.org"
+        assert client.base_url == "https://api.datosmexico.org"
         assert client.cache.enabled
     finally:
         client.close()
