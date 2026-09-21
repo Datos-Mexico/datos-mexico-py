@@ -5,6 +5,16 @@ aquí. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.
 y el versionado adhiere a [SemVer](https://semver.org/lang/es/).
 
 
+## 0.4.0 — 2026-09-21
+
+- **Namespace `inegi`** (`client.inegi`): la capa de cubos del observatorio (`cubos`, `cubo`, `cubo_miembros`, `cubo_datos`,
+  `cubo_csv`; misma consulta que el explorador, con `to_pandas()`), los tabulados explorables del INEGI (`tabulados`,
+  `tabulados_cuadros`, `tabulado`, `tabulado_celdas`: censos de población 2005-2020 y cuentas por sectores institucionales,
+  celda por celda), los Censos Económicos 2004-2024 por municipio, actividad y estrato (`saic`, `saic_datos`) y los bancos de
+  indicadores (`indicador_observaciones`, `bie_observaciones`).
+- Tests unitarios con `respx` y de integración (gated) que reproducen cifras publicadas por el INEGI: población 2020
+  126,014,024, unidades económicas 2023 5,468,180.
+
 ## 0.3.0 — 2026-09-21
 
 - **La API por omisión es `https://api.datosmexico.org`** (Cloudflare Workers + D1 + R2), en lugar de `https://api.datos-itam.org`. La API nueva reproduce ruta por ruta los contratos del sistema anterior (comparador de paridad en el repositorio `datos-mexico-api`, `docs/paridad/`) y además corrige la serie de la ENOE: los indicadores 2005T1-2026T2 se recalculan desde los microdatos oficiales y coinciden exactamente con el Banco de Indicadores del INEGI (la serie del sistema anterior estaba 0.7 % por debajo). Batería de integración de este cliente: 27/27 contra la API nueva.
