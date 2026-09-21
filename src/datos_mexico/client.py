@@ -20,6 +20,7 @@ from datos_mexico.endpoints.demo import DemoNamespace
 from datos_mexico.endpoints.enigh import EnighNamespace
 from datos_mexico.endpoints.enoe import EnoeNamespace
 from datos_mexico.endpoints.export import ExportNamespace
+from datos_mexico.endpoints.inegi import InegiNamespace
 from datos_mexico.endpoints.nombramientos import NombramientosNamespace
 from datos_mexico.endpoints.personas import PersonasNamespace
 from datos_mexico.models.base import HealthResponse
@@ -90,6 +91,7 @@ class DatosMexico:
         self.nombramientos = NombramientosNamespace(self._http)
         self.demo = DemoNamespace(self._http)
         self.export = ExportNamespace(self._http)
+        self.inegi = InegiNamespace(self._http)
 
     def health(self) -> HealthResponse:
         """Consulta ``GET /health`` para verificar que la API responde.
